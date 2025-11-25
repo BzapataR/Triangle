@@ -1,0 +1,70 @@
+package com.bzapata.triangle
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bzapata.triangle.ui.components.EmulatorAppBar
+import com.bzapata.triangle.ui.components.GameGrid
+import com.bzapata.triangle.ui.components.PagerIndicator
+import com.bzapata.triangle.ui.components.Settings
+import com.bzapata.triangle.ui.theme.TriangleTheme
+
+
+class MainActivity : ComponentActivity() {
+    private val gameViewModel: GameViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        installSplashScreen()
+        enableEdgeToEdge()
+        setContent {
+            TriangleTheme {
+                val isSettingsOpen by gameViewModel.isSettingsOpen.collectAsStateWithLifecycle()
+                val selectedGameIndex by gameViewModel.focusedGame.collectAsStateWithLifecycle()
+                val fileMenuOpen by gameViewModel.fileMenuOpen.collectAsStateWithLifecycle()
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(if (selectedGameIndex != null) 8.dp else 0.dp),
+                    topBar = {
+                        Column {
+                            EmulatorAppBar(
+                                settingsToggle = { gameViewModel.toggleSettings() },
+                                fileToggle = { gameViewModel.toggleFileMenu() },
+                                isMenuOpen = fileMenuOpen
+                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
+                    },
+                    bottomBar = {
+                        Column {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                            PagerIndicator()
+                        }
+                    }
+                ) { innerPadding ->
+                    GameGrid(
+                        modifier = Modifier.padding(innerPadding),
+                        focusedGame = selectedGameIndex,
+                        onGameFocus = { gameViewModel.onGameFocus(it) }
+                    )
+                    Settings(dismissAction = { gameViewModel.toggleSettings() }, isOpen = isSettingsOpen)
+                }
+            }
+        }
+    }
+}

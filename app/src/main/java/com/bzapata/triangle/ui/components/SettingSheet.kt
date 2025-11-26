@@ -39,6 +39,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -68,7 +69,7 @@ fun Settings(
     )
     val scope = rememberCoroutineScope()
 
-    var sliderPositions by remember { mutableStateOf(70f) }
+    var sliderPositions by remember { mutableFloatStateOf(70f) }
     var isChecked by remember { mutableStateOf(true) }
 
     val listState = rememberLazyListState()

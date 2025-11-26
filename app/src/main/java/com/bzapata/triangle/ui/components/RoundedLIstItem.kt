@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.foundation.text.TextAutoSizeDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -62,7 +60,7 @@ fun RoundedListItem(
             string
     }
     ListItem(
-        colors = ListItemDefaults.colors(containerColor = Color(0xff2c2c2e),),
+        colors = ListItemDefaults.colors(containerColor = Color(0xff2c2c2e)),
         leadingContent = if (icon ==null) null else{ {
                 Box(
                     modifier = modifier

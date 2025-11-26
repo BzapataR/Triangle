@@ -62,7 +62,7 @@ fun EmulatorAppBar(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                FileContextMenu(isMenuOpen, { fileToggle () })
+                FileContextMenu(isMenuOpen) { fileToggle() }
             },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface

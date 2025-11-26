@@ -21,6 +21,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun EmulatorPages(
+    blurBackgroundToggle : () -> Unit,
     modifier : Modifier,
     pagerState: PagerState,
     consoles: Array<Consoles>
@@ -30,14 +31,14 @@ fun EmulatorPages(
 //    val pagerState = rememberPagerState(
 //        pageCount = {consoles.size}
 //    )
-    var focusedGame by remember { mutableStateOf<Int?>(null) }
     HorizontalPager(
         modifier = modifier,
         state = pagerState
     ) { page ->
         GameGrid(
             console = consoles[page],
-            focusedGame = -78, onGameFocus = {focusedGame}
+            onGameFocus = { blurBackgroundToggle() }
+            //focusedGame = -78, onGameFocus = {focusedGame}
         )
         // todo GameGrid(emulator type)
     }
@@ -49,6 +50,6 @@ fun EmulatorPagesPreview() {
     TriangleTheme {
         val consoles = Consoles.entries.toTypedArray()
         val pagerState = rememberPagerState(pageCount = { consoles.size })
-        EmulatorPages(Modifier, pagerState, consoles)
+        EmulatorPages({}, Modifier, pagerState, consoles)
     }
 }

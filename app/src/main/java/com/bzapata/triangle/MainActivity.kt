@@ -13,6 +13,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.dp
@@ -35,8 +38,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TriangleTheme {
+                var blurBackground by remember { mutableStateOf(false) }
                 val isSettingsOpen by gameViewModel.isSettingsOpen.collectAsStateWithLifecycle()
-                val selectedGameIndex by gameViewModel.focusedGame.collectAsStateWithLifecycle()
                 val fileMenuOpen by gameViewModel.fileMenuOpen.collectAsStateWithLifecycle()
                 val consoles = Consoles.entries.toTypedArray()
                 val pagerState = rememberPagerState(
@@ -47,7 +50,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
-                        .blur(if (selectedGameIndex != null) 8.dp else 0.dp),
+                        .blur(if (blurBackground) 8.dp else 0.dp),
                     topBar = {
                         Column {
                             EmulatorAppBar(
@@ -69,7 +72,8 @@ class MainActivity : ComponentActivity() {
                     EmulatorPages(
                         modifier = Modifier.padding(innerPadding),
                         pagerState = pagerState,
-                        consoles = consoles
+                        consoles = consoles,
+                        blurBackgroundToggle = {blurBackground = !blurBackground}
                     )
 //                    GameGrid(
 //                        modifier = Modifier.padding(innerPadding),

@@ -1,6 +1,5 @@
 //
-// GameCover=[
-// ].kt
+// GameCover.kt
 // Triangle
 //
 // Created by Brian Zapata Resendiz on 11/21/2025
@@ -35,8 +34,8 @@ fun GameCover(
     Box(
         modifier = Modifier
             .combinedClickable(
-                onClick = {/*Launch Game*/},
-                onLongClick = onShowContextMenu, // Original Delta open the game on this event but i don't like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
+                onClick = {/*Launch Game*/ },
+                onLongClick = { onShowContextMenu() }, // Original Delta open the game on this event but i don't like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
                 onDoubleClick = {}, // Mayhaps we launch lastest quick save. // who is we?
                 onClickLabel = "Launch ROM",
                 onLongClickLabel = "Show ROM context menu",
@@ -55,6 +54,7 @@ fun GameCover(
             contentScale = ContentScale.Crop
         )
         GameContextMenu(
+            gameName = game.name,
             expanded = isContextMenuShown,
             onDismissRequest = onDismissContextMenu
         )

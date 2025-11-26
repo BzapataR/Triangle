@@ -15,6 +15,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,9 +38,10 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 fun GameGrid(
     console : Consoles,
     modifier: Modifier = Modifier,
-    focusedGame: Int?,
-    onGameFocus: (Int?) -> Unit
+//    focusedGame: Int?,
+    onGameFocus: () -> Unit
 ) {
+    var focusedGame by remember { mutableStateOf<Int?>(null) }
     //TODO remove the condition only to get different pages of games
     val game = when (console) {
         Consoles.NES -> {
@@ -65,7 +71,7 @@ fun GameGrid(
         contentPadding = PaddingValues(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        userScrollEnabled = focusedGame == null
+        //userScrollEnabled = focusedGame == null
     )
     {
         itemsIndexed(testImage) { index, _ ->
@@ -73,8 +79,14 @@ fun GameGrid(
                 GameCover(
                     game = game,
                     isContextMenuShown = focusedGame == index,
-                    onShowContextMenu = { onGameFocus(index) },
-                    onDismissContextMenu = { onGameFocus(null) }
+                    onShowContextMenu = {
+                        focusedGame = index
+                        onGameFocus()
+                    },
+                    onDismissContextMenu = {
+                        focusedGame = null
+                        onGameFocus()
+                    }
                 )
                 Text(
                     text = game.name,//todo get actual name
@@ -92,6 +104,6 @@ fun GameGrid(
 @Composable
 fun GameGridPreview() {
     TriangleTheme {
-        GameGrid(focusedGame = 0, onGameFocus = {}, console = Consoles.GBA)
+        GameGrid(console = Consoles.GBA, Modifier, {})
     }
 }

@@ -29,6 +29,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameContextMenu(
+    gameName : String,
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -39,7 +40,7 @@ fun GameContextMenu(
         shape = MaterialTheme.shapes.medium,
     ) {
         Text(
-            text = "Fire Emblem: Blazing Blade",
+            text = gameName,
             fontSize = 8.sp,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp ),
             color = MaterialTheme.colorScheme.outline
@@ -183,6 +184,7 @@ fun GameContextMenuPreview() {
     TriangleTheme {
         var expanded by remember { mutableStateOf(true) }
         GameContextMenu(
+            "game name",
             expanded = expanded,
             onDismissRequest = { expanded = false }
         )

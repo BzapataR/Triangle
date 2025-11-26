@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.ui.components.EmulatorAppBar
+import com.bzapata.triangle.ui.components.EmulatorPages
 import com.bzapata.triangle.ui.components.GameGrid
 import com.bzapata.triangle.ui.components.PagerIndicator
 import com.bzapata.triangle.ui.components.Settings
@@ -36,6 +38,12 @@ class MainActivity : ComponentActivity() {
                 val isSettingsOpen by gameViewModel.isSettingsOpen.collectAsStateWithLifecycle()
                 val selectedGameIndex by gameViewModel.focusedGame.collectAsStateWithLifecycle()
                 val fileMenuOpen by gameViewModel.fileMenuOpen.collectAsStateWithLifecycle()
+                val consoles = Consoles.entries.toTypedArray()
+                val pagerState = rememberPagerState(
+                    pageCount = {consoles.size}
+                )
+                val currentEmulatorName = consoles[pagerState.currentPage].name
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
@@ -45,7 +53,8 @@ class MainActivity : ComponentActivity() {
                             EmulatorAppBar(
                                 settingsToggle = { gameViewModel.toggleSettings() },
                                 fileToggle = { gameViewModel.toggleFileMenu() },
-                                isMenuOpen = fileMenuOpen
+                                isMenuOpen = fileMenuOpen,
+                                currentEmulatorName = currentEmulatorName
                             )
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         }
@@ -53,15 +62,21 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         Column {
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            PagerIndicator()
+                            PagerIndicator(pagerState = pagerState)
                         }
                     }
                 ) { innerPadding ->
-                    GameGrid(
+                    EmulatorPages(
                         modifier = Modifier.padding(innerPadding),
-                        focusedGame = selectedGameIndex,
-                        onGameFocus = { gameViewModel.onGameFocus(it) }
+                        pagerState = pagerState,
+                        consoles = consoles
                     )
+//                    GameGrid(
+//                        modifier = Modifier.padding(innerPadding),
+//                        focusedGame = selectedGameIndex,
+//                        onGameFocus = { gameViewModel.onGameFocus(it) },
+//                        console = Consoles.DS
+//                    )
                     Settings(dismissAction = { gameViewModel.toggleSettings() }, isOpen = isSettingsOpen)
                 }
             }

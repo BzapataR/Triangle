@@ -32,14 +32,15 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 fun EmulatorAppBar(
     settingsToggle : () -> Unit,
     fileToggle : () -> Unit,
-    isMenuOpen : Boolean
+    isMenuOpen : Boolean,
+    currentEmulatorName : String,
 /* TODO add starting emulator or null to add paths*/
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         CenterAlignedTopAppBar(
             title = {
                 Text(
-                    text = "GBA",
+                    text = currentEmulatorName,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -78,6 +79,8 @@ fun EmulatorAppBar(
 @Composable
 private fun TopAppBarPreview() {
     TriangleTheme {
-        EmulatorAppBar(settingsToggle = {}, isMenuOpen = true, fileToggle = {})
+        EmulatorAppBar(settingsToggle = {}, isMenuOpen = true, fileToggle = {},
+            currentEmulatorName = "GBA"
+        )
     }
 }

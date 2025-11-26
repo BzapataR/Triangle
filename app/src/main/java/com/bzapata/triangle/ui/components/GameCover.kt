@@ -22,10 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.bzapata.triangle.Game
 import com.bzapata.triangle.R
 
 @Composable
 fun GameCover(
+    game: Game,
     isContextMenuShown: Boolean,
     onShowContextMenu: () -> Unit,
     onDismissContextMenu: () -> Unit
@@ -47,7 +49,7 @@ fun GameCover(
         )
     {
         Image(
-            painter = painterResource(R.drawable.fire_emblem_high), // todo get cover from sqlite db by rom ID which is gotten from rom hash
+            painter = game.cover, // todo get cover from sqlite db by rom ID which is gotten from rom hash
             contentDescription = "Cover",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

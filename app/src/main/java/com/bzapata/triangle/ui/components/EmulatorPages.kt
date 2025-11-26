@@ -7,22 +7,38 @@
 package com.bzapata.triangle.ui.components
 
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bzapata.triangle.Consoles
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
-fun EmulatorPages() {
-    val pagerState = rememberPagerState(
-        pageCount = {10}
-    )
+fun EmulatorPages(
+    modifier : Modifier,
+    pagerState: PagerState,
+    consoles: Array<Consoles>
 
+) {
+//    val consoles = Consoles.entries.toTypedArray()
+//    val pagerState = rememberPagerState(
+//        pageCount = {consoles.size}
+//    )
+    var focusedGame by remember { mutableStateOf<Int?>(null) }
     HorizontalPager(
+        modifier = modifier,
         state = pagerState
     ) { page ->
-        GameGrid(focusedGame = -78, onGameFocus = {})
+        GameGrid(
+            console = consoles[page],
+            focusedGame = -78, onGameFocus = {focusedGame}
+        )
         // todo GameGrid(emulator type)
     }
 }
@@ -31,6 +47,8 @@ fun EmulatorPages() {
 @Composable
 fun EmulatorPagesPreview() {
     TriangleTheme {
-        EmulatorPages()
+        val consoles = Consoles.entries.toTypedArray()
+        val pagerState = rememberPagerState(pageCount = { consoles.size })
+        EmulatorPages(Modifier, pagerState, consoles)
     }
 }

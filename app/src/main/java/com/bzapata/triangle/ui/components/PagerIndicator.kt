@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
@@ -29,8 +30,9 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 
 @Composable
-fun PagerIndicator(/* page state */) {
-    val pagerState = rememberPagerState ( pageCount = { 4 })
+fun PagerIndicator(
+    pagerState: PagerState
+) {
     Column {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
@@ -70,6 +72,7 @@ fun PagerIndicator(/* page state */) {
 @Composable
 fun PagerIndicatorPreview() {
     TriangleTheme {
-        PagerIndicator()
+        val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 1)
+        PagerIndicator(pagerState)
     }
 }

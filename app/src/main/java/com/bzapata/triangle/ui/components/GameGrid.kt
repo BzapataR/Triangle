@@ -17,18 +17,46 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bzapata.triangle.Consoles
+import com.bzapata.triangle.Game
+import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameGrid(
+    console : Consoles,
     modifier: Modifier = Modifier,
     focusedGame: Int?,
     onGameFocus: (Int?) -> Unit
 ) {
+    //TODO remove the condition only to get different pages of games
+    val game = when (console) {
+        Consoles.NES -> {
+            Game(name = "Super Maio Bros", cover = painterResource(R.drawable.super_mario_bros))
+        }
+        Consoles.SNES -> {
+            Game(name = "Kirby Super Star", cover = painterResource(R.drawable.kirby_superstar))
+        }
+        Consoles.N64 -> {
+            Game(name = "Super Smash Bros", cover = painterResource(R.drawable.super_smash_bros))
+        }
+        Consoles.GB -> {
+            Game(name = "Mole Mania", cover = painterResource(R.drawable.mole_mania))
+        }
+        Consoles.GBA -> {
+            Game(name = "Fire Emblem: Blazing Blade", cover = painterResource(R.drawable.fire_emblem_high))
+        }
+        Consoles.DS -> {
+            Game(name = "Pokemon: Soulsilver", cover = painterResource(R.drawable.pokemon_soulsilver))
+        }
+    }
     val testImage = List(20) { it }
 
     LazyVerticalGrid(
@@ -43,12 +71,13 @@ fun GameGrid(
         itemsIndexed(testImage) { index, _ ->
             Column {
                 GameCover(
+                    game = game,
                     isContextMenuShown = focusedGame == index,
                     onShowContextMenu = { onGameFocus(index) },
                     onDismissContextMenu = { onGameFocus(null) }
                 )
                 Text(
-                    text = "Fire Emblem: The Blazing Blade",//todo get actual name
+                    text = game.name,//todo get actual name
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp,
                     lineHeight = 12.sp,
@@ -63,6 +92,6 @@ fun GameGrid(
 @Composable
 fun GameGridPreview() {
     TriangleTheme {
-        GameGrid(focusedGame = 0, onGameFocus = {})
+        GameGrid(focusedGame = 0, onGameFocus = {}, console = Consoles.GBA)
     }
 }

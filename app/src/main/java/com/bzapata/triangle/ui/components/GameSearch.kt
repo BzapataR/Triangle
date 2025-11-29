@@ -6,6 +6,7 @@
 // Search Barrrrrrr
 package com.bzapata.triangle.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun GameSearch() {
     val textState = rememberTextFieldState()

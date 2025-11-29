@@ -23,9 +23,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.data.model.Consoles
 import com.bzapata.triangle.ui.components.EmulatorAppBar
-import com.bzapata.triangle.ui.screens.Emulators.EmulatorPages
+import com.bzapata.triangle.ui.screens.emulators.EmulatorPages
 import com.bzapata.triangle.ui.components.PagerIndicator
-import com.bzapata.triangle.ui.screens.Settings.Settings
+import com.bzapata.triangle.ui.screens.settings.Settings
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 

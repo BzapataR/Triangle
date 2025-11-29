@@ -21,15 +21,16 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bzapata.triangle.data.model.Consoles
 import com.bzapata.triangle.ui.components.EmulatorAppBar
-import com.bzapata.triangle.ui.components.EmulatorPages
+import com.bzapata.triangle.ui.screens.Emulators.EmulatorPages
 import com.bzapata.triangle.ui.components.PagerIndicator
-import com.bzapata.triangle.ui.components.Settings
+import com.bzapata.triangle.ui.screens.Settings.Settings
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 
 class MainActivity : ComponentActivity() {
-    private val gameViewModel: GameViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +39,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             TriangleTheme {
                 var blurBackground by remember { mutableStateOf(false) }
-                val isSettingsOpen by gameViewModel.isSettingsOpen.collectAsStateWithLifecycle()
-                val fileMenuOpen by gameViewModel.fileMenuOpen.collectAsStateWithLifecycle()
+                val isSettingsOpen by mainViewModel.isSettingsOpen.collectAsStateWithLifecycle()
+                val fileMenuOpen by mainViewModel.fileMenuOpen.collectAsStateWithLifecycle()
                 val consoles = Consoles.entries.toTypedArray()
                 val pagerState = rememberPagerState(
                     pageCount = {consoles.size}
@@ -53,8 +54,8 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         Column {
                             EmulatorAppBar(
-                                settingsToggle = { gameViewModel.toggleSettings() },
-                                fileToggle = { gameViewModel.toggleFileMenu() },
+                                settingsToggle = { mainViewModel.toggleSettings() },
+                                fileToggle = { mainViewModel.toggleFileMenu() },
                                 isMenuOpen = fileMenuOpen,
                                 currentEmulatorName = currentEmulatorName
                             )
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
 //                        onGameFocus = { gameViewModel.onGameFocus(it) },
 //                        console = Consoles.DS
 //                    )
-                    Settings(dismissAction = { gameViewModel.toggleSettings() }, isOpen = isSettingsOpen)
+                    Settings(dismissAction = { mainViewModel.toggleSettings() }, isOpen = isSettingsOpen)
                 }
             }
         }

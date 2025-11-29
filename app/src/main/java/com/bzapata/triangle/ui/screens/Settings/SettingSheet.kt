@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/22/2025
 //
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.ui.screens.Settings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.ui.components.RoundedListItem
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.launch
 

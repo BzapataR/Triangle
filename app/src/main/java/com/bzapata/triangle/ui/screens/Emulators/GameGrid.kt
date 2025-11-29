@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/21/2025
 //
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.ui.screens.Emulators
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,8 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bzapata.triangle.Consoles
-import com.bzapata.triangle.Game
+import com.bzapata.triangle.data.model.Consoles
+import com.bzapata.triangle.data.model.Game
 import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 

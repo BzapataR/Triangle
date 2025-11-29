@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class GameViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
     private val _focusedGame = MutableStateFlow<Int?>(null)
     val focusedGame = _focusedGame.asStateFlow()
 

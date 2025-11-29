@@ -13,11 +13,11 @@ fun hasher(context : Context, file : DocumentFile) : String {
             val buffer = ByteArray(8192)
             var bytesRead : Int
 
-            while (stream.read(buffer).also { bytesRead = it } != 1) {
+            while (stream.read(buffer).also { bytesRead = it } != -1) {
                 digest.update(buffer, 0, bytesRead)
             }
 
-            digest.digest().joinToString("") { "02x".format(it) }
+            digest.digest().joinToString("") { "%02x".format(it) }
         } ?: ""
     }
     catch (e : Exception) {

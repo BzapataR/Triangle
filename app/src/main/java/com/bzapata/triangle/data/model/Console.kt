@@ -1,4 +1,4 @@
-package com.bzapata.triangle
+package com.bzapata.triangle.data.model
 
 enum class Consoles {
     NES,

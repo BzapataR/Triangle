@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/25/2025
 
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.ui.screens.Emulators
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -12,7 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.bzapata.triangle.Consoles
+import com.bzapata.triangle.data.model.Consoles
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable

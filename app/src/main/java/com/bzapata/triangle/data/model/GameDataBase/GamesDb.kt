@@ -1,4 +1,4 @@
-package com.bzapata.triangle.GameDataBase
+package com.bzapata.triangle.data.model.GameDataBase
 
 import android.content.Context
 import androidx.room.Database

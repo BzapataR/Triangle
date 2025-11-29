@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/21/2025
 //
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.ui.screens.Emulators
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.bzapata.triangle.Game
+import com.bzapata.triangle.data.model.Game
 
 @Composable
 fun GameCover(

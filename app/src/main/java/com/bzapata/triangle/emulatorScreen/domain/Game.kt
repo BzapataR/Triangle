@@ -1,4 +1,4 @@
-package com.bzapata.triangle.data.model
+package com.bzapata.triangle.emulatorScreen.domain
 
 import androidx.compose.ui.graphics.painter.Painter
 

@@ -1,6 +1,7 @@
-package com.bzapata.triangle.ui.screens.settings
+package com.bzapata.triangle.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -115,7 +116,8 @@ fun Settings(
             Text(
                 text = "Settings",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White
             )
 
             Spacer(modifier = Modifier.size(24.dp))
@@ -127,19 +129,26 @@ fun Settings(
             ) {
                 RoundedListItem(
                     leadingText = "Player 1",
-                    trailingText = "Touch Screen"
+                    trailingText = "Touch Screen",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Player 2",
+                    trailingText = "",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Player 3",
+                    trailingText = "",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Player 4",
+                    trailingText = "",
+                    onClick = {}
                 )
             }
             Spacer(modifier = Modifier.size(24.dp))
@@ -154,28 +163,34 @@ fun Settings(
             ) {
                 RoundedListItem(
                     leadingText = "Nintendo",
-                    trailingText = "Touch Screen"
+                    trailingText = "Touch Screen",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Super Nintendo",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Nintendo 64",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "GameBoy Color",
+                    onClick = {}
                 )
                 HorizontalDivider()
 
                 RoundedListItem(
                     leadingText = "GameBoy Advance",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
                     leadingText = "Nintendo DS",
+                    onClick = {}
                 )
             }
             SubText("Customize the appearance of each system. Learn more...")
@@ -250,6 +265,7 @@ fun Settings(
             ) {
                 RoundedListItem(
                     leadingText = "Services",
+                    onClick = {}
                 )
             }
             SubText("Sync your games, save data, save states, and cheats between devices")
@@ -324,6 +340,7 @@ fun Settings(
             Card {
                 RoundedListItem(
                     leadingText = "Home Screen Shortcuts",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
@@ -349,7 +366,8 @@ fun Settings(
             Card {
                 RoundedListItem(
                     leadingText = "Nintendo DS",
-                    trailingText = "melonDS"
+                    trailingText = "melonDS",
+                    onClick = {}
                 )
             }
             SubText("Manage Settings for individual emulation cores")
@@ -361,11 +379,14 @@ fun Settings(
             SubText("ADVANCED")
             Card {
                 ListItem(
+                    modifier = Modifier.clickable{
+
+                    },
                     colors = ListItemDefaults.colors(containerColor = Color(0xff2c2c2e)),
                     headlineContent = {
                         Text(
                             text = "Export Error Logs",
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     },
                     trailingContent = {
@@ -383,11 +404,13 @@ fun Settings(
             SubText("Boring Stuff")
             Card {
                 RoundedListItem(
-                    leadingText = "Licenses"
+                    leadingText = "Licenses",
+                    onClick = {}
                 )
                 HorizontalDivider()
                 RoundedListItem(
-                    leadingText = "Privacy Policy"
+                    leadingText = "Privacy Policy",
+                    onClick = {}
                 )
             }
             Spacer(Modifier.size(24.dp))
@@ -399,19 +422,25 @@ fun Settings(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Sources", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    text = "Sources",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = Color.White
+                    )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     IconButton(onClick = {}, modifier = Modifier.size(44.dp)) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.deltaicon),
                             contentDescription = "THE OG",
-                            modifier = Modifier.size(36.dp)
+                            modifier = Modifier.size(36.dp),
+                            tint = Color.White
                         )
                     }
                     IconButton(onClick = {}) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.github_mark_white),
-                            contentDescription = "Source Code"
+                            contentDescription = "Source Code",
+                            tint = Color.White
                         )
                     }
                 }

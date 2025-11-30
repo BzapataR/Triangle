@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.navigation.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

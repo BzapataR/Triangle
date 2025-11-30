@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/21/2025
 //
-package com.bzapata.triangle.ui.screens.emulators
+package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,15 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bzapata.triangle.data.model.Consoles
-import com.bzapata.triangle.data.model.Game
+import com.bzapata.triangle.emulatorScreen.domain.Consoles
+import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameGrid(
     console : Consoles,
-    modifier: Modifier = Modifier,
 //    focusedGame: Int?,
     onGameFocus: () -> Unit
 ) {
@@ -64,7 +63,7 @@ fun GameGrid(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(90.dp),
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -85,13 +84,6 @@ fun GameGrid(
                         onGameFocus()
                     }
                 )
-                Text(
-                    text = game.name,//todo get actual name
-                    textAlign = TextAlign.Center,
-                    fontSize = 10.sp,
-                    lineHeight = 12.sp,
-                    color = Color.LightGray
-                )
             }
         }
     }
@@ -101,6 +93,6 @@ fun GameGrid(
 @Composable
 fun GameGridPreview() {
     TriangleTheme {
-        GameGrid(console = Consoles.GBA, Modifier) {}
+        GameGrid(console = Consoles.GBA, ) {}
     }
 }

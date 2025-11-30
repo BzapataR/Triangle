@@ -1,4 +1,4 @@
-package com.bzapata.triangle.ui.screens.settings
+package com.bzapata.triangle.settings
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

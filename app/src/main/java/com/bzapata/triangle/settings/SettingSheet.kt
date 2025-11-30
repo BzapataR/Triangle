@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/22/2025
 //
-package com.bzapata.triangle.ui.screens.settings
+package com.bzapata.triangle.settings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api

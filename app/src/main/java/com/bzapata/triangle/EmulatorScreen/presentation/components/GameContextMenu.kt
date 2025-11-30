@@ -4,7 +4,7 @@
 //
 // Created by Brian Zapata Resendiz on 11/22/2025
 //
-package com.bzapata.triangle.ui.screens.emulators
+package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu

@@ -47,8 +47,10 @@ fun RoundedListItem(
     iconBackgroundColor: Color = Color.Unspecified, // Sets the Color of the circle around the icon
     iconColor : Color = MaterialTheme.colorScheme.background,
     leadingText: String,
+    leadingTextColor : Color? = null,
     trailingText: String = "",
-    trailingIcon: ImageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_right_24), // Icon at the end with default
+    trailingIcon: ImageVector? = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_right_24), // Icon at the end with default
+    trailingIconColor : Color? = null,
     customTrailingContent : @Composable ( () -> Unit)? = null, // used for anything, in this case added a switch
     iconModifier: Modifier = Modifier, // mainly used for icon size
 ) {
@@ -84,6 +86,7 @@ fun RoundedListItem(
                 Text(
                     text = leadingText,
                     maxLines = 1,
+                    color = if (trailingIconColor != null) trailingIconColor else Color.Unspecified
                    // modifier = Modifier.weight(1f)
                 )
                           },
@@ -103,12 +106,14 @@ fun RoundedListItem(
                         overflow = TextOverflow.Ellipsis,
 
                     )
-                    Icon(
-                        imageVector = trailingIcon,
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = iconModifier
-                    )
+                    if (trailingIcon != null) {
+                        Icon(
+                            imageVector = trailingIcon,
+                            contentDescription = null,
+                            tint = trailingIconColor ?: Color.Gray,
+                            modifier = iconModifier
+                        )
+                    }
                 }
             }
         },

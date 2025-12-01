@@ -7,6 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.bzapata.triangle.settings.controllerSettings.ControllerSettings
+import com.bzapata.triangle.settings.controllerSkins.ControllerSkinsRoot
+import com.bzapata.triangle.settings.mainSettingsPage.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +25,25 @@ fun SettingsNavigator(
             startDestination = SettingsNavigation.SettingsMainPage
         ) {
             composable<SettingsNavigation.SettingsMainPage> {
-                Settings(sheetState = sheetState)
+                Settings(
+                    sheetState = sheetState,
+                    toControllerSettings = {
+                        settingsNavigation.navigate(SettingsNavigation.ControllerSettings)
+                    },
+                    toControllerSkins = {
+                        settingsNavigation.navigate(SettingsNavigation.ControllerSkins)
+                    }
+                )
+            }
+            composable<SettingsNavigation.ControllerSettings> {
+                ControllerSettings(goBack = {
+                    settingsNavigation.popBackStack()
+                })
+            }
+            composable<SettingsNavigation.ControllerSkins> {
+                ControllerSkinsRoot(goBack = {
+                    settingsNavigation.popBackStack()
+                })
             }
         }
     }

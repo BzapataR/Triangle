@@ -1,4 +1,4 @@
-package com.bzapata.triangle.settings
+package com.bzapata.triangle.settings.mainSettingsPage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,13 +46,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.ui.components.RoundedListItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(
-    sheetState : SheetState
+    sheetState : SheetState,
+    toControllerSettings : () -> Unit = {},
+    toControllerSkins : () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
 
@@ -70,9 +72,6 @@ fun Settings(
     }
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .fillMaxHeight(.94f)
-            .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     )
@@ -86,7 +85,7 @@ fun Settings(
             ) {
                 Text(
                     text = "Settings",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier
@@ -130,7 +129,7 @@ fun Settings(
                 RoundedListItem(
                     leadingText = "Player 1",
                     trailingText = "Touch Screen",
-                    onClick = {}
+                    onClick = { toControllerSettings() }
                 )
                 HorizontalDivider()
                 RoundedListItem(
@@ -164,7 +163,7 @@ fun Settings(
                 RoundedListItem(
                     leadingText = "Nintendo",
                     trailingText = "Touch Screen",
-                    onClick = {}
+                    onClick = {toControllerSkins()}
                 )
                 HorizontalDivider()
                 RoundedListItem(

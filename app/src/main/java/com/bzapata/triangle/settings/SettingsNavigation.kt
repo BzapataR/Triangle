@@ -2,7 +2,8 @@ package com.bzapata.triangle.settings
 
 import kotlinx.serialization.Serializable
 
-interface SettingsNavigation {
+@Serializable
+sealed interface SettingsNavigation {
 
     @Serializable
     data object SettingsNavigationGraph: SettingsNavigation

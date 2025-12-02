@@ -26,17 +26,17 @@ import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.ui.components.EmulatorAppBar
 import com.bzapata.triangle.ui.components.PagerIndicator
-import com.bzapata.triangle.settings.Settings
+import com.bzapata.triangle.settings.SettingsSheets
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EmulatorHomePageRoot(viewModel: EmulatorViewModel) {
+fun EmulatorHomePageRoot() {
+    val viewModel: EmulatorViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     EmulatorHomePage(
         state = state,
-        onAction = {action ->
-            viewModel.onAction(action)
-        }
+        onAction = viewModel::onAction
     )
 }
 
@@ -96,7 +96,7 @@ fun EmulatorHomePage(
 //                        onGameFocus = { gameViewModel.onGameFocus(it) },
 //                        console = Consoles.DS
 //                    )
-    Settings(dismissAction = { onAction(EmulatorActions.ToggleSettings) }, isOpen = state.isSettingsOpen)
+    SettingsSheets(dismissAction = { onAction(EmulatorActions.ToggleSettings) }, isOpen = state.isSettingsOpen)
 }
 
 @Preview

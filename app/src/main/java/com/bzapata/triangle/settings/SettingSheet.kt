@@ -22,7 +22,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun Settings(
+fun SettingsSheets(
     isOpen: Boolean,
     dismissAction: () -> Unit
 ) {
@@ -55,8 +55,8 @@ fun Settings(
 
 @Preview
 @Composable
-fun SettingsPreview() {
+fun SettingsSheetsPreview() {
     TriangleTheme {
-        Settings(true) {}
+        SettingsSheets(true) {}
     }
 }

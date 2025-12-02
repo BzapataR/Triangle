@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -106,14 +107,14 @@ fun ControllerSkins(goBack: () -> Unit) {
             SubText("PORTRAIT")
             PdfImage(
                 assetFileName = "iphone_edgetoedge_portrait.pdf",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             )
         }
         item {
             SubText("LANDSCAPE")
             PdfImage(
                 assetFileName = "iphone_edgetoedge_landscape.pdf",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

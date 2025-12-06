@@ -10,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorHomePageRoot
 import com.bzapata.triangle.intro.IntroNavigator
+import com.bzapata.triangle.intro.IntroNavigatorRoot
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.android.inject
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 val isFirstLaunch = config.isFirstLaunchFlow.collectAsStateWithLifecycle(null)
                 splashScreen.setOnExitAnimationListener { isFirstLaunch.value == null }
                 if (isFirstLaunch.value== true)
-                    IntroNavigator()
+                    IntroNavigatorRoot()
                 else
                     EmulatorHomePageRoot()
             }

@@ -1,5 +1,6 @@
 package com.bzapata.triangle.intro.paths
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -14,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +25,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.R
+import com.bzapata.triangle.fileOperations.directoryPicker
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Path() {
+fun PathRoot(
+    viewModel: PathsViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    Path(
+        state = state,
+        onActions = viewModel::onAction
+    )
+}
+
+@Composable
+fun Path(
+    state: PathsState,
+    onActions: (PathsActions) -> Unit
+) {
+    val selectTrianglePathLauncher = directoryPicker(state.trianglePath) { uri ->
+        onActions(PathsActions.SetTrianglePath(uri))
+    }
+
+    val selectRomsPathLauncher = directoryPicker(state.romPath) { uri ->
+        onActions(PathsActions.SetRomsPath(uri))
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,8 +90,9 @@ fun Path() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth()
+                onClick = { selectTrianglePathLauncher() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = state.trianglePath == null
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.outline_home_24),
@@ -76,8 +105,9 @@ fun Path() {
                 )
             }
             Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth()
+                onClick = { selectRomsPathLauncher() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = state.romPath == null
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.videogame_asset_24dp),
@@ -89,7 +119,6 @@ fun Path() {
                     textAlign = TextAlign.Center
                 )
             }
-
         }
     }
 }
@@ -98,6 +127,6 @@ fun Path() {
 @Composable
 fun PathsPreview() {
     TriangleTheme {
-        Path()
+        Path(state = PathsState(), onActions = {})
     }
 }

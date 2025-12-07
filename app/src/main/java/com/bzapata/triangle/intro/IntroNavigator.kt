@@ -25,6 +25,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.bzapata.triangle.intro.done.Done
 import com.bzapata.triangle.intro.paths.Path
+import com.bzapata.triangle.intro.paths.PathRoot
 import com.bzapata.triangle.intro.permissions.PermissionRoot
 import com.bzapata.triangle.intro.permissions.Permissions
 import com.bzapata.triangle.intro.welcome.Welcome
@@ -70,7 +71,7 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Paths> {
                     onAction(IntroActions.ChangePage(2))
-                    Path()
+                    PathRoot()
                 }
                 composable<IntroNavigation.Done> {
                     onAction(IntroActions.ChangePage(3))

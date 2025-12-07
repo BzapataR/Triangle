@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import androidx.core.net.toUri
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "config")
 
@@ -25,9 +26,9 @@ class ConfigRepository(private val context: Context) {
     val triangleDataUriFlow : Flow<Uri?> = context.dataStore.data
         .map{ preferences ->
             val uriString = preferences[PreferenceKeys.TRIANGLE_DATA_URI]
-            uriString?.let { Uri.parse(it) }
+            uriString?.toUri()
         }
-    suspend fun saveTriangleDataUri(uri : Uri) {
+    suspend fun saveTriangleDataUri(uri : Uri?) {
         context.dataStore.edit { preferences ->
             preferences[PreferenceKeys.TRIANGLE_DATA_URI] = uri.toString()
         }
@@ -36,9 +37,9 @@ class ConfigRepository(private val context: Context) {
     val romUriFlow : Flow<Uri?> = context.dataStore.data
         .map{ preferences ->
             val uriString = preferences[PreferenceKeys.ROMS_URI]
-            uriString?.let { Uri.parse(it) }
+            uriString?.toUri()
         }
-    suspend fun saveRomsUri(uri : Uri) {
+    suspend fun saveRomsUri(uri : Uri?) {
         context.dataStore.edit { preferences ->
             preferences[PreferenceKeys.ROMS_URI] = uri.toString()
         }

@@ -75,7 +75,7 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Done> {
                     onAction(IntroActions.ChangePage(3))
-                    Done()
+                    Done(toEmulator = {onAction(IntroActions.Finish)})
                 }
             }
         }

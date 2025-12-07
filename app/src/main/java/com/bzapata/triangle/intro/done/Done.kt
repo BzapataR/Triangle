@@ -24,7 +24,7 @@ import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
-fun Done() {
+fun Done(toEmulator : () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,7 +48,7 @@ fun Done() {
         )
         Spacer(modifier= Modifier.size(32.dp))
         Button(
-            onClick = {},
+            onClick = { toEmulator() },
         ) {
             Text(
                 text = "Continue",
@@ -67,6 +67,6 @@ fun Done() {
 @Composable
 fun DonePreview() {
     TriangleTheme {
-        Done()
+        Done(){}
     }
 }

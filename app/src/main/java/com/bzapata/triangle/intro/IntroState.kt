@@ -5,4 +5,5 @@ data class IntroState(
     val hasNotificationPermission : Boolean = false,
     val hasMicPermission : Boolean = false,
     val hasCameraPermission : Boolean = false,
+    val showSkipDialog: Boolean = false
 )

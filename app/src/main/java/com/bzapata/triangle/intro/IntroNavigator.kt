@@ -24,10 +24,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.bzapata.triangle.intro.done.Done
-import com.bzapata.triangle.intro.paths.Path
 import com.bzapata.triangle.intro.paths.PathRoot
 import com.bzapata.triangle.intro.permissions.PermissionRoot
-import com.bzapata.triangle.intro.permissions.Permissions
 import com.bzapata.triangle.intro.welcome.Welcome
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,7 +65,7 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Permissions> {
                     onAction(IntroActions.ChangePage(1))
-                    PermissionRoot()
+                    PermissionRoot(skip = {onAction(IntroActions.SkipPage)})
                 }
                 composable<IntroNavigation.Paths> {
                     onAction(IntroActions.ChangePage(2))

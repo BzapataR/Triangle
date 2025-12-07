@@ -19,6 +19,8 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
             is IntroActions.Finish -> finishIntro()
             is IntroActions.ChangePage -> changePage(actions.page)
             is IntroActions.PermissionStatusChange -> updatePermissionStatus(actions.permission, actions.isGranted)
+            is IntroActions.SkipPage ->skipPage()
+            is IntroActions.TurnOffSkip -> turnOffSkip()
         }
     }
 
@@ -51,5 +53,11 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
         viewModelScope.launch {
             configRepository.changeFirstLaunch()
         }
+    }
+    private fun skipPage() {
+        _state.update { it.copy(showSkipDialog = true) }
+    }
+    private fun turnOffSkip() {
+        _state.update { it.copy(showSkipDialog = false) }
     }
 }

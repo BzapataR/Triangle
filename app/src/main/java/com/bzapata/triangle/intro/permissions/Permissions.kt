@@ -60,13 +60,17 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PermissionRoot(
-    viewModel: IntroViewModel = koinViewModel()
+    viewModel: IntroViewModel = koinViewModel(),
+    skip : () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Permissions(
         state = state,
         onAction = viewModel::onAction
     )
+    if(!(state.hasNotificationPermission && state.hasMicPermission && state.hasCameraPermission)) {
+        skip()
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

@@ -2,9 +2,7 @@ package com.bzapata.triangle.intro.permissions
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,7 +27,6 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -42,36 +39,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.R
 import com.bzapata.triangle.intro.IntroActions
 import com.bzapata.triangle.intro.IntroState
-import com.bzapata.triangle.intro.IntroViewModel
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
-
-@Composable
-fun PermissionRoot(
-    viewModel: IntroViewModel = koinViewModel(),
-    skip : () -> Unit
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    Permissions(
-        state = state,
-        onAction = viewModel::onAction
-    )
-    if(!(state.hasNotificationPermission && state.hasMicPermission && state.hasCameraPermission)) {
-        skip()
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalPermissionsApi::class)
@@ -123,7 +98,7 @@ fun Permissions(
     LaunchedEffect(notificationPermissionState.status) {
         onAction(
             IntroActions.PermissionStatusChange(
-                notificationPermissionState.permission,
+                Manifest.permission.POST_NOTIFICATIONS,
                 notificationPermissionState.status.isGranted
             )
         )
@@ -131,7 +106,7 @@ fun Permissions(
     LaunchedEffect(micPermissionsState.status) {
         onAction(
             IntroActions.PermissionStatusChange(
-                micPermissionsState.permission,
+                Manifest.permission.RECORD_AUDIO,
                 micPermissionsState.status.isGranted
             )
         )
@@ -139,7 +114,7 @@ fun Permissions(
     LaunchedEffect(cameraPermissionState.status) {
         onAction(
             IntroActions.PermissionStatusChange(
-                cameraPermissionState.permission,
+                Manifest.permission.CAMERA,
                 cameraPermissionState.status.isGranted
             )
         )
@@ -189,8 +164,8 @@ fun Permissions(
                         imageVector = ImageVector.vectorResource(R.drawable.notifications_24dp),
                         contentDescription = "Grant Notification Permission"
                     )
-                    Text(
-                        text = if (state.hasNotificationPermission) "Notifications Granted" else "Notifications",
+                    Text( // why is this different? i wanted the text to center between the buttons and this made it do it
+                        text = "Notifications",
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 8.dp),

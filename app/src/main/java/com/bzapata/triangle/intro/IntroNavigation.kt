@@ -21,7 +21,7 @@ sealed interface IntroNavigation {
     data object Done : IntroNavigation
 
     @Serializable
-    data object SkippingAllPermission : IntroNavigation //dialog
+    data object SkipPermissionDialog : IntroNavigation //dialog
 
     @Serializable
     data object NoUserFolder : IntroNavigation // also dialog

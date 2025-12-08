@@ -16,7 +16,7 @@ fun SkipPermissionDialog(onDismiss : () -> Unit, skip : () -> Unit) {
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                onClick = {},
+                onClick = {skip()},
             ){
                 Text(text = "Skip")
             }

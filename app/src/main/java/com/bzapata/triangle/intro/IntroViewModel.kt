@@ -1,6 +1,7 @@
 package com.bzapata.triangle.intro
 
 import android.Manifest
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzapata.triangle.data.repository.ConfigRepository
@@ -19,20 +20,24 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
             is IntroActions.Finish -> finishIntro()
             is IntroActions.ChangePage -> changePage(actions.page)
             is IntroActions.PermissionStatusChange -> updatePermissionStatus(actions.permission, actions.isGranted)
-            is IntroActions.SkipPage ->skipPage()
-            is IntroActions.TurnOffSkip -> turnOffSkip()
         }
     }
 
     private fun updatePermissionStatus(permission : String, isGranted :Boolean) {
+        Log.i("Permission", "permission: $permission, isGranted: $isGranted")
         _state.update {
             when(permission) {
                 Manifest.permission.POST_NOTIFICATIONS -> it.copy(hasNotificationPermission = isGranted)
                 Manifest.permission.RECORD_AUDIO -> it.copy(hasMicPermission = isGranted)
                 Manifest.permission.CAMERA -> it.copy(hasCameraPermission = isGranted)
-                else -> it
+                else -> {
+                    Log.e("Permission", "Wrong Permission")
+                    it
+                }
             }
         }
+        Log.i("Permission", "new view model state ${_state.value}" )
+
     }
 
     private fun changePage(page : Int) {
@@ -53,11 +58,5 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
         viewModelScope.launch {
             configRepository.changeFirstLaunch()
         }
-    }
-    private fun skipPage() {
-        _state.update { it.copy(showSkipDialog = true) }
-    }
-    private fun turnOffSkip() {
-        _state.update { it.copy(showSkipDialog = false) }
     }
 }

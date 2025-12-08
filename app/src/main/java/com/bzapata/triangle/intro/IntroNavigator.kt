@@ -1,5 +1,6 @@
 package com.bzapata.triangle.intro
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.bzapata.triangle.intro.done.Done
 import com.bzapata.triangle.intro.paths.PathRoot
-import com.bzapata.triangle.intro.permissions.PermissionRoot
+import com.bzapata.triangle.intro.permissions.Permissions
+import com.bzapata.triangle.intro.skipPermissionDialog.SkipPermissionDialog
 import com.bzapata.triangle.intro.welcome.Welcome
 import org.koin.androidx.compose.koinViewModel
 
@@ -65,7 +68,7 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Permissions> {
                     onAction(IntroActions.ChangePage(1))
-                    PermissionRoot(skip = {onAction(IntroActions.SkipPage)})
+                    Permissions(state= state, onAction = onAction)
                 }
                 composable<IntroNavigation.Paths> {
                     onAction(IntroActions.ChangePage(2))
@@ -74,6 +77,18 @@ fun IntroNavigator(
                 composable<IntroNavigation.Done> {
                     onAction(IntroActions.ChangePage(3))
                     Done(toEmulator = {onAction(IntroActions.Finish)})
+                }
+                dialog<IntroNavigation.SkipPermissionDialog>{
+                    SkipPermissionDialog(
+                        onDismiss = {
+                            introNavigator.popBackStack()
+                        },
+                        skip = {
+                            introNavigator.navigate(
+                            IntroNavigation.Paths
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -101,9 +116,24 @@ fun IntroNavigator(
                     if (state.page < 3) {
                         TextButton(
                             onClick = {
-                                    when (state.page) {
+                                Log.i("Permission", "new composable state ${state}" )
+
+                                when (state.page) {
                                         0 -> introNavigator.navigate(IntroNavigation.Permissions)
-                                        1 -> introNavigator.navigate(IntroNavigation.Paths)
+                                        1 -> {
+                                            val hasAnyPermission =
+                                                state.hasNotificationPermission ||
+                                                        state.hasMicPermission ||
+                                                        state.hasCameraPermission
+                                            Log.i("permissions", "camera: ${state.hasCameraPermission} mic:${state.hasMicPermission} camera: ${state.hasCameraPermission} boolean: $hasAnyPermission")
+
+                                            if (hasAnyPermission) {
+                                                introNavigator.navigate(IntroNavigation.Paths)
+                                            } else {
+                                                introNavigator.navigate(IntroNavigation.SkipPermissionDialog)
+                                            }
+
+                                        }
                                         2 -> introNavigator.navigate(IntroNavigation.Done)
                                     }
                             },

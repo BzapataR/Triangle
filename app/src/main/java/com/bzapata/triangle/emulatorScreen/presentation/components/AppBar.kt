@@ -5,7 +5,7 @@
 // Created by Brian Zapata Resendiz on 11/19/2025
 //
 // Starting Point
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

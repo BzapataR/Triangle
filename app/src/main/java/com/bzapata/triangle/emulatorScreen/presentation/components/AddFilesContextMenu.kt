@@ -5,7 +5,7 @@
 // Created by Brian Zapata Resendiz on 11/24/2025
 
 
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import android.net.Uri
 import android.util.Log
@@ -27,30 +27,21 @@ import androidx.documentfile.provider.DocumentFile
 import com.bzapata.triangle.R
 import com.bzapata.triangle.fileOperations.directoryPicker
 import com.bzapata.triangle.fileOperations.getRomFiles
-import com.bzapata.triangle.fileOperations.selectRomFolder
 
 @Composable
 fun FileContextMenu(
     subMenuOpen:Boolean,
     fileMenuToggle : () -> Unit
 ) {
-    var Roms : List<DocumentFile>
-    val context = LocalContext.current
-    val romFolderPicker = directoryPicker { uri ->
-        if (uri != null) {
-            Roms = getRomFiles(context, uri)
-            Roms.forEach { Log.i("Roms", "${it.name}") }
-        }
-    }
-    var romUri = Uri.EMPTY
+
 
     DropdownMenu(
         onDismissRequest = { fileMenuToggle() },
         expanded = subMenuOpen,
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.medium,
     ) {
         Text(
-            text = "Import From...",
+            text = "Paths",
             fontSize = 8.sp,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp ),
             color = MaterialTheme.colorScheme.outline
@@ -58,13 +49,12 @@ fun FileContextMenu(
         HorizontalDivider()
 
         DropdownMenuItem(
-            text = { Text("Device") },
+            text = { Text("Change User Folder") },
             onClick = {
-                romFolderPicker()
             },
             trailingIcon = {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.outline_folder_open_24),
+                    imageVector = ImageVector.vectorResource(R.drawable.outline_home_24),
                     contentDescription = "Edit Game Name"
                 )
             }
@@ -73,11 +63,24 @@ fun FileContextMenu(
         HorizontalDivider()
 
         DropdownMenuItem(
-            text = { Text("Cloud") },
+            text = { Text("Change Application Folders") },
             onClick = {},
             trailingIcon = {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.outline_cloud_24),
+                    imageVector = ImageVector.vectorResource(R.drawable.videogame_asset_24dp),
+                    contentDescription = "Edit Game Name"
+                )
+            }
+        )
+
+        HorizontalDivider()
+
+        DropdownMenuItem(
+            text = { Text("Set Save Folder") },
+            onClick = {},
+            trailingIcon = {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.outline_save_24),
                     contentDescription = "Edit Game Name"
                 )
             }

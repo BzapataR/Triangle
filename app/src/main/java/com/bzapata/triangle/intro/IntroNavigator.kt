@@ -1,6 +1,9 @@
 package com.bzapata.triangle.intro
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +57,11 @@ fun IntroNavigator(
         .fillMaxSize()){
         NavHost(
             navController = introNavigator,
-            startDestination = IntroNavigation.IntroNavigationGraph
+            startDestination = IntroNavigation.IntroNavigationGraph,
+            enterTransition = {slideIntoContainer(Left, tween(500))},
+            popEnterTransition = {slideIntoContainer(Right, tween(500))},
+            exitTransition = {slideOutOfContainer(Left, tween(500))},
+            popExitTransition = {slideOutOfContainer(Right,tween(500))}
         ) {
             navigation<IntroNavigation.IntroNavigationGraph>(
                 startDestination = IntroNavigation.Welcome
@@ -122,7 +129,7 @@ fun IntroNavigator(
                     if (state.page < 3) {
                         TextButton(
                             onClick = {
-                                Log.i("Permission", "new composable state ${state}" )
+                                Log.i("Permission", "new composable state $state" )
 
                                 when (state.page) {
                                         0 -> introNavigator.navigate(IntroNavigation.Permissions)

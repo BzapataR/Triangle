@@ -2,19 +2,14 @@ package com.bzapata.triangle.intro.paths
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzapata.triangle.data.repository.ConfigRepository
-import com.bzapata.triangle.fileOperations.directoryPicker
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -30,7 +25,7 @@ class PathsViewModel(
 
     val state = _state.asStateFlow()
         .onStart {
-            fetchConfig()
+            fetchPaths()
         }
         .stateIn(
             viewModelScope,
@@ -38,7 +33,7 @@ class PathsViewModel(
             _state.value
         )
 
-    private fun fetchConfig() {
+    private fun fetchPaths() {
         observerConfig?.cancel()
         observerConfig = combine(
             flow = configRepo.triangleDataUriFlow,

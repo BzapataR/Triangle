@@ -5,7 +5,7 @@
 // From another college project
 
 
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

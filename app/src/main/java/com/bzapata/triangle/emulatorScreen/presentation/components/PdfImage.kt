@@ -1,6 +1,5 @@
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
-import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
 import androidx.compose.foundation.Image

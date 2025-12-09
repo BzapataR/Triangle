@@ -40,12 +40,11 @@ fun GameCover(
             modifier = Modifier
                 .combinedClickable(
                     onClick = {/*Launch Game*/ },
-                    onLongClick = { onShowContextMenu() }, // Original Delta open the game on this event but i don't like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
+                    onLongClick = { onShowContextMenu() }, // Original Delta open the game on this event but i don'''t like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
                     onDoubleClick = {}, // Mayhaps we launch lastest quick save. // who is we?
                     onClickLabel = "Launch ROM",
                     onLongClickLabel = "Show ROM context menu",
                 )
-                .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center,
@@ -56,7 +55,7 @@ fun GameCover(
                 painter = game.cover, // todo get cover from sqlite db by rom ID which is gotten from rom hash
                 contentDescription = "Cover",
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
             GameContextMenu(
                 gameName = game.name,

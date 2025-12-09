@@ -7,8 +7,11 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,9 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
-import com.bzapata.triangle.ui.components.EmulatorAppBar
-import com.bzapata.triangle.ui.components.PagerIndicator
-import com.bzapata.triangle.settings.SettingsSheets
+import com.bzapata.triangle.emulatorScreen.presentation.components.EmulatorAppBar
+import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
+import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,10 +54,6 @@ fun EmulatorHomePage(
         initialPage = state.currentPage,
         pageCount = { state.consoles.size }
     )
-//    val consoles = Consoles.entries.toTypedArray()
-//    val pagerState = rememberPagerState(
-//        pageCount = {consoles.size}
-//    )
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +70,7 @@ fun EmulatorHomePage(
             }
         },
         bottomBar = {
-            Column {
+            Column() {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 PagerIndicator(pagerState = pagerState)
             }
@@ -96,7 +95,7 @@ fun EmulatorHomePage(
 //                        onGameFocus = { gameViewModel.onGameFocus(it) },
 //                        console = Consoles.DS
 //                    )
-    SettingsSheets(dismissAction = { onAction(EmulatorActions.ToggleSettings) }, isOpen = state.isSettingsOpen)
+    SettingsNavigator(dismissAction = { onAction(EmulatorActions.ToggleSettings) }, isOpen = state.isSettingsOpen)
 }
 
 @Preview

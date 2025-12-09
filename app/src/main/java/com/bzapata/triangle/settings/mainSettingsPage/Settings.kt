@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -47,15 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.settings.SubText
-import com.bzapata.triangle.ui.components.RoundedListItem
-import kotlinx.coroutines.launch
+import com.bzapata.triangle.emulatorScreen.presentation.components.RoundedListItem
+import kotlinx.coroutines.DisposableHandle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(
-    sheetState : SheetState,
-    toControllerSettings : () -> Unit = {},
-    toControllerSkins : () -> Unit = {}
+    dismiss: () -> Unit,
+    toControllerSettings: () -> Unit = {},
+    toControllerSkins: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
 
@@ -98,7 +97,7 @@ fun Settings(
 
                 TextButton(
                     onClick = {
-                        scope.launch { sheetState.hide() }
+                        dismiss()
                     },
                     modifier = Modifier.align(Alignment.CenterEnd),
                 ) {

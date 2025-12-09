@@ -4,7 +4,7 @@
 // Triangle
 //
 // Search Barrrrrrr
-package com.bzapata.triangle.ui.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility

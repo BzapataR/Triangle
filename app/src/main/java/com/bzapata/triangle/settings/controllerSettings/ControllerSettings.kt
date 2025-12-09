@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.settings.SubText
-import com.bzapata.triangle.ui.components.RoundedListItem
+import com.bzapata.triangle.emulatorScreen.presentation.components.RoundedListItem
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable

@@ -1,52 +1,92 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.bzapata.triangle.data.repository.ConfigRepository
+import androidx.lifecycle.viewModelScope
+import com.bzapata.triangle.emulatorScreen.data.GameRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class EmulatorViewModel(
-    config: ConfigRepository
+    private val gameRepo: GameRepository,
 ) : ViewModel() {
+    private var getGames : Job? = null
 
     private val _state = MutableStateFlow(EmulatorState())
-    var state = _state.asStateFlow()
+    val state = _state.asStateFlow()
+        .onStart {
+            getRoms()
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            _state.value
+        )
 
-    fun onAction(action : EmulatorActions) {
-        val previousState = _state.value
-        when(action) {
+
+
+    private fun getRoms() {
+        getGames?.cancel()
+        _state.update { it.copy(games = emptyList()) }
+        getGames = gameRepo.readAllGames()
+            .onEach { game ->
+                _state.update {
+                    val updatedGames = (it.games +game).sortedBy { game->
+                        game.name
+                    }
+                    it.copy(games = updatedGames)
+                }
+                Log.i("Emulator ViewModel", "Games updated: ${_state.value.games.size}")
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun onAction(action: EmulatorActions) {
+        when (action) {
             is EmulatorActions.OnPageChange -> {
                 _state.update {
                     it.copy(
                         currentPage = action.page
                     )
                 }
+                Log.i("Page", "Current Page: ${_state.value}")
             }
+
             is EmulatorActions.ToggleGameContextMenu -> {
                 _state.update {
                     it.copy(
-                        isBackgroundBlurred = !previousState.isBackgroundBlurred,
-                        isGameContextMenuOpen = !_state.value.isGameContextMenuOpen
+                        gameIndexForContextMenu = action.gameIndex,
+                        isBackgroundBlurred = !it.isBackgroundBlurred
                     )
                 }
             }
+
             is EmulatorActions.ToggleSettings -> {
-                _state.update{
+                _state.update {
                     it.copy(
                         isSettingsOpen = !_state.value.isSettingsOpen
                     )
                 }
             }
+
             is EmulatorActions.ToggleFileContextMenu -> {
                 _state.update {
+                    val newFileMenuState = !it.isFileContextMenuOpen
                     it.copy(
-                        isFileContextMenuOpen = !_state.value.isFileContextMenuOpen,
-                        isBackgroundBlurred = !_state.value.isBackgroundBlurred
+                        isFileContextMenuOpen = newFileMenuState,
+                        isBackgroundBlurred = newFileMenuState || it.gameIndexForContextMenu != null
                     )
                 }
             }
-            else -> {}
+
+            is EmulatorActions.PlayGame -> {}
         }
     }
 

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class ReleaseEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "releaseID")
-    val releaseId: Int,
+    val releaseId: Int? = null,
 
     // INTEGER
     @ColumnInfo(name = "romID")

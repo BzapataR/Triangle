@@ -1,0 +1,36 @@
+package com.bzapata.triangle.emulatorScreen.data.fileOperations
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import androidx.core.graphics.drawable.toBitmap
+import androidx.documentfile.provider.DocumentFile
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
+
+fun findCover(context : Context, userFolder : Uri, romID : Int) : Uri? {
+    val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
+
+    val coversDirectory = userDirectory?.findFile("covers")
+        ?: userDirectory?.createDirectory("covers")
+
+    if (coversDirectory == null || !coversDirectory.isDirectory) {
+        Log.e("download Cover", "Failed to find or create the covers directory")
+        return null
+    }
+
+    val fileName = "$romID.png"
+
+            val existingFile = coversDirectory.findFile(fileName)
+            if (existingFile != null) {
+                Log.i("find cover" , "Found Game Cover")
+                return existingFile.uri
+            }
+            Log.i("find cover", "No cover found")
+            return null
+
+
+
+}

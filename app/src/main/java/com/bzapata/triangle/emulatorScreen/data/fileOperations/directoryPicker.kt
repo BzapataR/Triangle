@@ -1,7 +1,8 @@
-package com.bzapata.triangle.fileOperations
+package com.bzapata.triangle.emulatorScreen.data.fileOperations
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -17,10 +18,11 @@ fun directoryPicker(startingLocation: Uri? = null, onDirectorySelected: (Uri?) -
         onResult = { uri ->
             uri?.let {
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 contentResolver.takePersistableUriPermission(it, takeFlags)
             }
             onDirectorySelected(uri)
+            Log.i("directory picker", "path selected: ${uri?.path}")
         }
     )
     return {

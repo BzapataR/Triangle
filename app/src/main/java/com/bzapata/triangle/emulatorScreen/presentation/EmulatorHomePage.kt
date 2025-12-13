@@ -6,31 +6,28 @@
 
 package com.bzapata.triangle.emulatorScreen.presentation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
-import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.emulatorScreen.presentation.components.EmulatorAppBar
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
+import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -54,28 +51,31 @@ fun EmulatorHomePage(
         initialPage = state.currentPage,
         pageCount = { state.consoles.size }
     )
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collect { page->
+                onAction(EmulatorActions.OnPageChange(page))
+            }
+    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .blur(if (state.isBackgroundBlurred) 8.dp else 0.dp),
         topBar = {
-            Column {
-                EmulatorAppBar(
-                    settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
-                    fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
-                    isMenuOpen = state.isFileContextMenuOpen,
-                    currentEmulatorName = state.consoles[pagerState.currentPage].name
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            }
+            EmulatorAppBar(
+                settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
+                fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
+                isMenuOpen = state.isFileContextMenuOpen,
+                currentEmulatorName = state.consoles[pagerState.currentPage].name
+            )
+
         },
         bottomBar = {
-            Column() {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                PagerIndicator(pagerState = pagerState)
-            }
+            PagerIndicator(pagerState = pagerState)
         }
     ) { innerPadding ->
+
 
         HorizontalPager(
             modifier = Modifier.padding(innerPadding),
@@ -83,19 +83,19 @@ fun EmulatorHomePage(
         ) { page ->
             GameGrid(
                 console = state.consoles[page],
-                onGameFocus = { onAction(EmulatorActions.ToggleGameContextMenu) }
-                //focusedGame = -78, onGameFocus = {focusedGame}
+                games = state.games.filter { it.consoles == state.consoles[page] },
+                onGameFocus = {
+                    onAction(EmulatorActions.ToggleGameContextMenu(it))
+                },
+                state = state,
+                pageNumber= page
             )
-            // todo GameGrid(emulator type)
         }
     }
-//                    GameGrid(
-//                        modifier = Modifier.padding(innerPadding),
-//                        focusedGame = selectedGameIndex,
-//                        onGameFocus = { gameViewModel.onGameFocus(it) },
-//                        console = Consoles.DS
-//                    )
-    SettingsNavigator(dismissAction = { onAction(EmulatorActions.ToggleSettings) }, isOpen = state.isSettingsOpen)
+    SettingsNavigator(
+        dismissAction = { onAction(EmulatorActions.ToggleSettings) },
+        isOpen = state.isSettingsOpen
+    )
 }
 
 @Preview
@@ -103,7 +103,7 @@ fun EmulatorHomePage(
 fun EmulatorHomePagePreview() {
     TriangleTheme {
         val consoles = Consoles.entries.toTypedArray()
-        val pagerState = rememberPagerState(pageCount = { consoles.size })
+        rememberPagerState(pageCount = { consoles.size })
         EmulatorHomePage(EmulatorState(), onAction = {})
     }
 }

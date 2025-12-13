@@ -1,6 +1,5 @@
 package com.bzapata.triangle.intro.paths
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -27,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.R
-import com.bzapata.triangle.fileOperations.directoryPicker
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.directoryPicker
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import org.koin.androidx.compose.koinViewModel
 

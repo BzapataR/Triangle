@@ -6,8 +6,6 @@ import java.net.URI
 
 @Dao
 interface GamesDbDoa {
-    @Query("SELECT romHashSHA1 FROM ROMs WHERE romExtensionlessFileName = :name")
-    fun getSHA(name :String) : String
 
     @Query("SELECT romID FROM ROMs WHERE romHashSHA1 = :hash")
     fun getRomId(hash : String) : Int?

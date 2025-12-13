@@ -25,7 +25,7 @@ fun findCover(context : Context, userFolder : Uri, romID : Int) : Uri? {
 
             val existingFile = coversDirectory.findFile(fileName)
             if (existingFile != null) {
-                Log.i("find cover" , "Found Game Cover")
+                Log.i("find cover" , "Found Game Cover: $fileName")
                 return existingFile.uri
             }
             Log.i("find cover", "No cover found")

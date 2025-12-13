@@ -34,28 +34,6 @@ fun GameGrid(
     pageNumber : Int
 ) {
 
-    //TODO remove the condition only to get different pages of games
-    val gameUiExample = when (console) {
-        Consoles.NES -> {
-            GameUiExample(name = "Super Maio Bros", cover = painterResource(R.drawable.super_mario_bros))
-        }
-        Consoles.SNES -> {
-            GameUiExample(name = "Kirby Super Star", cover = painterResource(R.drawable.kirby_superstar))
-        }
-        Consoles.N64 -> {
-            GameUiExample(name = "Super Smash Bros", cover = painterResource(R.drawable.super_smash_bros))
-        }
-        Consoles.GB -> {
-            GameUiExample(name = "Mole Mania", cover = painterResource(R.drawable.mole_mania))
-        }
-        Consoles.GBA -> {
-            GameUiExample(name = "Fire Emblem: Blazing Blade", cover = painterResource(R.drawable.fire_emblem_high))
-        }
-        Consoles.DS -> {
-            GameUiExample(name = "Pokemon: Soulsilver", cover = painterResource(R.drawable.pokemon_soulsilver))
-        }
-    }
-    val testImage = List(20) { it }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(90.dp),

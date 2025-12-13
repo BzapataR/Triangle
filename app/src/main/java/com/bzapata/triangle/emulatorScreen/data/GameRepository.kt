@@ -74,12 +74,12 @@ class GameRepository(
 
     suspend fun idRom(romPath: Uri, context: Context, doa: GamesDbDoa, userPath: Uri): Game {
         val file = DocumentFile.fromSingleUri(context, romPath) ?: throw IllegalArgumentException("File not Valid: $romPath")
-        val romID = doa.getRomIdFromName(file.name?.substringBeforeLast(".")) ?: doa.getRomId(hasher(context, romPath)) ?:-1
+        val romID = doa.getRomIdFromName(file.name?.substringBeforeLast(".")) ?: doa.getRomId(hasher(context, romPath)) ?: -1
         val romName = doa.getName(romID) ?: file.name?.substringBeforeLast('.') ?: "Unknown file"
         val coverURI =
             doa.getUSACoverURI(romID)?.toUri() ?: doa.getCoverURI(romID)?.toUri() ?: Uri.EMPTY
         val console = fileMapper(context, romPath)
-        return Game(
+        val rom = Game(
             name = romName,
             coverDownloaderUri = coverURI,
             romID = romID,
@@ -95,7 +95,8 @@ class GameRepository(
                 romID = romID,
                 imageUri = coverURI,
                 userFolder = userPath
-            )
+            ) ?: Uri.EMPTY
         )
+        return rom
     }
 }

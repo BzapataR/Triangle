@@ -30,6 +30,7 @@ import coil.Coil
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
+import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 
@@ -70,6 +71,8 @@ fun GameCover(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(game.cover) // Pass the Uri object here
+                        .fallback(R.drawable.deltaicon)
+                        .error(R.drawable.deltaicon)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Cover",
@@ -85,7 +88,7 @@ fun GameCover(
             )
         }
         Text(
-            text = game.name,//todo get actual name
+            text = game.name,
             textAlign = TextAlign.Center,
             fontSize = 10.sp,
             lineHeight = 12.sp,

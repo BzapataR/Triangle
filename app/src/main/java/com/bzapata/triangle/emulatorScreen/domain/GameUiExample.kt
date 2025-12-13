@@ -1,11 +1,13 @@
 package com.bzapata.triangle.emulatorScreen.domain
 
+import android.net.Uri
 import androidx.compose.ui.graphics.painter.Painter
 
-data class GameUiExample(
-    val name : String,
-    //val romID : String,
-    //val path : String,
-    //val settings : ROOMDB SETTINGS
-    val cover : Painter,
+ val GameUiExample = Game(
+    name = "Mole Mania",
+    romID =-1,
+     path = Uri.EMPTY,
+     coverDownloaderUri = emptyList(),
+    localCoverUri = Uri.EMPTY,
+    consoles = Consoles.GB
 )

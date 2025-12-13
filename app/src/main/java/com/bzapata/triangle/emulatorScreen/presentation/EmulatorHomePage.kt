@@ -6,6 +6,7 @@
 
 package com.bzapata.triangle.emulatorScreen.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -63,33 +64,38 @@ fun EmulatorHomePage(
             .fillMaxSize()
             .blur(if (state.isBackgroundBlurred) 8.dp else 0.dp),
         topBar = {
-            EmulatorAppBar(
-                settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
-                fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
-                isMenuOpen = state.isFileContextMenuOpen,
-                currentEmulatorName = state.consoles[pagerState.currentPage].name
-            )
+            if (state.consoles.isNotEmpty()) { // Add a check to prevent crashing
+                EmulatorAppBar(
+                    settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
+                    fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
+                    isMenuOpen = state.isFileContextMenuOpen,
+                    currentEmulatorName = state.consoles[pagerState.currentPage].name
+                )
+            }
 
         },
         bottomBar = {
-            PagerIndicator(pagerState = pagerState)
+            if (state.consoles.isNotEmpty()) {
+                PagerIndicator(pagerState = pagerState)
+            }
         }
     ) { innerPadding ->
 
-
-        HorizontalPager(
-            modifier = Modifier.padding(innerPadding),
-            state = pagerState
-        ) { page ->
-            GameGrid(
-                console = state.consoles[page],
-                games = state.games.filter { it.consoles == state.consoles[page] },
-                onGameFocus = {
-                    onAction(EmulatorActions.ToggleGameContextMenu(it))
-                },
-                state = state,
-                pageNumber= page
-            )
+        if (state.consoles.isNotEmpty()) { // Add a check to prevent crashing
+            HorizontalPager(
+                modifier = Modifier.padding(innerPadding),
+                state = pagerState
+            ) { page ->
+                GameGrid(
+                    console = state.consoles[page],
+                    games = state.games.filter { it.consoles == state.consoles[page] },
+                    onGameFocus = {
+                        onAction(EmulatorActions.ToggleGameContextMenu(it))
+                    },
+                    state = state,
+                    pageNumber = page
+                )
+            }
         }
     }
     SettingsNavigator(

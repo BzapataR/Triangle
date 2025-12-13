@@ -21,27 +21,22 @@ class EmulatorViewModel(
 
     private val _state = MutableStateFlow(EmulatorState())
     val state = _state.asStateFlow()
-        .onStart {
-            getRoms()
-        }
+        .onStart { getRoms() }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
+            SharingStarted.Eagerly,
             _state.value
         )
 
-
-
     private fun getRoms() {
         getGames?.cancel()
-        _state.update { it.copy(games = emptyList()) }
+        _state.update { it.copy(games = emptyList(), consoles = emptyList()) } // Reset consoles as well
         getGames = gameRepo.readAllGames()
             .onEach { game ->
-                _state.update {
-                    val updatedGames = (it.games +game).sortedBy { game->
-                        game.name
-                    }
-                    it.copy(games = updatedGames)
+                _state.update { currentState ->
+                    val updatedGames = (currentState.games + game).sortedBy { it.name }
+                    val updatedConsoles = updatedGames.map { it.consoles }.distinct().sorted()
+                    currentState.copy(games = updatedGames, consoles = updatedConsoles)
                 }
                 Log.i("Emulator ViewModel", "Games updated: ${_state.value.games.size}")
             }

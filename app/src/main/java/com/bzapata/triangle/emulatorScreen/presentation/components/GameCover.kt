@@ -1,7 +1,6 @@
 package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -26,13 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.Coil
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
-import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -70,7 +66,7 @@ fun GameCover(
         {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(game.cover) // Pass the Uri object here
+                        .data(game.localCoverUri) // Pass the Uri object here
                         .fallback(R.drawable.deltaicon)
                         .error(R.drawable.deltaicon)
                         .crossfade(true)

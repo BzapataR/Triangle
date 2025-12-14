@@ -73,7 +73,7 @@ fun GameSearch() {
             .height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
 
-    ) {
+        ) {
         TextField(
             state = textState,
             placeholder = {

@@ -14,11 +14,11 @@ import okio.IOException
 suspend fun downloadCover(
     context: Context,
     gameName: String,
-    romID : Int,
+    romID: Int,
     imageUri: Uri,
-    userFolder : Uri
-) : Uri? {
-    val userDirectory= DocumentFile.fromTreeUri(context, userFolder)
+    userFolder: Uri
+): Uri? {
+    val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
 
     val coversDirectory = userDirectory?.findFile("covers")
         ?: userDirectory?.createDirectory("covers")
@@ -54,15 +54,17 @@ suspend fun downloadCover(
                 context.contentResolver.openOutputStream(newCoverFile.uri)?.use { outputStream ->
                     bitMap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
                 }
-                Log.i("download Cover", "Successfully saved ${bitMap.width}x${bitMap.height} cover for $gameName ${newCoverFile.uri.path}")
+                Log.i(
+                    "download Cover",
+                    "Successfully saved ${bitMap.width}x${bitMap.height} cover for $gameName ${newCoverFile.uri.path}"
+                )
                 return newCoverFile.uri
             }
         } catch (e: IOException) {
             Log.e("download Cover", "Failed to save image for $gameName ", e)
             return null
         }
-    }
-    else {
+    } else {
         Log.e("download Cover", " Failed to download image for $gameName from $imageUri")
     }
     return null
@@ -71,10 +73,10 @@ suspend fun downloadCover(
 suspend fun downloadCover(
     context: Context,
     gameName: String,
-    romID : Int,
+    romID: Int,
     imageUris: List<Uri>,
-    userFolder : Uri
-) : Uri? {
+    userFolder: Uri
+): Uri? {
     val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
 
     val coversDirectory = userDirectory?.findFile("covers")
@@ -108,21 +110,21 @@ suspend fun downloadCover(
     }
     val bestQualityBitmap = imageResults.maxByOrNull { it.width * it.height } ?: return null
 
-        try {
-            val existingFile = coversDirectory.findFile(fileName)
-            existingFile?.delete()
-            val newCoverFile = coversDirectory.createFile("image/png", fileName)
+    try {
+        val existingFile = coversDirectory.findFile(fileName)
+        existingFile?.delete()
+        val newCoverFile = coversDirectory.createFile("image/png", fileName)
 
-            if (newCoverFile != null) {
-                    context.contentResolver.openOutputStream(newCoverFile.uri)?.use { outputStream ->
-                        bestQualityBitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
-                    }
-                    Log.i("download Cover", "Successfully save cover to ${newCoverFile.uri.path}")
-                    return newCoverFile.uri
+        if (newCoverFile != null) {
+            context.contentResolver.openOutputStream(newCoverFile.uri)?.use { outputStream ->
+                bestQualityBitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
             }
-        } catch (e: IOException) {
-            Log.e("download Cover", "Failed to save image for $gameName ", e)
-            return null
+            Log.i("download Cover", "Successfully save cover to ${newCoverFile.uri.path}")
+            return newCoverFile.uri
         }
+    } catch (e: IOException) {
+        Log.e("download Cover", "Failed to save image for $gameName ", e)
+        return null
+    }
     return null
 }

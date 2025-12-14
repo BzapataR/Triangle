@@ -1,16 +1,11 @@
 package com.bzapata.triangle.emulatorScreen.data.fileOperations
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
-import androidx.core.graphics.drawable.toBitmap
 import androidx.documentfile.provider.DocumentFile
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 
-fun findCover(context : Context, userFolder : Uri, romID : Int) : Uri? {
+fun findCover(context: Context, userFolder: Uri, romID: Int): Uri? {
     val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
 
     val coversDirectory = userDirectory?.findFile("covers")
@@ -23,14 +18,13 @@ fun findCover(context : Context, userFolder : Uri, romID : Int) : Uri? {
 
     val fileName = "$romID.png"
 
-            val existingFile = coversDirectory.findFile(fileName)
-            if (existingFile != null) {
-                Log.i("find cover" , "Found Game Cover: $fileName")
-                return existingFile.uri
-            }
-            Log.i("find cover", "No cover found")
-            return null
-
+    val existingFile = coversDirectory.findFile(fileName)
+    if (existingFile != null) {
+        Log.i("find cover", "Found Game Cover: $fileName")
+        return existingFile.uri
+    }
+    Log.i("find cover", "No cover found")
+    return null
 
 
 }

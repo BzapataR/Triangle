@@ -30,11 +30,12 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmulatorAppBar(
-    settingsToggle : () -> Unit,
-    fileToggle : () -> Unit,
-    isMenuOpen : Boolean,
-    currentEmulatorName : String,
-/* TODO add starting emulator or null to add paths*/
+    settingsToggle: () -> Unit,
+    fileToggle: () -> Unit,
+    isMenuOpen: Boolean,
+    currentEmulatorName: String,
+    onChangeUserFolder: () -> Unit,
+    onChangeRomsFolder: () -> Unit
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         CenterAlignedTopAppBar(
@@ -55,14 +56,19 @@ fun EmulatorAppBar(
                 }
             },
             actions = {
-                IconButton(onClick = { fileToggle() } ) {
+                IconButton(onClick = { fileToggle() }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
                         contentDescription = "Add Games",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                FileContextMenu(isMenuOpen) { fileToggle() }
+                FileContextMenu(
+                    subMenuOpen = isMenuOpen,
+                    fileMenuToggle = { fileToggle() },
+                    onChangeUserFolder = onChangeUserFolder,
+                    onChangeRomsFolder = onChangeRomsFolder
+                )
             },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface
@@ -79,8 +85,13 @@ fun EmulatorAppBar(
 @Composable
 private fun TopAppBarPreview() {
     TriangleTheme {
-        EmulatorAppBar(settingsToggle = {}, isMenuOpen = true, fileToggle = {},
-            currentEmulatorName = "GBA"
+        EmulatorAppBar(
+            settingsToggle = {},
+            isMenuOpen = true,
+            fileToggle = {},
+            currentEmulatorName = "GBA",
+            onChangeUserFolder = {},
+            onChangeRomsFolder = {}
         )
     }
 }

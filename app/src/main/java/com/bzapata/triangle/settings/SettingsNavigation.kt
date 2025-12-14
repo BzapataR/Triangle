@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed interface SettingsNavigation {
 
     @Serializable
-    data object SettingsNavigationGraph: SettingsNavigation
+    data object SettingsNavigationGraph : SettingsNavigation
 
     @Serializable
     data object SettingsMainPage : SettingsNavigation
@@ -27,7 +27,7 @@ sealed interface SettingsNavigation {
     data object CoreSettings : SettingsNavigation
 
     @Serializable
-    data object  ExportErrorLogs : SettingsNavigation
+    data object ExportErrorLogs : SettingsNavigation
 
     @Serializable
     data object Licenses : SettingsNavigation

@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
-import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.emulatorScreen.presentation.components.RoundedListItem
+import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
@@ -32,7 +32,7 @@ fun ControllerSettingsRoot() {
 }
 
 @Composable
-fun ControllerSettings(goBack : () -> Unit) {
+fun ControllerSettings(goBack: () -> Unit) {
     Column {
         Box(
             modifier = Modifier
@@ -47,20 +47,20 @@ fun ControllerSettings(goBack : () -> Unit) {
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
             )
-                TextButton(
-                    onClick = { goBack() },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = "Settings",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
+            TextButton(
+                onClick = { goBack() },
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),
+                    contentDescription = null,
+                )
+                Text(
+                    text = "Settings",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
         }
         SubText("ThisDevice")
         Card {

@@ -9,7 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun directoryPicker(startingLocation: Uri? = null, onDirectorySelected: (Uri?) -> Unit): () -> Unit { // return function to make it possible to be called on composable (i.e. onClick() )
+fun directoryPicker(
+    startingLocation: Uri? = null,
+    onDirectorySelected: (Uri?) -> Unit
+): () -> Unit { // return function to make it possible to be called on composable (i.e. onClick() )
     val context = LocalContext.current
     val contentResolver = context.contentResolver
 

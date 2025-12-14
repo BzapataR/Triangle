@@ -30,7 +30,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameContextMenu(
-    gameName : String,
+    gameName: String,
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -53,7 +53,7 @@ fun GameContextMenu(
                 Text(
                     text = gameName,
                     fontSize = 8.sp,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp ),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
                     color = MaterialTheme.colorScheme.outline
                 )
                 HorizontalDivider()
@@ -156,6 +156,7 @@ fun GameContextMenu(
                     }
                 )
             }
+
             "saves" -> {
                 DropdownMenuItem(
                     text = { Text("Back") },

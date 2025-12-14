@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -24,7 +23,7 @@ import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
-fun Done(toEmulator : () -> Unit) {
+fun Done(toEmulator: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,7 +45,7 @@ fun Done(toEmulator : () -> Unit) {
             text = "You're all set. Its Gamer Time!",
             color = Color.White
         )
-        Spacer(modifier= Modifier.size(32.dp))
+        Spacer(modifier = Modifier.size(32.dp))
         Button(
             onClick = { toEmulator() },
         ) {
@@ -67,6 +66,6 @@ fun Done(toEmulator : () -> Unit) {
 @Composable
 fun DonePreview() {
     TriangleTheme {
-        Done(){}
+        Done {}
     }
 }

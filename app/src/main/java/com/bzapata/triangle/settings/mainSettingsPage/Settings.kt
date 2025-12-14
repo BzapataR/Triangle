@@ -45,9 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
-import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.emulatorScreen.presentation.components.RoundedListItem
-import kotlinx.coroutines.DisposableHandle
+import com.bzapata.triangle.settings.SubText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +55,7 @@ fun Settings(
     toControllerSettings: () -> Unit = {},
     toControllerSkins: () -> Unit = {}
 ) {
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
 
     var sliderPositions by remember { mutableFloatStateOf(70f) }
     var isChecked by remember { mutableStateOf(true) }
@@ -162,7 +161,7 @@ fun Settings(
                 RoundedListItem(
                     leadingText = "Nintendo",
                     trailingText = "Touch Screen",
-                    onClick = {toControllerSkins()}
+                    onClick = { toControllerSkins() }
                 )
                 HorizontalDivider()
                 RoundedListItem(
@@ -377,7 +376,7 @@ fun Settings(
             SubText("ADVANCED")
             Card {
                 ListItem(
-                    modifier = Modifier.clickable{
+                    modifier = Modifier.clickable {
 
                     },
                     colors = ListItemDefaults.colors(containerColor = Color(0xff2c2c2e)),
@@ -424,7 +423,7 @@ fun Settings(
                     text = "Sources",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = Color.White
-                    )
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     IconButton(onClick = {}, modifier = Modifier.size(44.dp)) {
                         Icon(

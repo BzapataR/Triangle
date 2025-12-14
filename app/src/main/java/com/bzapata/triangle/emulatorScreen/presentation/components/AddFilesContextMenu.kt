@@ -24,11 +24,11 @@ import com.bzapata.triangle.R
 
 @Composable
 fun FileContextMenu(
-    subMenuOpen:Boolean,
-    fileMenuToggle : () -> Unit
+    subMenuOpen: Boolean,
+    fileMenuToggle: () -> Unit,
+    onChangeUserFolder: () -> Unit,
+    onChangeRomsFolder: () -> Unit
 ) {
-
-
     DropdownMenu(
         onDismissRequest = { fileMenuToggle() },
         expanded = subMenuOpen,
@@ -37,7 +37,7 @@ fun FileContextMenu(
         Text(
             text = "Paths",
             fontSize = 8.sp,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp ),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
             color = MaterialTheme.colorScheme.outline
         )
         HorizontalDivider()
@@ -45,11 +45,13 @@ fun FileContextMenu(
         DropdownMenuItem(
             text = { Text("Change User Folder") },
             onClick = {
+                onChangeUserFolder()
+                fileMenuToggle()
             },
             trailingIcon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.outline_home_24),
-                    contentDescription = "Edit Game Name"
+                    contentDescription = "Change User Folder"
                 )
             }
         )
@@ -57,25 +59,15 @@ fun FileContextMenu(
         HorizontalDivider()
 
         DropdownMenuItem(
-            text = { Text("Change Application Folders") },
-            onClick = {},
+            text = { Text("Change ROMs Folder") },
+            onClick = {
+                onChangeRomsFolder()
+                fileMenuToggle()
+            },
             trailingIcon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.videogame_asset_24dp),
-                    contentDescription = "Edit Game Name"
-                )
-            }
-        )
-
-        HorizontalDivider()
-
-        DropdownMenuItem(
-            text = { Text("Set Save Folder") },
-            onClick = {},
-            trailingIcon = {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.outline_save_24),
-                    contentDescription = "Edit Game Name"
+                    contentDescription = "Change ROMs Folder"
                 )
             }
         )

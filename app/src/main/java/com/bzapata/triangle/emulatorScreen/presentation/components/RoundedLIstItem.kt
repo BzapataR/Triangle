@@ -45,25 +45,26 @@ fun RoundedListItem(
     onClick: (() -> Unit)? = null, // optional onClick
     icon: ImageVector? = null, // optional Icon
     iconBackgroundColor: Color = Color.Unspecified, // Sets the Color of the circle around the icon
-    iconColor : Color = MaterialTheme.colorScheme.background,
+    iconColor: Color = MaterialTheme.colorScheme.background,
     leadingText: String,
-    leadingTextColor : Color? = null,
+    leadingTextColor: Color? = null,
     trailingText: String = "",
     trailingIcon: ImageVector? = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_right_24), // Icon at the end with default
-    trailingIconColor : Color? = null,
-    customTrailingContent : @Composable ( () -> Unit)? = null, // used for anything, in this case added a switch
+    trailingIconColor: Color? = null,
+    customTrailingContent: @Composable (() -> Unit)? = null, // used for anything, in this case added a switch
     iconModifier: Modifier = Modifier, // mainly used for icon size
 ) {
     // Manufacturer name was too long used to shrink
-    fun shrinkText(string: String) : String {
-        return if(string.length >= 26) {
+    fun shrinkText(string: String): String {
+        return if (string.length >= 26) {
             string.take(10) + "..." // to customize the length of string before adding eclipse
         } else
             string
     }
     ListItem(
         colors = ListItemDefaults.colors(containerColor = Color(0xff2c2c2e)),
-        leadingContent = if (icon ==null) null else{ {
+        leadingContent = if (icon == null) null else {
+            {
                 Box(
                     modifier = modifier
                         .size(24.dp) // Circle size
@@ -73,39 +74,41 @@ fun RoundedListItem(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = iconColor,
-                            modifier = modifier.size(20.dp)
-                        )
-                    }
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconColor,
+                        modifier = modifier.size(20.dp)
+                    )
+                }
             }
         },
         headlineContent = {
-                Text(
-                    text = leadingText,
-                    maxLines = 1,
-                    color = if (trailingIconColor != null) trailingIconColor else Color.Unspecified
-                   // modifier = Modifier.weight(1f)
-                )
-                          },
+            Text(
+                text = leadingText,
+                maxLines = 1,
+                color = if (trailingIconColor != null) trailingIconColor else Color.Unspecified
+                // modifier = Modifier.weight(1f)
+            )
+        },
         trailingContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                ) {
+            ) {
                 if (customTrailingContent != null) {
                     customTrailingContent()
                 } else {
                     Text(
                         text = shrinkText(trailingText),
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.weight(12f,false).padding(end = 4.dp),
+                        modifier = Modifier
+                            .weight(12f, false)
+                            .padding(end = 4.dp),
                         color = Color.Gray,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
 
-                    )
+                        )
                     if (trailingIcon != null) {
                         Icon(
                             imageVector = trailingIcon,
@@ -117,6 +120,6 @@ fun RoundedListItem(
                 }
             }
         },
-        modifier = if (onClick != null) Modifier.clickable{ onClick() } else Modifier
+        modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier
     )
 }

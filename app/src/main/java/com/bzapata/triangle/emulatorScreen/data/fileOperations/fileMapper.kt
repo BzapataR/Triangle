@@ -6,7 +6,8 @@ import androidx.documentfile.provider.DocumentFile
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 
 fun fileMapper(context: Context, path: Uri): Consoles {
-    val fileName = DocumentFile.fromSingleUri(context, path)?.name ?: throw IllegalArgumentException("Invalid URI, cannot get filename from $path")
+    val fileName = DocumentFile.fromSingleUri(context, path)?.name
+        ?: throw IllegalArgumentException("Invalid URI, cannot get filename from $path")
     return when {
         fileName.endsWith(".gbc", false) -> Consoles.GB
         fileName.endsWith(".gb", false) -> Consoles.GB

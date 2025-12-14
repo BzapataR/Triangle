@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel() {
-    private var observerConfig : Job? = null
+    private var observerConfig: Job? = null
     private var _state = MutableStateFlow(IntroState())
     var state = _state.asStateFlow()
         .onStart {
@@ -31,7 +31,7 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
 
     private fun fetchConfig() {
         observerConfig?.cancel()
-        observerConfig = configRepository.triangleDataUriFlow.onEach{ trianglePath  ->
+        observerConfig = configRepository.triangleDataUriFlow.onEach { trianglePath ->
             _state.update {
                 it.copy(
                     triangleFolderEmpty = trianglePath == null,
@@ -42,21 +42,25 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
 
 
     fun onAction(actions: IntroActions) {
-        when(actions){
+        when (actions) {
             is IntroActions.GoBack -> decrementPage()
             is IntroActions.Finish -> finishIntro()
             is IntroActions.ChangePage -> changePage(actions.page)
-            is IntroActions.PermissionStatusChange -> updatePermissionStatus(actions.permission, actions.isGranted)
+            is IntroActions.PermissionStatusChange -> updatePermissionStatus(
+                actions.permission,
+                actions.isGranted
+            )
         }
     }
 
-    private fun updatePermissionStatus(permission : String, isGranted :Boolean) {
+    private fun updatePermissionStatus(permission: String, isGranted: Boolean) {
         Log.i("Permission", "permission: $permission, isGranted: $isGranted")
         _state.update {
-            when(permission) {
+            when (permission) {
                 Manifest.permission.POST_NOTIFICATIONS -> it.copy(
                     hasNotificationPermission = isGranted,
                 )
+
                 Manifest.permission.RECORD_AUDIO -> it.copy(hasMicPermission = isGranted)
                 Manifest.permission.CAMERA -> it.copy(hasCameraPermission = isGranted)
                 else -> {
@@ -68,14 +72,14 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
         _state.update {
             it.copy(
                 showSkipPermissionDialog = it.hasNotificationPermission ||
-                    it.hasMicPermission ||
-                    it.hasCameraPermission
+                        it.hasMicPermission ||
+                        it.hasCameraPermission
             )
         }
-        Log.i("Permission", "new view model state ${_state.value}" )
+        Log.i("Permission", "new view model state ${_state.value}")
     }
 
-    private fun changePage(page : Int) {
+    private fun changePage(page: Int) {
         _state.update {
             it.copy(
                 page = page
@@ -85,7 +89,7 @@ class IntroViewModel(private val configRepository: ConfigRepository) : ViewModel
 
     private fun decrementPage() {
         _state.update {
-            it.copy(page = it.page -1)
+            it.copy(page = it.page - 1)
         }
     }
 

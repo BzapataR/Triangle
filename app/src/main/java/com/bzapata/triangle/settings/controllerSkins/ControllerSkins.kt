@@ -30,12 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
-import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.emulatorScreen.presentation.components.PdfImage
+import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
-fun ControllerSkinsRoot(goBack : () -> Unit = {}) {
+fun ControllerSkinsRoot(goBack: () -> Unit = {}) {
     ControllerSkins(goBack)
 }
 

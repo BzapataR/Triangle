@@ -6,7 +6,6 @@
 
 package com.bzapata.triangle.emulatorScreen.presentation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -22,6 +21,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.directoryPicker
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.presentation.components.EmulatorAppBar
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
@@ -55,29 +55,37 @@ fun EmulatorHomePage(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
-            .collect { page->
+            .collect { page ->
                 onAction(EmulatorActions.OnPageChange(page))
             }
     }
+
+    val userDirectoryPicker = directoryPicker { uri ->
+        onAction(EmulatorActions.SetUserFolder(uri))
+    }
+
+    val romsDirectoryPicker = directoryPicker { uri ->
+        onAction(EmulatorActions.SetRomsFolder(uri))
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .blur(if (state.isBackgroundBlurred) 8.dp else 0.dp),
         topBar = {
-            if (state.consoles.isNotEmpty()) { // Add a check to prevent crashing
-                EmulatorAppBar(
-                    settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
-                    fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
-                    isMenuOpen = state.isFileContextMenuOpen,
-                    currentEmulatorName = state.consoles[pagerState.currentPage].name
-                )
-            }
+            EmulatorAppBar(
+                settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
+                fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
+                isMenuOpen = state.isFileContextMenuOpen,
+                currentEmulatorName = if (state.consoles.isNotEmpty()) state.consoles[pagerState.currentPage].name else "",
+                onChangeUserFolder = userDirectoryPicker,
+                onChangeRomsFolder = romsDirectoryPicker
+            )
+
 
         },
         bottomBar = {
-            if (state.consoles.isNotEmpty()) {
-                PagerIndicator(pagerState = pagerState)
-            }
+            PagerIndicator(pagerState = pagerState)
         }
     ) { innerPadding ->
 

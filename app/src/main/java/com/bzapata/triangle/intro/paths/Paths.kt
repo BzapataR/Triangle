@@ -48,11 +48,11 @@ fun Path(
     onActions: (PathsActions) -> Unit
 ) {
     val selectTrianglePathLauncher = directoryPicker(state.trianglePath) { uri ->
-        onActions(PathsActions.SetTrianglePath(uri))
+        uri?.let { onActions(PathsActions.SetTrianglePath(it)) }
     }
 
     val selectRomsPathLauncher = directoryPicker(state.romPath) { uri ->
-        onActions(PathsActions.SetRomsPath(uri))
+        uri?.let { onActions(PathsActions.SetRomsPath(it)) }
     }
 
     Column(
@@ -99,7 +99,9 @@ fun Path(
                 )
                 Text(
                     text = "Select User Folder",
-                    modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
                     textAlign = TextAlign.Center
                 )
             }

@@ -46,22 +46,25 @@ fun IntroNavigatorRoot(
         onAction = viewModel::onAction
     )
 }
+
 @Composable
 fun IntroNavigator(
-    state : IntroState,
-    onAction : (IntroActions) -> Unit
+    state: IntroState,
+    onAction: (IntroActions) -> Unit
 ) {
     val introNavigator = rememberNavController()
-    Box(Modifier
-        .background(MaterialTheme.colorScheme.background)
-        .fillMaxSize()){
+    Box(
+        Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
+    ) {
         NavHost(
             navController = introNavigator,
             startDestination = IntroNavigation.IntroNavigationGraph,
-            enterTransition = {slideIntoContainer(Left, tween(500))},
-            popEnterTransition = {slideIntoContainer(Right, tween(500))},
-            exitTransition = {slideOutOfContainer(Left, tween(500))},
-            popExitTransition = {slideOutOfContainer(Right,tween(500))}
+            enterTransition = { slideIntoContainer(Left, tween(500)) },
+            popEnterTransition = { slideIntoContainer(Right, tween(500)) },
+            exitTransition = { slideOutOfContainer(Left, tween(500)) },
+            popExitTransition = { slideOutOfContainer(Right, tween(500)) }
         ) {
             navigation<IntroNavigation.IntroNavigationGraph>(
                 startDestination = IntroNavigation.Welcome
@@ -76,7 +79,7 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Permissions> {
                     onAction(IntroActions.ChangePage(1))
-                    Permissions(state= state, onAction = onAction)
+                    Permissions(state = state, onAction = onAction)
                 }
                 composable<IntroNavigation.Paths> {
                     onAction(IntroActions.ChangePage(2))
@@ -84,16 +87,16 @@ fun IntroNavigator(
                 }
                 composable<IntroNavigation.Done> {
                     onAction(IntroActions.ChangePage(3))
-                    Done(toEmulator = {onAction(IntroActions.Finish)})
+                    Done(toEmulator = { onAction(IntroActions.Finish) })
                 }
-                dialog<IntroNavigation.SkipPermissionDialog>{
+                dialog<IntroNavigation.SkipPermissionDialog> {
                     SkipPermissionDialog(
                         onDismiss = {
                             introNavigator.popBackStack()
                         },
                         skip = {
                             introNavigator.navigate(
-                            IntroNavigation.Paths
+                                IntroNavigation.Paths
                             )
                         }
                     )
@@ -105,61 +108,65 @@ fun IntroNavigator(
                 }
             }
         }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(16.dp)
-            ) {
-                if (state.page > 0) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(16.dp)
+        ) {
+            if (state.page > 0) {
+                TextButton(
+                    onClick = {
+                        introNavigator.popBackStack()
+                        onAction(IntroActions.GoBack)
+                    }
+                ) {
+                    Text(
+                        text = "Back",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                if (state.page < 3) {
                     TextButton(
                         onClick = {
-                            introNavigator.popBackStack()
-                            onAction(IntroActions.GoBack)
-                        }
+                            Log.i("Permission", "new composable state $state")
+
+                            when (state.page) {
+                                0 -> introNavigator.navigate(IntroNavigation.Permissions)
+                                1 -> {
+                                    Log.i(
+                                        "permissions",
+                                        "camera: ${state.hasCameraPermission} mic:${state.hasMicPermission} camera: ${state.hasCameraPermission} boolean: ${state.showSkipPermissionDialog}"
+                                    )
+
+                                    if (state.showSkipPermissionDialog) {
+                                        introNavigator.navigate(IntroNavigation.Paths)
+                                    } else {
+                                        introNavigator.navigate(IntroNavigation.SkipPermissionDialog)
+                                    }
+
+                                }
+
+                                2 -> {
+                                    if (state.triangleFolderEmpty)
+                                        introNavigator.navigate(IntroNavigation.NoUserFolder)
+                                    else
+                                        introNavigator.navigate(IntroNavigation.Done)
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(start = 16.dp)
                     ) {
                         Text(
-                            text = "Back",
+                            text = "Next",
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-
-                    if (state.page < 3) {
-                        TextButton(
-                            onClick = {
-                                Log.i("Permission", "new composable state $state" )
-
-                                when (state.page) {
-                                        0 -> introNavigator.navigate(IntroNavigation.Permissions)
-                                        1 -> {
-                                            Log.i("permissions", "camera: ${state.hasCameraPermission} mic:${state.hasMicPermission} camera: ${state.hasCameraPermission} boolean: ${state.showSkipPermissionDialog}")
-
-                                            if (state.showSkipPermissionDialog) {
-                                                introNavigator.navigate(IntroNavigation.Paths)
-                                            } else {
-                                                introNavigator.navigate(IntroNavigation.SkipPermissionDialog)
-                                            }
-
-                                        }
-                                        2 -> {
-                                            if (state.triangleFolderEmpty)
-                                                introNavigator.navigate(IntroNavigation.NoUserFolder)
-                                            else
-                                                introNavigator.navigate(IntroNavigation.Done)
-                                        }
-                                    }
-                            },
-                            modifier = Modifier.padding(start = 16.dp)
-                        ) {
-                            Text(
-                                text = "Next",
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
                 }
+            }
         }
     }
 }

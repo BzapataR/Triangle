@@ -41,7 +41,10 @@ fun GameCover(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
         Box(
             modifier = Modifier
                 .combinedClickable(
@@ -64,17 +67,17 @@ fun GameCover(
 
             )
         {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(game.localCoverUri) // Pass the Uri object here
-                        .fallback(R.drawable.deltaicon)
-                        .error(R.drawable.deltaicon)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Cover",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize(),
-                    // You can also define placeholder/error content within the AsyncImage scope
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(game.localCoverUri) // Pass the Uri object here
+                    .fallback(R.drawable.deltaicon)
+                    .error(R.drawable.deltaicon)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Cover",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize(),
+                // You can also define placeholder/error content within the AsyncImage scope
 
             )
             GameContextMenu(

@@ -3,42 +3,31 @@ package com.bzapata.triangle.emulatorScreen.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class EmulatorViewModel(
-    private val gameRepo: GameRepository,
+    gameRepo: GameRepository,
+    private val configRepo: ConfigRepository
 ) : ViewModel() {
-    private var getGames : Job? = null
 
     private val _state = MutableStateFlow(EmulatorState())
     val state = _state.asStateFlow()
-        .onStart { getRoms() }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            _state.value
-        )
 
-    private fun getRoms() {
-        getGames?.cancel()
-        _state.update { it.copy(games = emptyList(), consoles = emptyList()) } // Reset consoles as well
-        getGames = gameRepo.readAllGames()
-            .onEach { game ->
+    init {
+        gameRepo.readAllGames()
+            .onEach { games ->
                 _state.update { currentState ->
-                    val updatedGames = (currentState.games + game).sortedBy { it.name }
-                    val updatedConsoles = updatedGames.map { it.consoles }.distinct().sorted()
-                    currentState.copy(games = updatedGames, consoles = updatedConsoles)
+                    val updatedConsoles = games.map { it.consoles }.distinct().sorted()
+                    currentState.copy(games = games, consoles = updatedConsoles)
                 }
-                Log.i("Emulator ViewModel", "Games updated: ${_state.value.games.size}")
+                Log.i("Emulator ViewModel", "Games updated: ${games.size}")
             }
             .launchIn(viewModelScope)
     }
@@ -78,6 +67,18 @@ class EmulatorViewModel(
                         isFileContextMenuOpen = newFileMenuState,
                         isBackgroundBlurred = newFileMenuState || it.gameIndexForContextMenu != null
                     )
+                }
+            }
+
+            is EmulatorActions.SetUserFolder -> {
+                viewModelScope.launch {
+                    action.uri?.let { configRepo.saveTriangleDataUri(it) }
+                }
+            }
+
+            is EmulatorActions.SetRomsFolder -> {
+                viewModelScope.launch {
+                    action.uri?.let { configRepo.saveRomsUri(it) }
                 }
             }
 

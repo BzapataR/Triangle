@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PathsViewModel(
-    private val configRepo : ConfigRepository
-) : ViewModel()  {
+    private val configRepo: ConfigRepository
+) : ViewModel() {
 
-    private var observerConfig : Job? = null
+    private var observerConfig: Job? = null
     private val _state = MutableStateFlow(PathsState())
 
     val state = _state.asStateFlow()
@@ -38,7 +38,7 @@ class PathsViewModel(
         observerConfig = combine(
             flow = configRepo.triangleDataUriFlow,
             flow2 = configRepo.romUriFlow
-        ){ trianglePath, romPath ->
+        ) { trianglePath, romPath ->
             _state.update {
                 it.copy(
                     trianglePath = trianglePath,
@@ -54,11 +54,15 @@ class PathsViewModel(
             is PathsActions.SetRomsPath -> {
                 setRomPath(actions.uri)
             }
+
             is PathsActions.SetTrianglePath -> {
                 setTrianglePath(actions.uri)
             }
         }
-        Log.i("Paths", "rom path: ${_state.value.romPath}, triangle path: ${_state.value.trianglePath}")
+        Log.i(
+            "Paths",
+            "rom path: ${_state.value.romPath}, triangle path: ${_state.value.trianglePath}"
+        )
     }
 
     private fun setTrianglePath(uri: Uri?) {

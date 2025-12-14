@@ -8,14 +8,12 @@ import com.bzapata.triangle.intro.IntroViewModel
 import com.bzapata.triangle.intro.paths.PathsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val appModule = module {
 
-    single{
+    single {
         ConfigRepository(context = get())
     }
     single {

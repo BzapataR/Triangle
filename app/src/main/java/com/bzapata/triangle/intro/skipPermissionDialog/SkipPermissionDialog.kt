@@ -11,13 +11,13 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SkipPermissionDialog(onDismiss : () -> Unit, skip : () -> Unit) {
+fun SkipPermissionDialog(onDismiss: () -> Unit, skip: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                onClick = {skip()},
-            ){
+                onClick = { skip() },
+            ) {
                 Text(text = "Skip")
             }
         },
@@ -29,7 +29,7 @@ fun SkipPermissionDialog(onDismiss : () -> Unit, skip : () -> Unit) {
             }
         },
         text = {
-            Column() {
+            Column {
                 Text(text = "Skip granting permissions?")
                 Text(text = "Permission are used for DS Emulation")
             }
@@ -42,6 +42,6 @@ fun SkipPermissionDialog(onDismiss : () -> Unit, skip : () -> Unit) {
 @Composable
 fun SkipPermissionDialogPreview() {
     TriangleTheme {
-        SkipPermissionDialog({},{})
+        SkipPermissionDialog({}, {})
     }
 }

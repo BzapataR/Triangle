@@ -3,6 +3,7 @@ package com.bzapata.triangle.di
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameDataBase.GamesDb
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
+import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDb
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorViewModel
 import com.bzapata.triangle.intro.IntroViewModel
 import com.bzapata.triangle.intro.paths.PathsViewModel
@@ -16,12 +17,19 @@ val appModule = module {
     single {
         ConfigRepository(context = get())
     }
+
     single {
-        GamesDb.getDataBase(context = androidContext())
+        GamesDb.getDataBase(context = get())
     }
     single {
         get<GamesDb>().gameDbDoa()
     }
+
+    single {
+        SavedRomsDb.getRomsDatabase(context = get())
+    }
+    single { get<SavedRomsDb>().romsDbDoa() }
+
     singleOf(::GameRepository)
     viewModelOf(::EmulatorViewModel)
     viewModelOf(::IntroViewModel)

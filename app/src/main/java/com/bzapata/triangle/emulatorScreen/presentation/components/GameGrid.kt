@@ -6,17 +6,19 @@
 //
 package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
@@ -24,14 +26,14 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameGrid(
-    console: Consoles,
     games: List<Game>,
-//    focusedGame: Int?,
-    onGameFocus: (Int?) -> Unit,
+    onGameFocus: (String?) -> Unit,
     state: EmulatorState,
-    pageNumber: Int
 ) {
 
+    LaunchedEffect(state.gameHashForContextMenu) {
+        Log.i("Page", "${state.gameHashForContextMenu}")
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(90.dp),
@@ -41,14 +43,16 @@ fun GameGrid(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     )
     {
-        itemsIndexed(games) { index, game ->
+        items(items = games, key = {it.hash}) {game -> //todo fix one rom glitch
             GameCover(
                 game = game,
-                isContextMenuShown = (state.gameIndexForContextMenu == index && pageNumber == state.currentPage),
+                isContextMenuShown = state.gameHashForContextMenu == game.hash,
                 onShowContextMenu = {
-                    onGameFocus(index)
+                    onGameFocus(game.hash)
+                    Log.i("Page", "state hash: ${state.gameHashForContextMenu} and hash ${game.hash}")
                 },
                 onDismissContextMenu = {
+                    Log.i("Page", "dismiss context menu")
                     onGameFocus(null)
                 }
             )
@@ -60,6 +64,6 @@ fun GameGrid(
 @Composable
 fun GameGridPreview() {
     TriangleTheme {
-        GameGrid(console = Consoles.GBA, state = EmulatorState(), onGameFocus = {0}, pageNumber= 1 , games = listOf(GameUiExample))
+        GameGrid(state = EmulatorState(), onGameFocus = {0}, games = listOf(GameUiExample))
     }
 }

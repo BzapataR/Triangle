@@ -8,5 +8,6 @@ val GameUiExample = Game(
     path = Uri.EMPTY,
     coverDownloaderUri = emptyList(),
     localCoverUri = Uri.EMPTY,
-    consoles = Consoles.GB
+    consoles = Consoles.GB,
+    hash = "ahdfjskljfa"
 )

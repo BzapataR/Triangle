@@ -12,25 +12,34 @@ import com.bzapata.triangle.emulatorScreen.data.fileOperations.fileMapper
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.findCover
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getRomFiles
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.hasher
+import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDoa
+import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toGame
+import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toSavedRomsEntity
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.launch
 
 class GameRepository(
-    private val doa: GamesDbDoa,
+    private val gamesDoa: GamesDbDoa,
     private val config: ConfigRepository,
-    private val context: Context
+    private val context: Context,
+    private val savedRomsDoa : SavedRomsDoa,
 ) : GameRepository {
-
+    val scope = CoroutineScope(Dispatchers.IO)
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun readAllGames(): Flow<List<Game>> {
+    override fun scanRoms(): Flow<List<Game>> {
         return combine(config.romUriFlow, config.triangleDataUriFlow) { romPath, userPath ->
             romPath to userPath
         }.flatMapLatest { (romPath, userPath) ->
@@ -41,11 +50,15 @@ class GameRepository(
                 Log.i("GameRepo", "Starting ROM scan for path: $romPath")
                 getRomFiles(context, romPath)
                     .scan(emptyList<Game>()) { accumulatedGames, newRomUri ->
-                        val game = idRom(newRomUri, context, doa, userPath)
+                        val game = idRom(newRomUri, context, gamesDoa, userPath)
                         (accumulatedGames + game).sortedBy { it.name }
                     }
             }
         }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getGames(): Flow<List<Game>> {
+       return savedRomsDoa.getAllSavedRoms()?.map { it.toGame() } ?: emptyFlow()
     }
 
 
@@ -57,18 +70,20 @@ class GameRepository(
     ): Game {
         val file = DocumentFile.fromSingleUri(context, romPath)
             ?: throw IllegalArgumentException("File not Valid: $romPath")
+        val hash = hasher(context, romPath)
         val romID = doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
-            ?: doa.getRomId(hasher(context, romPath)) ?: -1
+            ?: doa.getRomId(hash) ?: -1
         val romName = doa.getName(romID) ?: file.name?.substringBeforeLast('.') ?: "Unknown file"
         val coverURI = doa.getCoverURI(romID)?.map { it.toUri() } ?: emptyList()
         val console = fileMapper(context, romPath)
 
-        return Game(
+        val rom =  Game(
             name = romName,
             coverDownloaderUri = coverURI,
             romID = romID,
             path = romPath,
             consoles = console,
+            hash = hash,
             localCoverUri = findCover(
                 context = context,
                 userFolder = userPath,
@@ -81,5 +96,8 @@ class GameRepository(
                 userFolder = userPath
             ) ?: Uri.EMPTY
         )
+        val lastModified = file.lastModified()
+        savedRomsDoa.upsert(rom.toSavedRomsEntity(lastModified))
+        return rom
     }
 }

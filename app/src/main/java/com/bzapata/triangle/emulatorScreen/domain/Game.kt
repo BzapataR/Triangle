@@ -10,5 +10,6 @@ data class Game(
 //val settings : ROOMDB SETTINGS
     val coverDownloaderUri: List<Uri?>,
     val localCoverUri: Uri?,
-    val consoles: Consoles
+    val consoles: Consoles,
+    val hash : String
 )

@@ -21,7 +21,7 @@ class EmulatorViewModel(
     val state = _state.asStateFlow()
 
     init {
-        gameRepo.readAllGames()
+        gameRepo.scanRoms()
             .onEach { games ->
                 _state.update { currentState ->
                     val updatedConsoles = games.map { it.consoles }.distinct().sorted()
@@ -44,10 +44,11 @@ class EmulatorViewModel(
             }
 
             is EmulatorActions.ToggleGameContextMenu -> {
-                _state.update {
-                    it.copy(
-                        gameIndexForContextMenu = action.gameIndex,
-                        isBackgroundBlurred = !it.isBackgroundBlurred
+                _state.update { currentState ->
+                    val isGameMenuOpening = action.gameHash != null
+                    currentState.copy(
+                        gameHashForContextMenu = action.gameHash,
+                        isBackgroundBlurred = isGameMenuOpening || currentState.isFileContextMenuOpen
                     )
                 }
             }
@@ -55,17 +56,17 @@ class EmulatorViewModel(
             is EmulatorActions.ToggleSettings -> {
                 _state.update {
                     it.copy(
-                        isSettingsOpen = !_state.value.isSettingsOpen
+                        isSettingsOpen = !it.isSettingsOpen
                     )
                 }
             }
 
             is EmulatorActions.ToggleFileContextMenu -> {
-                _state.update {
-                    val newFileMenuState = !it.isFileContextMenuOpen
-                    it.copy(
+                _state.update { currentState ->
+                    val newFileMenuState = !currentState.isFileContextMenuOpen
+                    currentState.copy(
                         isFileContextMenuOpen = newFileMenuState,
-                        isBackgroundBlurred = newFileMenuState || it.gameIndexForContextMenu != null
+                        isBackgroundBlurred = newFileMenuState || currentState.gameHashForContextMenu != null
                     )
                 }
             }

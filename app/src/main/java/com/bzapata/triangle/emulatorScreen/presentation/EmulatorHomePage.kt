@@ -62,6 +62,7 @@ fun EmulatorHomePage(
 
     val userDirectoryPicker = directoryPicker { uri ->
         onAction(EmulatorActions.SetUserFolder(uri))
+        //todo fix crash on changeing folder on a page that it gets rid of
     }
 
     val romsDirectoryPicker = directoryPicker { uri ->
@@ -88,20 +89,17 @@ fun EmulatorHomePage(
             PagerIndicator(pagerState = pagerState)
         }
     ) { innerPadding ->
-
         if (state.consoles.isNotEmpty()) { // Add a check to prevent crashing
             HorizontalPager(
                 modifier = Modifier.padding(innerPadding),
-                state = pagerState
+                state = pagerState,
             ) { page ->
                 GameGrid(
-                    console = state.consoles[page],
                     games = state.games.filter { it.consoles == state.consoles[page] },
-                    onGameFocus = {
-                        onAction(EmulatorActions.ToggleGameContextMenu(it))
+                    onGameFocus = { gameHash ->
+                        onAction(EmulatorActions.ToggleGameContextMenu(gameHash))
                     },
                     state = state,
-                    pageNumber = page
                 )
             }
         }

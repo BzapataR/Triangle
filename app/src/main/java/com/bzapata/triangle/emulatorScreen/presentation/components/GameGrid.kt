@@ -16,6 +16,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,30 +37,35 @@ fun GameGrid(
 ) {
 
     LaunchedEffect(state.gameHashForContextMenu) {
-        Log.i("Page", "${state.gameHashForContextMenu}")
+        Log.i("Page", "state hash changed to: ${state.gameHashForContextMenu}")
     }
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(90.dp),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-    )
-    {
-        items(items = games, key = {it.hash}) {game -> //todo fix one rom glitch
-            GameCover(
-                game = game,
-                isContextMenuShown = state.gameHashForContextMenu == game.hash,
-                onShowContextMenu = {
-                    onGameFocus(game.hash)
-                    Log.i("Page", "state hash: ${state.gameHashForContextMenu} and hash ${game.hash}")
-                },
-                onDismissContextMenu = {
-                    Log.i("Page", "dismiss context menu")
-                    onGameFocus(null)
-                }
-            )
+    key(state.gameHashForContextMenu) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(90.dp),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        )
+        {
+            items(items = games, key = { it.hash }) { game -> //todo fix one rom glitch
+                val openContextMenu = state.gameHashForContextMenu == game.hash
+                GameCover(
+                    game = game,
+                    isContextMenuShown = openContextMenu,
+                    onShowContextMenu = {
+                        onGameFocus(game.hash)
+                        Log.i(
+                            "Page",
+                            "state hash: ${state.gameHashForContextMenu} and game hash ${game.hash}"
+                        )
+                    },
+                    onDismissContextMenu = {
+                        Log.i("Page", "dismiss context menu")
+                        onGameFocus(null)
+                    }
+                )
+            }
         }
     }
 }

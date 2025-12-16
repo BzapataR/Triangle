@@ -11,4 +11,8 @@ data class EmulatorState(
     val isBackgroundBlurred: Boolean = false,
     val currentPage: Int = 0,
     val isSettingsOpen: Boolean = false,
+    val isRefreshing : Boolean = false,
+    val isInitialScanDone : Boolean = false,
+    val noRomPath : Boolean = false,
+    val isScanning : Boolean = false
 )

@@ -11,4 +11,5 @@ sealed interface EmulatorActions {
     data object ToggleFileContextMenu : EmulatorActions
     data class SetUserFolder(val uri: Uri?) : EmulatorActions
     data class SetRomsFolder(val uri: Uri?) : EmulatorActions
+    data object RefreshRomList : EmulatorActions
 }

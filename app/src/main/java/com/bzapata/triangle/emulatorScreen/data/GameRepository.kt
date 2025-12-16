@@ -19,48 +19,75 @@ import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.withContext
+import kotlin.collections.emptyList
+import kotlin.collections.plus
+import kotlin.collections.sortedBy
 
 class GameRepository(
     private val gamesDoa: GamesDbDoa,
     private val config: ConfigRepository,
     private val context: Context,
-    private val savedRomsDoa : SavedRomsDoa,
+    private val savedRomsDoa: SavedRomsDoa,
 ) : GameRepository {
-    val scope = CoroutineScope(Dispatchers.IO)
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun scanRoms(): Flow<List<Game>> {
-        return combine(config.romUriFlow, config.triangleDataUriFlow) { romPath, userPath ->
-            romPath to userPath
-        }.flatMapLatest { (romPath, userPath) ->
-            if (romPath == null || userPath == null) {
-                Log.w("GameRepo", "ROM or User path not configured, aborting scan.")
-                flowOf(emptyList())
-            } else {
-                Log.i("GameRepo", "Starting ROM scan for path: $romPath")
-                getRomFiles(context, romPath)
-                    .scan(emptyList<Game>()) { accumulatedGames, newRomUri ->
-                        val game = idRom(newRomUri, context, gamesDoa, userPath)
-                        (accumulatedGames + game).sortedBy { it.name }
-                    }
+    private val scope = CoroutineScope(Dispatchers.IO)
+
+    override suspend fun scanRoms() = withContext(Dispatchers.IO) {
+        val romPath = config.romUriFlow.first()
+        val userPath = config.triangleDataUriFlow.first()
+
+        if (romPath == null || userPath == null) {
+            Log.w("GameRepo", "ROM or User path not configured, aborting scan.")
+            return@withContext
+        }
+
+        Log.i("GameRepo", "Starting ROM scan for path: $romPath")
+        val romUris = getRomFiles(context, romPath).toList()
+
+        romUris.map { romUri ->
+            async {
+                idRom(romUri, context, gamesDoa, userPath)
             }
-        }.flowOn(Dispatchers.IO)
+        }.awaitAll()
+
+        Log.i("GameRepo", "ROM scan finished. Validating database...")
+        validateSavedRoms()
     }
 
-    override suspend fun getGames(): Flow<List<Game>> {
-       return savedRomsDoa.getAllSavedRoms()?.map { it.toGame() } ?: emptyFlow()
+    override fun getGames(): Flow<List<Game>> {
+        return savedRomsDoa.getAllSavedRoms()?.map { it.toGame() } ?: return emptyFlow()
     }
 
+    override fun databaseBomb() {
+        savedRomsDoa.deleteAll()
+    }
+
+    private suspend fun validateSavedRoms() {
+        Log.i("GameRepo", "Starting background validation of saved games.")
+        val dbGames = savedRomsDoa.getAllSavedRoms()?.first() ?: return
+
+        val gamesToDelete = dbGames.filter { savedRom ->
+            val file = DocumentFile.fromSingleUri(context, savedRom.path.toUri())
+            file == null || !file.exists()
+        }
+
+        if (gamesToDelete.isNotEmpty()) {
+            Log.i("GameRepo", "Found ${gamesToDelete.size} deleted ROMs. Removing from database.")
+            gamesToDelete.forEach { savedRomsDoa.deleteRomsFromDb(it) }
+        }
+        Log.i("GameRepo", "Validation finished.")
+    }
 
     private suspend fun idRom(
         romPath: Uri,
@@ -77,7 +104,7 @@ class GameRepository(
         val coverURI = doa.getCoverURI(romID)?.map { it.toUri() } ?: emptyList()
         val console = fileMapper(context, romPath)
 
-        val rom =  Game(
+        val rom = Game(
             name = romName,
             coverDownloaderUri = coverURI,
             romID = romID,
@@ -100,4 +127,5 @@ class GameRepository(
         savedRomsDoa.upsert(rom.toSavedRomsEntity(lastModified))
         return rom
     }
+
 }

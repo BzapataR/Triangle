@@ -22,4 +22,7 @@ interface SavedRomsDoa {
     @Delete
     suspend fun deleteRomsFromDb(game: SavedRomsEntity)
 
+    @Query("DELETE FROM SavedRomsDb")
+    fun deleteAll()
+
 }

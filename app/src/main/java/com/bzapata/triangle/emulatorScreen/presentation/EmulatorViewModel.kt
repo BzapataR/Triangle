@@ -102,7 +102,7 @@ class EmulatorViewModel(
                 CoroutineScope(Dispatchers.IO).launch {
                     action.uri?.let { configRepo.saveRomsUri(it) }
                     gameRepo.databaseBomb()
-                    _state.update { it.copy(isScanning = true) }
+                    _state.update { it.copy(isScanning = true, currentPage = 0) }
                     gameRepo.scanRoms()
                     _state.update { it.copy(isScanning = false) }
                 }

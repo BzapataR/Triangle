@@ -68,6 +68,10 @@ fun EmulatorHomePage(
 
     val pullToRefreshState = rememberPullToRefreshState()
 
+    LaunchedEffect(state.consoles) {
+            pagerState.scrollToPage(0)
+    }
+
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
@@ -78,7 +82,6 @@ fun EmulatorHomePage(
 
     val userDirectoryPicker = directoryPicker { uri ->
         onAction(EmulatorActions.SetUserFolder(uri))
-        //todo fix crash on changeing folder on a page that it gets rid of
     }
 
     val romsDirectoryPicker = directoryPicker { uri ->
@@ -94,7 +97,7 @@ fun EmulatorHomePage(
                 settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
                 fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
                 isMenuOpen = state.isFileContextMenuOpen,
-                currentEmulatorName = if (state.consoles.isNotEmpty()) state.consoles[pagerState.currentPage].name else "",
+                currentEmulatorName = state.consoles.getOrNull(state.currentPage)?.name ?: "",
                 onChangeUserFolder = userDirectoryPicker,
                 onChangeRomsFolder = romsDirectoryPicker
             )

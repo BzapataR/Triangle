@@ -9,13 +9,13 @@ import androidx.room.TypeConverters
 @Database(entities = [SavedRomsEntity::class], version = 1)
 @TypeConverters(SavedRomsTypeConverter::class)
 abstract class SavedRomsDb : RoomDatabase() {
-    abstract fun romsDbDoa() : SavedRomsDoa
+    abstract fun romsDbDoa(): SavedRomsDoa
 
-    companion object{
+    companion object {
         @Volatile
-        private var INSTANCE : SavedRomsDb? = null
+        private var INSTANCE: SavedRomsDb? = null
 
-        fun getRomsDatabase(context : Context) : SavedRomsDb {
+        fun getRomsDatabase(context: Context): SavedRomsDb {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

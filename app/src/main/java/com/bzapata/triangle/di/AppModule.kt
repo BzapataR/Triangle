@@ -7,7 +7,6 @@ import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDb
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorViewModel
 import com.bzapata.triangle.intro.IntroViewModel
 import com.bzapata.triangle.intro.paths.PathsViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module

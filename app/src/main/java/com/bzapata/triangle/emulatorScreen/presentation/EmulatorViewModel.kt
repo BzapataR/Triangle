@@ -27,28 +27,31 @@ class EmulatorViewModel(
         setScreen()
         observeRomPath()
     }
+
     private fun setScreen() {
         gameRepo.getGames().distinctUntilChanged()
             .onEach { games ->
                 _state.update { currentState ->
                     val updatedConsoles = games.map { it.consoles }.distinct().sorted()
-                    currentState.copy(games = games.sortedBy { it.name }, consoles = updatedConsoles)
+                    currentState.copy(
+                        games = games.sortedBy { it.name },
+                        consoles = updatedConsoles
+                    )
                 }
             }.launchIn(viewModelScope)
     }
+
     private fun observeRomPath() {
         configRepo.romUriFlow.distinctUntilChanged().onEach { uri ->
             if (uri != null && !_state.value.isInitialScanDone) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    _state.update { it.copy(noRomPath = false, isScanning = true)}
+                    _state.update { it.copy(noRomPath = false, isScanning = true) }
                     gameRepo.scanRoms()
                     _state.update { it.copy(isInitialScanDone = true, isScanning = false) }
                 }
-            }
-            else if(uri==null){
+            } else if (uri == null) {
                 _state.update { it.copy(noRomPath = true) }
-            }
-            else {
+            } else {
                 _state.update { it.copy(noRomPath = false) }
             }
         }.launchIn(viewModelScope)
@@ -69,7 +72,7 @@ class EmulatorViewModel(
                 _state.update {
                     it.copy(
                         gameHashForContextMenu = action.gameHash,
-                        isBackgroundBlurred =  !it.isBackgroundBlurred
+                        isBackgroundBlurred = !it.isBackgroundBlurred
                     )
                 }
             }
@@ -113,7 +116,7 @@ class EmulatorViewModel(
                 CoroutineScope(Dispatchers.IO).launch {
                     _state.update { it.copy(isRefreshing = true) }
                     gameRepo.scanRoms()
-                    _state.update { it.copy(isRefreshing = false)}
+                    _state.update { it.copy(isRefreshing = false) }
                 }
             }
         }

@@ -11,5 +11,5 @@ data class Game(
     val coverDownloaderUri: List<Uri?>,
     val localCoverUri: Uri?,
     val consoles: Consoles,
-    val hash : String
+    val hash: String
 )

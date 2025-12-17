@@ -1,11 +1,9 @@
 package com.bzapata.triangle.emulatorScreen.data.romsDatabase
 
-import android.net.Uri
 import androidx.core.net.toUri
-import com.bzapata.triangle.emulatorScreen.data.GameDataBase.ROMsEntity
 import com.bzapata.triangle.emulatorScreen.domain.Game
 
-fun SavedRomsEntity.toGame() : Game {
+fun SavedRomsEntity.toGame(): Game {
     return Game(
         name = this.name,
         romID = this.romId,
@@ -17,7 +15,7 @@ fun SavedRomsEntity.toGame() : Game {
     )
 }
 
-fun Game.toSavedRomsEntity(lastModified : Long) : SavedRomsEntity {
+fun Game.toSavedRomsEntity(lastModified: Long): SavedRomsEntity {
     return SavedRomsEntity(
         deviceHash = this.hash,
         name = this.name,
@@ -30,6 +28,6 @@ fun Game.toSavedRomsEntity(lastModified : Long) : SavedRomsEntity {
     )
 }
 
-fun List<SavedRomsEntity>.toGame() : List<Game> {
+fun List<SavedRomsEntity>.toGame(): List<Game> {
     return this.map { it.toGame() }
 }

@@ -3,7 +3,6 @@ package com.bzapata.triangle.emulatorScreen.data.romsDatabase
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 
 class SavedRomsTypeConverter {

@@ -69,7 +69,7 @@ fun EmulatorHomePage(
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(state.consoles) {
-            pagerState.scrollToPage(0)
+        pagerState.scrollToPage(0)
     }
 
     LaunchedEffect(pagerState) {
@@ -140,6 +140,7 @@ fun EmulatorHomePage(
                     }
                 }
             }
+
             state.noRomPath -> NoRomPathMessage()
             state.isScanning && state.isInitialScanDone -> ScanIndicator()
             state.games.isEmpty() && state.isInitialScanDone -> NoGamesFoundMessage()

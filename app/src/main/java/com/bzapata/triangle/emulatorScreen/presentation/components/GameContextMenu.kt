@@ -25,7 +25,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 

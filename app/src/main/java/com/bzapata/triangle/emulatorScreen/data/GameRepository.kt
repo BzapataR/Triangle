@@ -108,11 +108,10 @@ class GameRepository(
             localCoverUri = findCover(
                 context = context,
                 userFolder = userPath,
-                romID = romID,
+                gameHash = hash,
             ) ?: downloadCover(
                 context = context,
-                gameName = romName,
-                romID = romID,
+                gameHash = hash,
                 imageUris = coverURI,
                 userFolder = userPath
             ) ?: Uri.EMPTY
@@ -125,6 +124,11 @@ class GameRepository(
     suspend fun queryCovers(titleName : String) : Map<Uri,String?> = withContext(Dispatchers.IO) {
         if (titleName.isBlank()) return@withContext emptyMap()
         gamesDoa.queryCover(titleName.trim()).associate { it.releaseCoverFront.toUri() to it.releaseTitleName }
+    }
+
+    override suspend fun saveCover(uri : Uri, gameHash : String) = withContext(Dispatchers.IO) {
+        downloadCover(context = context, userFolder = config.triangleDataUriFlow.first() ?: return@withContext , imageUri = uri, gameHash = gameHash)
+        savedRomsDoa.updateCoverUri(uri = uri.toString(), hash = gameHash)
     }
 
 }

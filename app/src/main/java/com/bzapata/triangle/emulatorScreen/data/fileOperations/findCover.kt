@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 
-fun findCover(context: Context, userFolder: Uri, romID: Int): Uri? {
+fun findCover(context: Context, userFolder: Uri, gameHash : String): Uri? {
     val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
 
     val coversDirectory = userDirectory?.findFile("covers")
@@ -16,14 +16,14 @@ fun findCover(context: Context, userFolder: Uri, romID: Int): Uri? {
         return null
     }
 
-    val fileName = "$romID.png"
+    val fileName = "$gameHash.png"
 
     val existingFile = coversDirectory.findFile(fileName)
     if (existingFile != null) {
-        Log.i("find cover", "Found Game Cover: $fileName")
+        Log.i("find cover", "Found Game Cover for game: $gameHash to match $fileName")
         return existingFile.uri
     }
-    Log.i("find cover", "No cover found")
+    Log.i("find cover", "No cover found for :$gameHash to match $fileName")
     return null
 
 

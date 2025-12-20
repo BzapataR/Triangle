@@ -16,4 +16,5 @@ sealed interface EmulatorActions {
     data object ToggleCoverActionSheet : EmulatorActions
     data object ToggleDbCover : EmulatorActions
     data class QueryCovers(val gameName: String) : EmulatorActions
+    data class SaveCover(val uri: Uri, val gameHash : String) : EmulatorActions
 }

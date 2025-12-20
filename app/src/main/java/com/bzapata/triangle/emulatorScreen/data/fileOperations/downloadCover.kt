@@ -13,8 +13,7 @@ import okio.IOException
 
 suspend fun downloadCover(
     context: Context,
-    gameName: String,
-    romID: Int,
+    gameHash: String,
     imageUri: Uri,
     userFolder: Uri
 ): Uri? {
@@ -33,7 +32,7 @@ suspend fun downloadCover(
         Log.i("downloadCover", "Created .nomedia file in covers directory.")
     }
 
-    val fileName = "$romID.png"
+    val fileName = "$gameHash.png"
 
     val imageLoader = ImageLoader(context)
     val request = ImageRequest.Builder(context)
@@ -56,24 +55,23 @@ suspend fun downloadCover(
                 }
                 Log.i(
                     "download Cover",
-                    "Successfully saved ${bitMap.width}x${bitMap.height} cover for $gameName ${newCoverFile.uri.path}"
+                    "Successfully saved ${bitMap.width}x${bitMap.height} cover for $gameHash ${newCoverFile.uri.path}"
                 )
                 return newCoverFile.uri
             }
         } catch (e: IOException) {
-            Log.e("download Cover", "Failed to save image for $gameName ", e)
+            Log.e("download Cover", "Failed to save image for $gameHash ", e)
             return null
         }
     } else {
-        Log.e("download Cover", " Failed to download image for $gameName from $imageUri")
+        Log.e("download Cover", " Failed to download image for $gameHash from $imageUri")
     }
     return null
 }
 
 suspend fun downloadCover(
     context: Context,
-    gameName: String,
-    romID: Int,
+    gameHash: String,
     imageUris: List<Uri>,
     userFolder: Uri
 ): Uri? {
@@ -92,7 +90,7 @@ suspend fun downloadCover(
         Log.i("downloadCover", "Created .nomedia file in covers directory.")
     }
 
-    val fileName = "$romID.png"
+    val fileName = "$gameHash.png"
     val imageResults = mutableListOf<Bitmap>()
     val imageLoader = ImageLoader(context)
 
@@ -123,7 +121,7 @@ suspend fun downloadCover(
             return newCoverFile.uri
         }
     } catch (e: IOException) {
-        Log.e("download Cover", "Failed to save image for $gameName ", e)
+        Log.e("download Cover", "Failed to save image for $gameHash ", e)
         return null
     }
     return null

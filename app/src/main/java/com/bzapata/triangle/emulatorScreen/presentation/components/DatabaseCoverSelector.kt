@@ -150,7 +150,15 @@ fun DatabaseCoverSelector(
                     ListItem(
                         modifier = Modifier
                             .height(100.dp)
-                            .clickable(onClick = {}),
+                            .clickable(onClick = {
+                                onAction(EmulatorActions.SaveCover(uri = uri, gameHash = game.hash))
+                                scope.launch {
+                                    sheetState.hide()
+                                }.invokeOnCompletion {
+                                    if (!sheetState.isVisible)
+                                        onAction(EmulatorActions.ToggleDbCover)
+                                }
+                            }),
                         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                         leadingContent = {
                             AsyncImage(

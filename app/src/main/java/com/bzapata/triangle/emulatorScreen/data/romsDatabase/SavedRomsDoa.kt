@@ -1,8 +1,10 @@
 package com.bzapata.triangle.emulatorScreen.data.romsDatabase
 
+import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -23,5 +25,8 @@ interface SavedRomsDoa {
 
     @Query("DELETE FROM SavedRomsDb")
     fun deleteAll()
+
+    @Query("UPDATE SavedRomsDb SET localCoverUri = :uri WHERE deviceHash = :hash")
+    suspend fun updateCoverUri(hash: String, uri: String)
 
 }

@@ -144,6 +144,11 @@ class EmulatorViewModel(
             is EmulatorActions.SelectGame -> {
                 _state.update { it.copy(selectedGame = action.game) }
             }
+            is EmulatorActions.SaveCover -> {
+                viewModelScope.launch {
+                    gameRepo.saveCover(action.uri, action.gameHash)
+                }
+            }
         }
     }
     @OptIn(FlowPreview::class)

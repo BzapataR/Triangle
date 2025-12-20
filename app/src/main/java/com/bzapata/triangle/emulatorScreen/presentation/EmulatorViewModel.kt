@@ -3,14 +3,19 @@ package com.bzapata.triangle.emulatorScreen.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.query
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,9 +28,12 @@ class EmulatorViewModel(
     private val _state = MutableStateFlow(EmulatorState())
     val state = _state.asStateFlow()
 
+    private var searchCoversJob : Job? = null
+
     init {
         setScreen()
         observeRomPath()
+        observeSearchQuery()
     }
 
     private fun setScreen() {
@@ -71,6 +79,8 @@ class EmulatorViewModel(
             is EmulatorActions.ToggleGameContextMenu -> {
                 _state.update {
                     it.copy(
+//                        selectedGame = action.game,
+//                        isBackgroundBlurred = !it.isBackgroundBlurred
                         gameHashForContextMenu = action.gameHash,
                         isBackgroundBlurred = !it.isBackgroundBlurred
                     )
@@ -87,10 +97,9 @@ class EmulatorViewModel(
 
             is EmulatorActions.ToggleFileContextMenu -> {
                 _state.update { currentState ->
-                    val newFileMenuState = !currentState.isFileContextMenuOpen
                     currentState.copy(
-                        isFileContextMenuOpen = newFileMenuState,
-                        isBackgroundBlurred = newFileMenuState || currentState.gameHashForContextMenu != null
+                        isFileContextMenuOpen = !currentState.isFileContextMenuOpen,
+                        isBackgroundBlurred = !currentState.isBackgroundBlurred
                     )
                 }
             }
@@ -124,7 +133,7 @@ class EmulatorViewModel(
             }
             is EmulatorActions.QueryCovers -> {
                 viewModelScope.launch {
-                    _state.update { it.copy(queriedCovers = gameRepo.queryCovers(action.gameName)) }
+                    _state.update { it.copy(query = action.gameName) }
                 Log.i("covers", "Uris: ${_state.value.queriedCovers}")
                 }
 
@@ -132,7 +141,30 @@ class EmulatorViewModel(
             is EmulatorActions.ToggleDbCover -> {
                 _state.update{ it.copy(isCoverDbSelectorOpen = !it.isCoverDbSelectorOpen)}
             }
+            is EmulatorActions.SelectGame -> {
+                _state.update { it.copy(selectedGame = action.game) }
+            }
         }
     }
+    @OptIn(FlowPreview::class)
+    private fun observeSearchQuery() {
+        _state.map { it.query }
+            .distinctUntilChanged()
+            .debounce(500L)
+            .onEach { query ->
+            when {
+                query.isBlank() -> {
+                    _state.update { it.copy(queriedCovers = emptyMap()) }
+                }
+                query.length >= 2 -> {
+                    searchCoversJob?.cancel()
+                    searchCoversJob = searchCovers(query)
+                }
+            }
+            }.launchIn(viewModelScope)
+    }
 
+    private fun searchCovers(query : String) = viewModelScope.launch {
+        _state.update { it.copy(queriedCovers = gameRepo.queryCovers(query) ) }
+    }
 }

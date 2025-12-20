@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
@@ -44,23 +44,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 
 
 @Composable
-fun GameSearch(
+fun SearchField(
+    initialText : String = "" ,
     onSearch : (String) -> Unit
 ) {
-    val textState = rememberTextFieldState()
+    val textState = rememberTextFieldState(
+        initialText = initialText
+    )
     var isFocused by remember { mutableStateOf(false) }
     val focusManager: FocusManager = LocalFocusManager.current
 
     LaunchedEffect(textState.text) {
-        if (textState.text.isNotEmpty()) {
-            onSearch(textState.text.toString())
-        }
+        onSearch(textState.text.toString())
     }
 
     BoxWithConstraints(
@@ -87,12 +87,13 @@ fun GameSearch(
             ) {
             TextField(
                 state = textState,
+                lineLimits = TextFieldLineLimits.SingleLine,
                 placeholder = {
                     Text("Search")
                 },
                 contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
                     top = 8.dp,
-                    bottom = 8.dp
+                    bottom = 8.dp,
                 ),
                 modifier = Modifier
                     .width(animatedWidth)
@@ -113,7 +114,7 @@ fun GameSearch(
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.sharp_close_24),
                                 contentDescription = "Clear search",
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary,
                             )
                         }
                     }

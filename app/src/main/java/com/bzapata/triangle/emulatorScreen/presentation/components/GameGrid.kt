@@ -48,7 +48,6 @@ fun GameGrid(
                 GameCover(
                     game = game,
                     isContextMenuShown = state.gameHashForContextMenu == game.hash,
-                    onShowContextMenu = { onAction(EmulatorActions.ToggleGameContextMenu(game.hash)) },
                     onActions = onAction,
                     state = state
                 )

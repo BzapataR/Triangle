@@ -26,6 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.emulatorScreen.domain.Game
+import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
@@ -33,12 +35,12 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameContextMenu(
-    gameName: String,
+    game: Game,
     expanded: Boolean,
     onActions : (EmulatorActions) -> Unit,
     state : EmulatorState,
 
-) {
+    ) {
     var currentMenu by remember { mutableStateOf("main") }
 
     // When the menu is closed, reset its state to the main menu.
@@ -56,7 +58,7 @@ fun GameContextMenu(
         when (currentMenu) {
             "main" -> {
                 Text(
-                    text = gameName,
+                    text = game.name,
                     fontSize = 8.sp,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
                     color = MaterialTheme.colorScheme.outline
@@ -78,8 +80,9 @@ fun GameContextMenu(
                 DropdownMenuItem(
                     text = { Text("Change Artwork") },
                     onClick = {
-                        onActions(EmulatorActions.ToggleGameContextMenu(null))
                         onActions(EmulatorActions.ToggleCoverActionSheet)
+                        onActions(EmulatorActions.ToggleGameContextMenu(null))
+                        onActions(EmulatorActions.SelectGame(game))
                               },
                     trailingIcon = {
                         Icon(
@@ -207,9 +210,8 @@ fun GameContextMenu(
 @Composable
 fun GameContextMenuPreview() {
     TriangleTheme {
-        var expanded by remember { mutableStateOf(true) }
         GameContextMenu(
-            "game name",
+            GameUiExample,
             expanded = true,
             onActions = {},
             state = EmulatorState(),

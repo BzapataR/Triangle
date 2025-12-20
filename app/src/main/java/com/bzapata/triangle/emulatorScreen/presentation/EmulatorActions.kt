@@ -5,6 +5,7 @@ import com.bzapata.triangle.emulatorScreen.domain.Game
 
 sealed interface EmulatorActions {
     data class ToggleGameContextMenu(val gameHash: String?) : EmulatorActions
+    data class SelectGame(val game : Game?) : EmulatorActions
     data class PlayGame(val game: Game) : EmulatorActions
     data class OnPageChange(val page: Int) : EmulatorActions
     data object ToggleSettings : EmulatorActions

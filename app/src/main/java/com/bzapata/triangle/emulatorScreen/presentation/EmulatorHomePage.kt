@@ -44,6 +44,7 @@ import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.Gam
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.selects.select
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -152,7 +153,7 @@ fun EmulatorHomePage(
         isOpen = state.isSettingsOpen
     )
     SelectCoverActionSheet(state = state, onAction = onAction)
-    DatabaseCoverSelector(state = state, onAction = onAction)
+    DatabaseCoverSelector(state = state, onAction = onAction, game = state.selectedGame ?: return)
 
 }
 

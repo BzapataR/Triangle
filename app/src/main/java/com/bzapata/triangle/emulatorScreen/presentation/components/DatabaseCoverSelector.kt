@@ -6,26 +6,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -43,8 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,14 +44,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bzapata.triangle.R
+import com.bzapata.triangle.emulatorScreen.domain.Game
+import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import kotlinx.coroutines.launch
 import kotlin.collections.mutableListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatabaseCoverSelector(
+    game : Game,
     state : EmulatorState,
     onAction : (EmulatorActions) -> Unit
 ) {
@@ -95,7 +91,10 @@ fun DatabaseCoverSelector(
             // .padding(top = 50.dp)
             ,
             dragHandle = { },
-            onDismissRequest = { onAction(EmulatorActions.ToggleDbCover) },
+            onDismissRequest = {
+                onAction(EmulatorActions.ToggleDbCover)
+                onAction(EmulatorActions.SelectGame(null))
+           },
             sheetState = sheetState,
             containerColor = Color(0xff1c1c1e),
             sheetGesturesEnabled = false,
@@ -120,16 +119,17 @@ fun DatabaseCoverSelector(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
                                 modifier = Modifier
-                                    .graphicsLayer {
-                                        alpha = headerAlpha
-                                        translationY = (1f - headerAlpha) * -12f
-                                    }
                                     .align(Alignment.Center)
                             )
 
                             TextButton(
                                 onClick = {
-                                    onAction(EmulatorActions.ToggleDbCover)
+                                    scope.launch {
+                                        sheetState.hide()
+                                    }.invokeOnCompletion {
+                                        if (!sheetState.isVisible)
+                                            onAction(EmulatorActions.ToggleDbCover)
+                                    }
                                 },
                                 modifier = Modifier.align(Alignment.CenterEnd),
                             ) {
@@ -141,34 +141,7 @@ fun DatabaseCoverSelector(
                                 )
                             }
                         }
-//                        SearchBar(
-//                            modifier = Modifier.align(Alignment.CenterHorizontally)
-//                                .semantics { traversalIndex = 0f },
-//                            state = searchBarState,
-//                            inputField = {
-//                                SearchBarDefaults.InputField(
-//                                    query = textFieldState.text.toString(),
-//                                    onQueryChange = {
-//                                        textFieldState.edit {
-//                                            replace(
-//                                                0,
-//                                                length,
-//                                                it
-//                                            )
-//                                        }
-//                                    },
-//                                    onSearch = {
-//                                        onAction(EmulatorActions.QueryCovers(textFieldState.text.toString()))
-//                                        isExpanded = false
-//                                    },
-//                                    expanded = isExpanded,
-//                                    onExpandedChange = { isExpanded = it },
-//                                    placeholder = { Text("Search") }
-//                                )
-//                            }
-//                        )
-//                    }
-                        GameSearch() {
+                        SearchField(initialText = game.name) {
                             onAction(EmulatorActions.QueryCovers(it))
                         }
                     }
@@ -226,6 +199,6 @@ fun DatabaseCoverSelector(
 @Composable
 private fun DataBaseCoverSelectorPreview() {
     TriangleTheme {
-        DatabaseCoverSelector(state = EmulatorState(isCoverDbSelectorOpen = true)) { }
+        DatabaseCoverSelector(state = EmulatorState(isCoverDbSelectorOpen = true), game = GameUiExample) { }
     }
 }

@@ -8,6 +8,7 @@ data class EmulatorState(
     val consoles: List<Consoles> = emptyList(),
     val games: List<Game> = emptyList(),
     val gameHashForContextMenu: String? = null,
+    val selectedGame : Game? = null,
     val isFileContextMenuOpen: Boolean = false,
     val isBackgroundBlurred: Boolean = false,
     val currentPage: Int = 0,
@@ -18,5 +19,6 @@ data class EmulatorState(
     val isScanning: Boolean = false,
     val isCoverActionSheetOpen : Boolean = false,
     val isCoverDbSelectorOpen : Boolean = false,
-    val queriedCovers : Map<Uri,String?> = emptyMap()
+    val queriedCovers : Map<Uri,String?> = emptyMap(),
+    val query : String  = ""
 )

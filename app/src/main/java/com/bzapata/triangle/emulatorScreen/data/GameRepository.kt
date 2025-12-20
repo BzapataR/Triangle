@@ -90,10 +90,11 @@ class GameRepository(
     ): Game {
         val file = DocumentFile.fromSingleUri(context, romPath)
             ?: throw IllegalArgumentException("File not Valid: $romPath")
+        val fileName = file.name?.substringBeforeLast('.')?.replace(Regex("\\s*\\(.*?\\)"), "")?.trim()
         val hash = hasher(context, romPath)
         val romID = doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
             ?: doa.getRomId(hash) ?: -1
-        val romName = doa.getName(romID) ?: file.name?.substringBeforeLast('.') ?: "Unknown file"
+        val romName = doa.getName(romID) ?: fileName ?: "Unknown Game"
         val coverURI = doa.getCoverURI(romID)?.map { it.toUri() } ?: emptyList()
         val console = fileMapper(context, romPath)
 

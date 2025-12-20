@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,11 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     if (state.isCoverActionSheetOpen) {
         ModalBottomSheet(
@@ -60,8 +63,13 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                         ActionItem(text = "Photo Library") { /* TODO */ }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
                         ActionItem(text = "Local Database") {
-                            onAction(EmulatorActions.ToggleCoverActionSheet)
-                            onAction(EmulatorActions.ToggleDbCover)
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible)
+                                    onAction(EmulatorActions.ToggleCoverActionSheet)
+                                    onAction(EmulatorActions.ToggleDbCover)
+                            }
                         }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
                         ActionItem(text = "Files") { /* TODO */ }
@@ -75,7 +83,14 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    ActionItem(text = "Cancel") { onAction(EmulatorActions.ToggleCoverActionSheet) }
+                    ActionItem(text = "Cancel") {
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible)
+                                onAction(EmulatorActions.ToggleCoverActionSheet)
+                        }
+                    }
                 }
             }
         }

@@ -41,6 +41,7 @@ fun SettingsNavigator(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
+    val settingsNavigation = rememberNavController()
 
     if (isOpen) {
         ModalBottomSheet(
@@ -61,7 +62,6 @@ fun SettingsNavigator(
                     .fillMaxHeight(.94f)
                     .padding(horizontal = 16.dp),
             ) {
-                val settingsNavigation = rememberNavController()
                 NavHost(
                     navController = settingsNavigation,
                     startDestination = SettingsNavigation.SettingsNavigationGraph,

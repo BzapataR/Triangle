@@ -29,7 +29,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmulatorAppBar(
+fun AppBar(
     settingsToggle: () -> Unit,
     fileToggle: () -> Unit,
     isMenuOpen: Boolean,
@@ -74,7 +74,7 @@ fun EmulatorAppBar(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         )
-        GameSearch()
+        GameSearch(){}
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
 
@@ -85,7 +85,7 @@ fun EmulatorAppBar(
 @Composable
 private fun TopAppBarPreview() {
     TriangleTheme {
-        EmulatorAppBar(
+        AppBar(
             settingsToggle = {},
             isMenuOpen = true,
             fileToggle = {},

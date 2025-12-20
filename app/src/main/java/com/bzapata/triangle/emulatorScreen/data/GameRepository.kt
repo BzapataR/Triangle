@@ -121,4 +121,9 @@ class GameRepository(
         return rom
     }
 
+    suspend fun queryCovers(titleName : String) : Map<Uri,String?> = withContext(Dispatchers.IO) {
+        if (titleName.isBlank()) return@withContext emptyMap()
+        gamesDoa.queryCover(titleName.trim()).associate { it.releaseCoverFront.toUri() to it.releaseTitleName }
+    }
+
 }

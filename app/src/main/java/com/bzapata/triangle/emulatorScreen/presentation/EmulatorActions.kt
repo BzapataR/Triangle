@@ -12,4 +12,7 @@ sealed interface EmulatorActions {
     data class SetUserFolder(val uri: Uri?) : EmulatorActions
     data class SetRomsFolder(val uri: Uri?) : EmulatorActions
     data object RefreshRomList : EmulatorActions
+    data object ToggleCoverActionSheet : EmulatorActions
+    data object ToggleDbCover : EmulatorActions
+    data class QueryCovers(val gameName: String) : EmulatorActions
 }

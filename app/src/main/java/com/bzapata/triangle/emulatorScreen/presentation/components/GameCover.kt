@@ -29,14 +29,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
+import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
+import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GameCover(
     game: Game,
+    state : EmulatorState,
     isContextMenuShown: Boolean,
     onShowContextMenu: () -> Unit,
-    onDismissContextMenu: () -> Unit
+    onActions : (EmulatorActions) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -77,13 +80,12 @@ fun GameCover(
                 contentDescription = "Cover",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize(),
-                // You can also define placeholder/error content within the AsyncImage scope
-
             )
             GameContextMenu(
                 gameName = game.name,
                 expanded = isContextMenuShown,
-                onDismissRequest = onDismissContextMenu
+                onActions = onActions ,
+                state = state
             )
         }
         Text(

@@ -21,20 +21,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
+import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameGrid(
     games: List<Game>,
-    onGameFocus: (String?) -> Unit,
     state: EmulatorState,
+    onAction : (EmulatorActions) -> Unit
 ) {
 
     LaunchedEffect(state.gameHashForContextMenu) {
         Log.i("Page", "state hash changed to: ${state.gameHashForContextMenu}")
     }
-    key(state.gameHashForContextMenu) {
+    key(state.gameHashForContextMenu) { //When 1 rom is loaded context menu won't open without this
         LazyVerticalGrid(
             columns = GridCells.Adaptive(90.dp),
             modifier = Modifier.fillMaxSize(),
@@ -44,21 +45,12 @@ fun GameGrid(
         )
         {
             items(items = games, key = { it.hash }) { game -> //todo fix one rom glitch
-                val openContextMenu = state.gameHashForContextMenu == game.hash
                 GameCover(
                     game = game,
-                    isContextMenuShown = openContextMenu,
-                    onShowContextMenu = {
-                        onGameFocus(game.hash)
-                        Log.i(
-                            "Page",
-                            "state hash: ${state.gameHashForContextMenu} and game hash ${game.hash}"
-                        )
-                    },
-                    onDismissContextMenu = {
-                        Log.i("Page", "dismiss context menu")
-                        onGameFocus(null)
-                    }
+                    isContextMenuShown = state.gameHashForContextMenu == game.hash,
+                    onShowContextMenu = { onAction(EmulatorActions.ToggleGameContextMenu(game.hash)) },
+                    onActions = onAction,
+                    state = state
                 )
             }
         }
@@ -69,6 +61,6 @@ fun GameGrid(
 @Composable
 fun GameGridPreview() {
     TriangleTheme {
-        GameGrid(state = EmulatorState(), onGameFocus = { 0 }, games = listOf(GameUiExample))
+        GameGrid(state = EmulatorState(), games = listOf(GameUiExample), onAction = {})
     }
 }

@@ -36,8 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.directoryPicker
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
-import com.bzapata.triangle.emulatorScreen.presentation.components.EmulatorAppBar
+import com.bzapata.triangle.emulatorScreen.presentation.components.AppBar
+import com.bzapata.triangle.emulatorScreen.presentation.components.DatabaseCoverSelector
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
+import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
@@ -91,9 +93,10 @@ fun EmulatorHomePage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            //.background(Color.Transparent)
             .blur(if (state.isBackgroundBlurred) 8.dp else 0.dp),
         topBar = {
-            EmulatorAppBar(
+            AppBar(
                 settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
                 fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
                 isMenuOpen = state.isFileContextMenuOpen,
@@ -132,10 +135,8 @@ fun EmulatorHomePage(
                     ) { page ->
                         GameGrid(
                             games = state.games.filter { it.consoles == state.consoles[page] },
-                            onGameFocus = { gameHash ->
-                                onAction(EmulatorActions.ToggleGameContextMenu(gameHash))
-                            },
                             state = state,
+                            onAction = onAction
                         )
                     }
                 }
@@ -150,6 +151,9 @@ fun EmulatorHomePage(
         dismissAction = { onAction(EmulatorActions.ToggleSettings) },
         isOpen = state.isSettingsOpen
     )
+    SelectCoverActionSheet(state = state, onAction = onAction)
+    DatabaseCoverSelector(state = state, onAction = onAction)
+
 }
 
 @Composable

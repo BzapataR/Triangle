@@ -7,17 +7,24 @@ import androidx.room.Query
 interface GamesDbDoa {
 
     @Query("SELECT romID FROM ROMs WHERE romHashSHA1 = :hash")
-    fun getRomId(hash: String): Int?
+    suspend fun getRomId(hash: String): Int?
 
     @Query("SELECT romID FROM ROMs WHERE romExtensionlessFileName = :fileName")
-    fun getRomIdFromName(fileName: String?): Int?
+    suspend fun getRomIdFromName(fileName: String?): Int?
 
     @Query("SELECT releaseTitleName FROM RELEASES WHERE romID = :romID")
-    fun getName(romID: Int): String?
+    suspend fun getName(romID: Int): String?
 
     @Query("SELECT releaseCoverFront FROM RELEASES WHERE romID = :romID")
-    fun getCoverURI(romID: Int): List<String>?
+    suspend fun getCoverURI(romID: Int): List<String>?
 
     @Query("SELECT releaseCoverFront FROM RELEASES WHERE romID = :romID AND regionLocalizedID =21")
-    fun getUSACoverURI(romID: Int): String? // sometimes the us version has a higher quality image. function above is for a fallback
+    suspend fun getUSACoverURI(romID: Int): String? // sometimes the us version has a higher quality image. function above is for a fallback
+    @Query("""
+        SELECT DISTINCT releaseCoverFront, releaseTitleName
+        FROM RELEASES 
+        WHERE releaseTitleName LIKE '%' || :titleName || '%'
+        AND releaseCoverFront IS NOT NULL
+    """)
+    suspend fun queryCover(titleName : String) : List<CoveryQueryResult>
 }

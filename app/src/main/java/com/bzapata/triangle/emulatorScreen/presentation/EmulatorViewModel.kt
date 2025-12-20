@@ -112,12 +112,25 @@ class EmulatorViewModel(
             }
 
             is EmulatorActions.PlayGame -> {}
-            EmulatorActions.RefreshRomList -> {
+            is EmulatorActions.RefreshRomList -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     _state.update { it.copy(isRefreshing = true) }
                     gameRepo.scanRoms()
                     _state.update { it.copy(isRefreshing = false) }
                 }
+            }
+            is EmulatorActions.ToggleCoverActionSheet -> {
+                _state.update { it.copy(isCoverActionSheetOpen = !it.isCoverActionSheetOpen) }
+            }
+            is EmulatorActions.QueryCovers -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(queriedCovers = gameRepo.queryCovers(action.gameName)) }
+                Log.i("covers", "Uris: ${_state.value.queriedCovers}")
+                }
+
+            }
+            is EmulatorActions.ToggleDbCover -> {
+                _state.update{ it.copy(isCoverDbSelectorOpen = !it.isCoverDbSelectorOpen)}
             }
         }
     }

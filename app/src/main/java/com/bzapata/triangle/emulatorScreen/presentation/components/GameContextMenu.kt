@@ -26,13 +26,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
+import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
+import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameContextMenu(
     gameName: String,
     expanded: Boolean,
-    onDismissRequest: () -> Unit
+    onActions : (EmulatorActions) -> Unit,
+    state : EmulatorState,
+
 ) {
     var currentMenu by remember { mutableStateOf("main") }
 
@@ -45,7 +50,7 @@ fun GameContextMenu(
 
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { onActions(EmulatorActions.ToggleGameContextMenu(null)) } ,
         shape = MaterialTheme.shapes.medium,
     ) {
         when (currentMenu) {
@@ -72,7 +77,10 @@ fun GameContextMenu(
 
                 DropdownMenuItem(
                     text = { Text("Change Artwork") },
-                    onClick = {},
+                    onClick = {
+                        onActions(EmulatorActions.ToggleGameContextMenu(null))
+                        onActions(EmulatorActions.ToggleCoverActionSheet)
+                              },
                     trailingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.sharp_image_24),
@@ -202,8 +210,9 @@ fun GameContextMenuPreview() {
         var expanded by remember { mutableStateOf(true) }
         GameContextMenu(
             "game name",
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
+            expanded = true,
+            onActions = {},
+            state = EmulatorState(),
         )
     }
 }

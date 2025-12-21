@@ -1,6 +1,7 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
+import androidx.compose.ui.graphics.vector.Path
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.util.query
@@ -148,6 +149,19 @@ class EmulatorViewModel(
                 viewModelScope.launch {
                     gameRepo.saveCover(action.uri, action.gameHash)
                 }
+            }
+            is EmulatorActions.SaveCoverFromClipboard -> {
+                viewModelScope.launch {
+                    try {
+                        gameRepo.getCoverFromClipboard(action.gameHash)
+                    }
+                    catch (e : Exception) {
+                        _state.update { it.copy(errorMessage = e.message) }
+                    }
+                }
+            }
+            is EmulatorActions.ClearError -> {
+                _state.update { it.copy(errorMessage = null) }
             }
         }
     }

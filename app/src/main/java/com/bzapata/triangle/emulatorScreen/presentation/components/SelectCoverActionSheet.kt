@@ -58,7 +58,13 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
-                        ActionItem(text = "Clipboard") { /* TODO */ }
+                        ActionItem(text = "Clipboard") {                             scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible)
+                                onAction(EmulatorActions.ToggleCoverActionSheet)
+                            onAction(EmulatorActions.SaveCoverFromClipboard(state.selectedGame?.hash ?: return@invokeOnCompletion))
+                        } }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
                         ActionItem(text = "Photo Library") { /* TODO */ }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
@@ -68,7 +74,7 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                             }.invokeOnCompletion {
                                 if (!sheetState.isVisible)
                                     onAction(EmulatorActions.ToggleCoverActionSheet)
-                                    onAction(EmulatorActions.ToggleDbCover)
+                                onAction(EmulatorActions.ToggleDbCover)
                             }
                         }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)

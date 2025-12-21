@@ -38,6 +38,7 @@ import com.bzapata.triangle.emulatorScreen.data.fileOperations.directoryPicker
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.presentation.components.AppBar
 import com.bzapata.triangle.emulatorScreen.presentation.components.DatabaseCoverSelector
+import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
@@ -149,6 +150,9 @@ fun EmulatorHomePage(
     )
     SelectCoverActionSheet(state = state, onAction = onAction)
     DatabaseCoverSelector(state = state, onAction = onAction, game = state.selectedGame ?: return)
+    if (state.errorMessage != null) {
+        ErrorDialog()
+    }
 
 }
 

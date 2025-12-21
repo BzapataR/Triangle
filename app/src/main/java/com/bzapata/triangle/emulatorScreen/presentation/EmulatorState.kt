@@ -20,5 +20,6 @@ data class EmulatorState(
     val isCoverActionSheetOpen : Boolean = false,
     val isCoverDbSelectorOpen : Boolean = false,
     val queriedCovers : Map<Uri,String?> = emptyMap(),
-    val query : String  = ""
+    val query : String  = "",
+    val errorMessage : String? = null,
 )

@@ -11,6 +11,7 @@ import com.bzapata.triangle.emulatorScreen.data.fileOperations.downloadCover
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.fileMapper
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.findCover
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getRomFiles
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.getUriFromClipboard
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.hasher
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDoa
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toGame
@@ -129,6 +130,22 @@ class GameRepository(
     override suspend fun saveCover(uri : Uri, gameHash : String) = withContext(Dispatchers.IO) {
         downloadCover(context = context, userFolder = config.triangleDataUriFlow.first() ?: return@withContext , imageUri = uri, gameHash = gameHash)
         savedRomsDoa.updateCoverUri(uri = uri.toString(), hash = gameHash)
+    }
+
+    override suspend fun getCoverFromClipboard(gameHash : String)  = withContext(Dispatchers.IO) {
+        try {
+            val uriFromClipboard = getUriFromClipboard(context = context)
+            downloadCover(
+                context = context,
+                userFolder = config.triangleDataUriFlow.first() ?: throw Exception("User Folder Not Set"),
+                imageUri = uriFromClipboard,
+                gameHash = gameHash
+            )
+            savedRomsDoa.updateCoverUri(uri = uriFromClipboard.toString(), hash = gameHash)
+        }
+        catch (e : Exception) {
+            throw e
+        }
     }
 
 }

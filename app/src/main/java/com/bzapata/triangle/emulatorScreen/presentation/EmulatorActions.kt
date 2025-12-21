@@ -17,4 +17,6 @@ sealed interface EmulatorActions {
     data object ToggleDbCover : EmulatorActions
     data class QueryCovers(val gameName: String) : EmulatorActions
     data class SaveCover(val uri: Uri, val gameHash : String) : EmulatorActions
+    data class SaveCoverFromClipboard(val gameHash: String) : EmulatorActions
+    data object ClearError : EmulatorActions
 }

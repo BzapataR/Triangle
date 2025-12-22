@@ -7,29 +7,28 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ErrorDialog() { // todo actually add error implementation
+fun ErrorDialog(errorMessage : String, onDismiss : () -> Unit) { // todo actually add error implementation
     AlertDialog(
-        onDismissRequest = { },
+        onDismissRequest = { onDismiss() },
         confirmButton = {
             TextButton(
-                onClick = {  },
+                onClick = { onDismiss() },
             ) {
-                Text(text = "Skip")
+                Text(text = "Ok")
             }
         },
-        dismissButton = {
-            TextButton(
-                onClick = {  }
-            ) {
-                Text(text = "Cancel")
-            }
-        },
+//        dismissButton = {
+//            TextButton(
+//                onClick = {  }
+//            ) {
+//                Text(text = "Cancel")
+//            }
+//        },
         text = {
             Column {
-                Text(text = "Skip granting permissions?")
-                Text(text = "Permission are used for DS Emulation")
+                Text(text = errorMessage)
             }
         },
-        title = { Text(text = "Warning") },
+        title = { Text(text = "Error") },
     )
 }

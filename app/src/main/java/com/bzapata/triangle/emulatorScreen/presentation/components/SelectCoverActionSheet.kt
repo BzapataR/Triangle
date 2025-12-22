@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.PhotoPicker
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.filePicker
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
@@ -31,9 +33,26 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -> Unit) {
+fun SelectCoverActionSheet(state: EmulatorState, onAction: (EmulatorActions) -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+
+    val filePickerLauncher = filePicker { uri ->
+        onAction(
+            EmulatorActions.SaveCover(
+                uri = uri ?: return@filePicker,
+                gameHash = state.selectedGame?.hash ?: return@filePicker
+            )
+        )
+    }
+    val photoPickerLauncher = PhotoPicker { uri ->
+        onAction(
+            EmulatorActions.SaveCover(
+                uri = uri ?: return@PhotoPicker,
+                gameHash = state.selectedGame?.hash ?: return@PhotoPicker
+            )
+        )
+    }
 
     if (state.isCoverActionSheetOpen) {
         ModalBottomSheet(
@@ -58,15 +77,29 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
-                        ActionItem(text = "Clipboard") {                             scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            if (!sheetState.isVisible)
-                                onAction(EmulatorActions.ToggleCoverActionSheet)
-                            onAction(EmulatorActions.SaveCoverFromClipboard(state.selectedGame?.hash ?: return@invokeOnCompletion))
-                        } }
+                        ActionItem(text = "Clipboard") {
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible)
+                                    onAction(EmulatorActions.ToggleCoverActionSheet)
+                                onAction(
+                                    EmulatorActions.SaveCoverFromClipboard(
+                                        state.selectedGame?.hash ?: return@invokeOnCompletion
+                                    )
+                                )
+                            }
+                        }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
-                        ActionItem(text = "Photo Library") { /* TODO */ }
+                        ActionItem(text = "Photo Library") {
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible)
+                                    onAction(EmulatorActions.ToggleCoverActionSheet)
+                                photoPickerLauncher()
+                            }
+                        }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
                         ActionItem(text = "Local Database") {
                             scope.launch {
@@ -78,7 +111,15 @@ fun SelectCoverActionSheet(state : EmulatorState, onAction : (EmulatorActions) -
                             }
                         }
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 0.5.dp)
-                        ActionItem(text = "Files") { /* TODO */ }
+                        ActionItem(text = "Files") {
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible)
+                                    onAction(EmulatorActions.ToggleCoverActionSheet)
+                                filePickerLauncher()
+                            }
+                        }
                     }
                 }
 

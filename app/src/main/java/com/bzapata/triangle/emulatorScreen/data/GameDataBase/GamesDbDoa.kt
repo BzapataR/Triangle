@@ -20,11 +20,14 @@ interface GamesDbDoa {
 
     @Query("SELECT releaseCoverFront FROM RELEASES WHERE romID = :romID AND regionLocalizedID =21")
     suspend fun getUSACoverURI(romID: Int): String? // sometimes the us version has a higher quality image. function above is for a fallback
-    @Query("""
+
+    @Query(
+        """
         SELECT DISTINCT releaseCoverFront, releaseTitleName
         FROM RELEASES 
         WHERE releaseTitleName LIKE '%' || :titleName || '%'
         AND releaseCoverFront IS NOT NULL
-    """)
-    suspend fun queryCover(titleName : String) : List<CoveryQueryResult>
+    """
+    )
+    suspend fun queryCover(titleName: String): List<CoveryQueryResult>
 }

@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -50,20 +49,18 @@ import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.launch
-import kotlin.collections.mutableListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatabaseCoverSelector(
-    game : Game,
-    state : EmulatorState,
-    onAction : (EmulatorActions) -> Unit
+    game: Game,
+    state: EmulatorState,
+    onAction: (EmulatorActions) -> Unit
 ) {
-    val listOfUri = remember { mutableListOf<Uri>() }
-    var isExpanded by remember { mutableStateOf(false) }
+    remember { mutableListOf<Uri>() }
 
-    val textFieldState = rememberTextFieldState()
-    val searchBarState = rememberSearchBarState()
+    rememberTextFieldState()
+    rememberSearchBarState()
 
     val scope = rememberCoroutineScope()
     val modalBottomSheetProperties = remember {
@@ -77,12 +74,6 @@ fun DatabaseCoverSelector(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
-    val headerAlpha by remember {
-        derivedStateOf {
-            if (listState.firstVisibleItemIndex > 0) 1f
-            else (listState.firstVisibleItemScrollOffset / 120f).coerceIn(0f, 1f)
-        }
-    }
 
     if (state.isCoverDbSelectorOpen) {
         ModalBottomSheet(
@@ -94,7 +85,7 @@ fun DatabaseCoverSelector(
             onDismissRequest = {
                 onAction(EmulatorActions.ToggleDbCover)
                 onAction(EmulatorActions.SelectGame(null))
-           },
+            },
             sheetState = sheetState,
             containerColor = Color(0xff1c1c1e),
             sheetGesturesEnabled = false,
@@ -146,7 +137,7 @@ fun DatabaseCoverSelector(
                         }
                     }
                 }
-                items(items = state.queriedCovers.toList(), key = null) {(uri, title)  ->
+                items(items = state.queriedCovers.toList(), key = null) { (uri, title) ->
                     ListItem(
                         modifier = Modifier
                             .height(100.dp)
@@ -172,7 +163,7 @@ fun DatabaseCoverSelector(
                                 contentScale = ContentScale.Fit,
                             )
                         },
-                        headlineContent = {Text(title ?: "")}
+                        headlineContent = { Text(title ?: "") }
                     )
                     HorizontalDivider()
                 }
@@ -207,6 +198,9 @@ fun DatabaseCoverSelector(
 @Composable
 private fun DataBaseCoverSelectorPreview() {
     TriangleTheme {
-        DatabaseCoverSelector(state = EmulatorState(isCoverDbSelectorOpen = true), game = GameUiExample) { }
+        DatabaseCoverSelector(
+            state = EmulatorState(isCoverDbSelectorOpen = true),
+            game = GameUiExample
+        ) { }
     }
 }

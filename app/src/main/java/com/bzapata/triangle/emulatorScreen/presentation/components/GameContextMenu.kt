@@ -30,15 +30,14 @@ import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
-import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameContextMenu(
     game: Game,
     expanded: Boolean,
-    onActions : (EmulatorActions) -> Unit,
-    state : EmulatorState,
+    onActions: (EmulatorActions) -> Unit,
+    state: EmulatorState,
 
     ) {
     var currentMenu by remember { mutableStateOf("main") }
@@ -52,7 +51,7 @@ fun GameContextMenu(
 
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = { onActions(EmulatorActions.ToggleGameContextMenu(null)) } ,
+        onDismissRequest = { onActions(EmulatorActions.ToggleGameContextMenu(null)) },
         shape = MaterialTheme.shapes.medium,
     ) {
         when (currentMenu) {
@@ -83,7 +82,7 @@ fun GameContextMenu(
                         onActions(EmulatorActions.ToggleCoverActionSheet)
                         onActions(EmulatorActions.ToggleGameContextMenu(null))
                         onActions(EmulatorActions.SelectGame(game))
-                              },
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.sharp_image_24),

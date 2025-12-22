@@ -7,6 +7,6 @@ interface GameRepository {
     suspend fun scanRoms()
     fun getGames(): Flow<List<Game>>
     fun databaseBomb()
-    suspend fun saveCover(uri : Uri, gameHash : String)
-    suspend fun getCoverFromClipboard(gameHash : String)
+    suspend fun saveCover(uri: Uri, gameHash: String)
+    suspend fun getCoverFromClipboard(gameHash: String)
 }

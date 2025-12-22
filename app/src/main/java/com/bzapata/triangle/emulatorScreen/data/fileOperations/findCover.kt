@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 
-fun findCover(context: Context, userFolder: Uri, gameHash : String): Uri? {
+fun findCover(context: Context, userFolder: Uri, gameHash: String): Uri? {
     val userDirectory = DocumentFile.fromTreeUri(context, userFolder)
 
     val coversDirectory = userDirectory?.findFile("covers")

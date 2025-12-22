@@ -7,7 +7,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorHomePageRoot
@@ -34,6 +33,7 @@ class MainActivity : ComponentActivity() {
                     false -> {
                         EmulatorHomePageRoot()
                     }
+
                     else -> {}
                 }
 //

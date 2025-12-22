@@ -29,7 +29,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 fun GameGrid(
     games: List<Game>,
     state: EmulatorState,
-    onAction : (EmulatorActions) -> Unit
+    onAction: (EmulatorActions) -> Unit
 ) {
 
     LaunchedEffect(state.gameHashForContextMenu) {

@@ -36,9 +36,9 @@ import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 @Composable
 fun GameCover(
     game: Game,
-    state : EmulatorState,
+    state: EmulatorState,
     isContextMenuShown: Boolean,
-    onActions : (EmulatorActions) -> Unit
+    onActions: (EmulatorActions) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -83,7 +83,7 @@ fun GameCover(
             GameContextMenu(
                 game = game,
                 expanded = isContextMenuShown,
-                onActions = onActions ,
+                onActions = onActions,
                 state = state
             )
         }

@@ -17,10 +17,10 @@ fun getUriFromClipboard(context: Context): Uri {
         if (imageUri != null) {
             val contentResolver = context.contentResolver
             val uriMimeType: String? = contentResolver.getType(imageUri)
-            
+
             // Verify if the URI points to an image
             if (uriMimeType?.startsWith("image/") == true) {
-                Log.i("Clipboard" ," Image found in Clipboard with URI: $imageUri")
+                Log.i("Clipboard", " Image found in Clipboard with URI: $imageUri")
                 return imageUri
             } else {
                 Log.w("Clipboard", "Clip item is not an image. MimeType: $uriMimeType")

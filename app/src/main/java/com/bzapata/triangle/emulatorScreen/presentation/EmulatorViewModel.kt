@@ -1,10 +1,8 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
-import androidx.compose.ui.graphics.vector.Path
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.query
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +27,7 @@ class EmulatorViewModel(
     private val _state = MutableStateFlow(EmulatorState())
     val state = _state.asStateFlow()
 
-    private var searchCoversJob : Job? = null
+    private var searchCoversJob: Job? = null
 
     init {
         setScreen()
@@ -129,61 +127,69 @@ class EmulatorViewModel(
                     _state.update { it.copy(isRefreshing = false) }
                 }
             }
+
             is EmulatorActions.ToggleCoverActionSheet -> {
                 _state.update { it.copy(isCoverActionSheetOpen = !it.isCoverActionSheetOpen) }
             }
+
             is EmulatorActions.QueryCovers -> {
                 viewModelScope.launch {
                     _state.update { it.copy(query = action.gameName) }
-                Log.i("covers", "Uris: ${_state.value.queriedCovers}")
+                    Log.i("covers", "Uris: ${_state.value.queriedCovers}")
                 }
 
             }
+
             is EmulatorActions.ToggleDbCover -> {
-                _state.update{ it.copy(isCoverDbSelectorOpen = !it.isCoverDbSelectorOpen)}
+                _state.update { it.copy(isCoverDbSelectorOpen = !it.isCoverDbSelectorOpen) }
             }
+
             is EmulatorActions.SelectGame -> {
                 _state.update { it.copy(selectedGame = action.game) }
             }
+
             is EmulatorActions.SaveCover -> {
                 viewModelScope.launch {
                     gameRepo.saveCover(action.uri, action.gameHash)
                 }
             }
+
             is EmulatorActions.SaveCoverFromClipboard -> {
                 viewModelScope.launch {
                     try {
                         gameRepo.getCoverFromClipboard(action.gameHash)
-                    }
-                    catch (e : Exception) {
+                    } catch (e: Exception) {
                         _state.update { it.copy(errorMessage = e.message) }
                     }
                 }
             }
+
             is EmulatorActions.ClearError -> {
                 _state.update { it.copy(errorMessage = null) }
             }
         }
     }
+
     @OptIn(FlowPreview::class)
     private fun observeSearchQuery() {
         _state.map { it.query }
             .distinctUntilChanged()
             .debounce(500L)
             .onEach { query ->
-            when {
-                query.isBlank() -> {
-                    _state.update { it.copy(queriedCovers = emptyMap()) }
+                when {
+                    query.isBlank() -> {
+                        _state.update { it.copy(queriedCovers = emptyMap()) }
+                    }
+
+                    query.length >= 2 -> {
+                        searchCoversJob?.cancel()
+                        searchCoversJob = searchCovers(query)
+                    }
                 }
-                query.length >= 2 -> {
-                    searchCoversJob?.cancel()
-                    searchCoversJob = searchCovers(query)
-                }
-            }
             }.launchIn(viewModelScope)
     }
 
-    private fun searchCovers(query : String) = viewModelScope.launch {
-        _state.update { it.copy(queriedCovers = gameRepo.queryCovers(query) ) }
+    private fun searchCovers(query: String) = viewModelScope.launch {
+        _state.update { it.copy(queriedCovers = gameRepo.queryCovers(query)) }
     }
 }

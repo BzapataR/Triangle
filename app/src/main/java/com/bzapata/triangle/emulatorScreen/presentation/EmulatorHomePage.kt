@@ -151,7 +151,9 @@ fun EmulatorHomePage(
     SelectCoverActionSheet(state = state, onAction = onAction)
     DatabaseCoverSelector(state = state, onAction = onAction, game = state.selectedGame ?: return)
     if (state.errorMessage != null) {
-        ErrorDialog(errorMessage = state.errorMessage, onDismiss = { onAction(EmulatorActions.ClearError) })
+        ErrorDialog(
+            errorMessage = state.errorMessage,
+            onDismiss = { onAction(EmulatorActions.ClearError) })
     }
 
 }

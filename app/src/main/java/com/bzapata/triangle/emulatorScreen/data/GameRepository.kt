@@ -91,11 +91,13 @@ class GameRepository(
     ): Game {
         val file = DocumentFile.fromSingleUri(context, romPath)
             ?: throw IllegalArgumentException("File not Valid: $romPath")
-        val fileName = file.name?.substringBeforeLast('.')?.replace(Regex("\\s*\\(.*?\\)"), "")?.trim()
+        val fileName = file.name
         val hash = hasher(context, romPath)
         val romID = doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
             ?: doa.getRomId(hash) ?: -1
-        val romName = doa.getName(romID) ?: fileName ?: "Unknown Game"
+        val romName = doa.getName(romID) ?: fileName?.substringBeforeLast('.')
+            ?.replace(Regex("\\s*[(\\[].*?[)\\]]"), "")
+            ?.trim() ?: "Unknown Game"
         val coverURI = doa.getCoverURI(romID)?.map { it.toUri() } ?: emptyList()
         val console = fileMapper(context, romPath)
 
@@ -122,28 +124,34 @@ class GameRepository(
         return rom
     }
 
-    suspend fun queryCovers(titleName : String) : Map<Uri,String?> = withContext(Dispatchers.IO) {
+    suspend fun queryCovers(titleName: String): Map<Uri, String?> = withContext(Dispatchers.IO) {
         if (titleName.isBlank()) return@withContext emptyMap()
-        gamesDoa.queryCover(titleName.trim()).associate { it.releaseCoverFront.toUri() to it.releaseTitleName }
+        gamesDoa.queryCover(titleName.trim())
+            .associate { it.releaseCoverFront.toUri() to it.releaseTitleName }
     }
 
-    override suspend fun saveCover(uri : Uri, gameHash : String) = withContext(Dispatchers.IO) {
-        downloadCover(context = context, userFolder = config.triangleDataUriFlow.first() ?: return@withContext , imageUri = uri, gameHash = gameHash)
+    override suspend fun saveCover(uri: Uri, gameHash: String) = withContext(Dispatchers.IO) {
+        downloadCover(
+            context = context,
+            userFolder = config.triangleDataUriFlow.first() ?: return@withContext,
+            imageUri = uri,
+            gameHash = gameHash
+        )
         savedRomsDoa.updateCoverUri(uri = uri.toString(), hash = gameHash)
     }
 
-    override suspend fun getCoverFromClipboard(gameHash : String)  = withContext(Dispatchers.IO) {
+    override suspend fun getCoverFromClipboard(gameHash: String) = withContext(Dispatchers.IO) {
         try {
             val uriFromClipboard = getUriFromClipboard(context = context)
             downloadCover(
                 context = context,
-                userFolder = config.triangleDataUriFlow.first() ?: throw Exception("User Folder Not Set"),
+                userFolder = config.triangleDataUriFlow.first()
+                    ?: throw Exception("User Folder Not Set"),
                 imageUri = uriFromClipboard,
                 gameHash = gameHash
             )
             savedRomsDoa.updateCoverUri(uri = uriFromClipboard.toString(), hash = gameHash)
-        }
-        catch (e : Exception) {
+        } catch (e: Exception) {
             throw e
         }
     }

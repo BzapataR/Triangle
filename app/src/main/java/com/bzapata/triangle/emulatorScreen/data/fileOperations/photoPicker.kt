@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 @Composable
 fun PhotoPicker(
     onPhotoSelected: (Uri?) -> Unit
-) : () -> Unit {
+): () -> Unit {
     val pickMedia =
-        rememberLauncherForActivityResult (
+        rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
             onResult = { uri ->
                 onPhotoSelected(uri)

@@ -50,8 +50,8 @@ import com.bzapata.triangle.R
 
 @Composable
 fun SearchField(
-    initialText : String = "" ,
-    onSearch : (String) -> Unit
+    initialText: String = "",
+    onSearch: (String) -> Unit
 ) {
     val textState = rememberTextFieldState(
         initialText = initialText

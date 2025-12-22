@@ -74,7 +74,7 @@ fun AppBar(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         )
-        SearchField(){}
+        SearchField {}
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
 

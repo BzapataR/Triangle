@@ -16,7 +16,7 @@ interface GamesDbDoa {
     suspend fun getName(romID: Int): String?
 
     @Query("SELECT releaseCoverFront FROM RELEASES WHERE romID = :romID")
-    suspend fun getCoverURI(romID: Int): List<String>?
+    suspend fun getCoverURI(romID: Int): List<String?>
 
     @Query("SELECT releaseCoverFront FROM RELEASES WHERE romID = :romID AND regionLocalizedID =21")
     suspend fun getUSACoverURI(romID: Int): String? // sometimes the us version has a higher quality image. function above is for a fallback

@@ -98,7 +98,7 @@ class GameRepository(
         val romName = doa.getName(romID) ?: fileName?.substringBeforeLast('.')
             ?.replace(Regex("\\s*[(\\[].*?[)\\]]"), "")
             ?.trim() ?: "Unknown Game"
-        val coverURI = doa.getCoverURI(romID)?.map { it.toUri() } ?: emptyList()
+        val coverURI = doa.getCoverURI(romID).map { it?.toUri() ?: "".toUri()  }
         val console = fileMapper(context, romPath)
 
         val rom = Game(

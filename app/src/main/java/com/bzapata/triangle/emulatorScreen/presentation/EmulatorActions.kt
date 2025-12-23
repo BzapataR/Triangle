@@ -19,4 +19,5 @@ sealed interface EmulatorActions {
     data class SaveCover(val uri: Uri, val gameHash: String) : EmulatorActions
     data class SaveCoverFromClipboard(val gameHash: String) : EmulatorActions
     data object ClearError : EmulatorActions
+//    data class shareFile(val romUri : Uri) : EmulatorActions
 }

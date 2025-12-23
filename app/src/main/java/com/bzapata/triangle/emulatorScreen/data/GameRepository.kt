@@ -3,6 +3,7 @@ package com.bzapata.triangle.emulatorScreen.data
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.bzapata.triangle.data.repository.ConfigRepository
@@ -13,6 +14,7 @@ import com.bzapata.triangle.emulatorScreen.data.fileOperations.findCover
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getRomFiles
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getUriFromClipboard
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.hasher
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.isValid
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDoa
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toGame
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toSavedRomsEntity
@@ -93,13 +95,15 @@ class GameRepository(
             ?: throw IllegalArgumentException("File not Valid: $romPath")
         val fileName = file.name
         val hash = hasher(context, romPath)
-        val romID = doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
+        val dbRom = savedRomsDoa.queryForDevice(hash)?.toGame()
+        val romID = dbRom?.romID ?: doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
             ?: doa.getRomId(hash) ?: -1
-        val romName = doa.getName(romID) ?: fileName?.substringBeforeLast('.')
+        val romName = dbRom?.name ?: doa.getName(romID) ?: fileName?.substringBeforeLast('.')
             ?.replace(Regex("\\s*[(\\[].*?[)\\]]"), "")
             ?.trim() ?: "Unknown Game"
         val coverURI = doa.getCoverURI(romID).map { it?.toUri() ?: "".toUri()  }
-        val console = fileMapper(context, romPath)
+        val console = dbRom?.consoles ?: fileMapper(context, romPath)
+
 
         val rom = Game(
             name = romName,
@@ -108,7 +112,7 @@ class GameRepository(
             path = romPath,
             consoles = console,
             hash = hash,
-            localCoverUri = findCover(
+            localCoverUri = if (dbRom?.localCoverUri?.isValid(context) == true) dbRom.localCoverUri else findCover(
                 context = context,
                 userFolder = userPath,
                 gameHash = hash,
@@ -119,8 +123,10 @@ class GameRepository(
                 userFolder = userPath
             ) ?: Uri.EMPTY
         )
-        val lastModified = file.lastModified()
-        savedRomsDoa.upsert(rom.toSavedRomsEntity(lastModified))
+        if (dbRom == null) {
+            val lastModified = file.lastModified()
+            savedRomsDoa.upsert(rom.toSavedRomsEntity(lastModified))
+        }
         return rom
     }
 
@@ -131,29 +137,32 @@ class GameRepository(
     }
 
     override suspend fun saveCover(uri: Uri, gameHash: String) = withContext(Dispatchers.IO) {
-        downloadCover(
+        val newUri = downloadCover(
             context = context,
             userFolder = config.triangleDataUriFlow.first() ?: return@withContext,
             imageUri = uri,
             gameHash = gameHash
         )
-        savedRomsDoa.updateCoverUri(uri = uri.toString(), hash = gameHash)
+        savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash)
     }
 
     override suspend fun getCoverFromClipboard(gameHash: String) = withContext(Dispatchers.IO) {
         try {
             val uriFromClipboard = getUriFromClipboard(context = context)
-            downloadCover(
+            val newUri = downloadCover(
                 context = context,
                 userFolder = config.triangleDataUriFlow.first()
                     ?: throw Exception("User Folder Not Set"),
                 imageUri = uriFromClipboard,
                 gameHash = gameHash
             )
-            savedRomsDoa.updateCoverUri(uri = uriFromClipboard.toString(), hash = gameHash)
+            savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash)
         } catch (e: Exception) {
             throw e
         }
     }
+//    override fun shareRom(uri : Uri) {
+//        shareFile(context= context, uri = uri)
+//    }
 
 }

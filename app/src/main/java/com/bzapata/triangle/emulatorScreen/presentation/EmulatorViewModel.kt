@@ -163,6 +163,9 @@ class EmulatorViewModel(
                     }
                 }
             }
+//            is EmulatorActions.shareFile -> {
+//                    gameRepo.shareRom(action.romUri)
+//            }
 
             is EmulatorActions.ClearError -> {
                 _state.update { it.copy(errorMessage = null) }

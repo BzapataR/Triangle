@@ -53,7 +53,10 @@ fun GameCover(
                     interactionSource = interactionSource,
                     indication = null,
                     onClick = {/*Launch Game*/ },
-                    onLongClick = { onActions(EmulatorActions.ToggleGameContextMenu(game.hash)) }, // Original Delta open the game on this event but i don'''t like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
+                    onLongClick = {
+                        onActions(EmulatorActions.ToggleGameContextMenu(game.hash))
+                        onActions(EmulatorActions.SelectGame(game))
+                                  }, // Original Delta open the game on this event but i don'''t like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)
                     onDoubleClick = {}, // Mayhaps we launch lastest quick save.
                     onClickLabel = "Launch ROM",
                     onLongClickLabel = "Show ROM context menu",

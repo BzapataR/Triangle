@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.shareFile
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
@@ -42,13 +43,14 @@ fun GameContextMenu(
     ) {
     var currentMenu by remember { mutableStateOf("main") }
 
+    val launchShareSheet = shareFile(state.selectedGame?.path ?: return)
+
     // When the menu is closed, reset its state to the main menu.
     LaunchedEffect(expanded) {
         if (!expanded) {
             currentMenu = "main"
         }
     }
-
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { onActions(EmulatorActions.ToggleGameContextMenu(null)) },
@@ -94,7 +96,10 @@ fun GameContextMenu(
 
                 DropdownMenuItem(
                     text = { Text("Share") },
-                    onClick = {},
+                    onClick = {
+                        onActions(EmulatorActions.SelectGame(game))
+                        launchShareSheet()
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.outline_ios_share_24),

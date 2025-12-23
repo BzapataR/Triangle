@@ -24,8 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bzapata.triangle.emulatorScreen.data.fileOperations.PhotoPicker
-import com.bzapata.triangle.emulatorScreen.data.fileOperations.filePicker
+import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.photoPicker
+import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.filePicker
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.ui.theme.TriangleTheme
@@ -45,11 +45,11 @@ fun SelectCoverActionSheet(state: EmulatorState, onAction: (EmulatorActions) -> 
             )
         )
     }
-    val photoPickerLauncher = PhotoPicker { uri ->
+    val photoPickerLauncher = photoPicker { uri ->
         onAction(
             EmulatorActions.SaveCover(
-                uri = uri ?: return@PhotoPicker,
-                gameHash = state.selectedGame?.hash ?: return@PhotoPicker
+                uri = uri ?: return@photoPicker,
+                gameHash = state.selectedGame?.hash ?: return@photoPicker
             )
         )
     }

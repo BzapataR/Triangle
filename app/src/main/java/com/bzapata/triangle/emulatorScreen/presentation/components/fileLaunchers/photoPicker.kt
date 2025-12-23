@@ -1,4 +1,4 @@
-package com.bzapata.triangle.emulatorScreen.data.fileOperations
+package com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -7,7 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 
 @Composable
-fun PhotoPicker(
+fun photoPicker(
     onPhotoSelected: (Uri?) -> Unit
 ): () -> Unit {
     val pickMedia =

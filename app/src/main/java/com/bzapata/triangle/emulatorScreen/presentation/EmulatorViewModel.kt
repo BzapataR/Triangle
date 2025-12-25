@@ -1,10 +1,8 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
-import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -177,6 +175,17 @@ class EmulatorViewModel(
                 // Logic to handle external ROM launch:
                 // 1. Identify the ROM (maybe use idRom logic)
                 // 2. Start the appropriate emulator
+            }
+            is EmulatorActions.RenameRom -> {
+                viewModelScope.launch {
+                    gameRepo.renameGame(
+                        action.newName,
+                        gameHash = _state.value.selectedGame?.hash ?: return@launch
+                    )
+                }
+            }
+            is EmulatorActions.ToggleRenameDialog -> {
+                _state.update { it.copy(renameDialogOpen = !it.renameDialogOpen) }
             }
         }
     }

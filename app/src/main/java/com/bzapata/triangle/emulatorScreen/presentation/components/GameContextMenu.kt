@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
+import com.bzapata.triangle.emulatorScreen.presentation.components.createPinnedShortcut
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
@@ -44,6 +46,8 @@ fun GameContextMenu(
     var currentMenu by remember { mutableStateOf("main") }
 
     val launchShareSheet = shareFile(state.selectedGame?.path ?: return)
+
+    val context = LocalContext.current
 
     // When the menu is closed, reset its state to the main menu.
     LaunchedEffect(expanded) {
@@ -68,7 +72,10 @@ fun GameContextMenu(
 
                 DropdownMenuItem(
                     text = { Text("Rename") },
-                    onClick = {},
+                    onClick = {
+                        onActions(EmulatorActions.ToggleGameContextMenu(null))
+                        onActions(EmulatorActions.ToggleRenameDialog)
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.sharp_edit_24),
@@ -103,6 +110,26 @@ fun GameContextMenu(
                     trailingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.outline_ios_share_24),
+                            contentDescription = null
+                        )
+                    }
+                )
+                HorizontalDivider()
+                DropdownMenuItem(
+                    text = { Text("Create Shortcut") },
+                    enabled = game.localCoverUri != null,
+                    onClick = {
+                        if (game.localCoverUri != null)
+                        createPinnedShortcut(
+                            context = context ,
+                            shortcutId = game.hash,
+                            label = game.name,
+                            iconUri = game.localCoverUri
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.outline_jump_to_element_24),
                             contentDescription = null
                         )
                     }

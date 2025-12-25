@@ -22,4 +22,5 @@ data class EmulatorState(
     val queriedCovers: Map<Uri, String?> = emptyMap(),
     val query: String = "",
     val errorMessage: String? = null,
+    val renameDialogOpen : Boolean = false
 )

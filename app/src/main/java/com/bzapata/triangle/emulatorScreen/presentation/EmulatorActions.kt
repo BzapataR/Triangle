@@ -20,4 +20,6 @@ sealed interface EmulatorActions {
     data class SaveCoverFromClipboard(val gameHash: String) : EmulatorActions
     data object ClearError : EmulatorActions
     data class LaunchExternalRom(val uri: Uri) : EmulatorActions
+    data object ToggleRenameDialog : EmulatorActions
+    data class RenameRom(val newName : String) : EmulatorActions
 }

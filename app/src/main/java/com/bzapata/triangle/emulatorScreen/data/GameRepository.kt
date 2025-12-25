@@ -180,6 +180,10 @@ class GameRepository(
         )
 
     }
+
+    override suspend fun renameGame(newName : String, gameHash: String) {
+        savedRomsDoa.renameRom(gameHash, newName )
+    }
 //    override fun shareRom(uri : Uri) {
 //        shareFile(context= context, uri = uri)
 //    }

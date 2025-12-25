@@ -40,6 +40,7 @@ import com.bzapata.triangle.emulatorScreen.presentation.components.AppBar
 import com.bzapata.triangle.emulatorScreen.presentation.components.DatabaseCoverSelector
 import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
+import com.bzapata.triangle.emulatorScreen.presentation.components.RenameDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
@@ -154,6 +155,12 @@ fun EmulatorHomePage(
         ErrorDialog(
             errorMessage = state.errorMessage,
             onDismiss = { onAction(EmulatorActions.ClearError) })
+    }
+    if (state.renameDialogOpen){
+        RenameDialog(game = state.selectedGame, onDismiss = { onAction(EmulatorActions.ToggleRenameDialog) }, onConfirm = {newName ->
+            onAction(EmulatorActions.RenameRom(newName))
+        }
+        )
     }
 
 }

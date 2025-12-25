@@ -3,13 +3,12 @@ package com.bzapata.triangle.emulatorScreen.data
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameDataBase.GamesDbDoa
+import com.bzapata.triangle.emulatorScreen.data.fileOperations.copyFile
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.downloadCover
-import com.bzapata.triangle.emulatorScreen.data.fileOperations.fileMapper
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.findCover
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getRomFiles
 import com.bzapata.triangle.emulatorScreen.data.fileOperations.getUriFromClipboard
@@ -18,6 +17,7 @@ import com.bzapata.triangle.emulatorScreen.data.fileOperations.isValid
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.SavedRomsDoa
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toGame
 import com.bzapata.triangle.emulatorScreen.data.romsDatabase.toSavedRomsEntity
+import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class GameRepository(
     private val gamesDoa: GamesDbDoa,
@@ -93,16 +94,17 @@ class GameRepository(
     ): Game {
         val file = DocumentFile.fromSingleUri(context, romPath)
             ?: throw IllegalArgumentException("File not Valid: $romPath")
-        val fileName = file.name
+        val fileName = file.name ?: ""
         val hash = hasher(context, romPath)
         val dbRom = savedRomsDoa.queryForDevice(hash)?.toGame()
         val romID = dbRom?.romID ?: doa.getRomIdFromName(file.name?.substringBeforeLast('.'))
-            ?: doa.getRomId(hash) ?: -1
-        val romName = dbRom?.name ?: doa.getName(romID) ?: fileName?.substringBeforeLast('.')
-            ?.replace(Regex("\\s*[(\\[].*?[)\\]]"), "")
-            ?.trim() ?: "Unknown Game"
-        val coverURI = doa.getCoverURI(romID).map { it?.toUri() ?: "".toUri()  }
-        val console = dbRom?.consoles ?: fileMapper(context, romPath)
+        ?: doa.getRomId(hash) ?: -1
+        val romName = dbRom?.name ?: doa.getName(romID) ?: fileName.substringBeforeLast('.')
+            .replace(Regex("\\s*[(\\[].*?[)\\]]"), "")
+            .trim()
+        val coverURI = doa.getCoverURI(romID).map { it?.toUri() ?: "".toUri() }
+        val console = dbRom?.consoles ?: Consoles.fromExtension(File(fileName).extension)
+        ?: throw IllegalArgumentException("File with incorrect file extension $fileName")
 
 
         val rom = Game(
@@ -160,6 +162,23 @@ class GameRepository(
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    override suspend fun addSingleGame(uri: Uri) = withContext(Dispatchers.IO) {
+        val userPath = config.triangleDataUriFlow.first() ?: return@withContext
+        val romPath = config.romUriFlow.first()
+        val copiedFileUri = copyFile(
+            context = context,
+            sourceUri = uri,
+            destinationUri = romPath ?: userPath
+        ) ?: return@withContext
+        idRom(
+            romPath = copiedFileUri,
+            context = context,
+            doa = gamesDoa,
+            userPath = userPath
+        )
+
     }
 //    override fun shareRom(uri : Uri) {
 //        shareFile(context= context, uri = uri)

@@ -23,3 +23,4 @@ fun fileMapper(context: Context, path: Uri): Consoles {
         else -> throw IllegalArgumentException("Unknown console for file: $fileName")
     }
 }
+/*.gbc .gba .gb .nes .smc .sfc .fig .ds .nds .n64 .z64*/

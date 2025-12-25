@@ -1,8 +1,10 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -78,8 +80,6 @@ class EmulatorViewModel(
             is EmulatorActions.ToggleGameContextMenu -> {
                 _state.update {
                     it.copy(
-//                        selectedGame = action.game,
-//                        isBackgroundBlurred = !it.isBackgroundBlurred
                         gameHashForContextMenu = action.gameHash,
                         isBackgroundBlurred = !it.isBackgroundBlurred
                     )
@@ -119,7 +119,10 @@ class EmulatorViewModel(
                 }
             }
 
-            is EmulatorActions.PlayGame -> {}
+            is EmulatorActions.PlayGame -> {
+                // Handle playing the game
+            }
+
             is EmulatorActions.RefreshRomList -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     _state.update { it.copy(isRefreshing = true) }
@@ -135,9 +138,7 @@ class EmulatorViewModel(
             is EmulatorActions.QueryCovers -> {
                 viewModelScope.launch {
                     _state.update { it.copy(query = action.gameName) }
-                    Log.i("covers", "Uris: ${_state.value.queriedCovers}")
                 }
-
             }
 
             is EmulatorActions.ToggleDbCover -> {
@@ -163,12 +164,19 @@ class EmulatorViewModel(
                     }
                 }
             }
-//            is EmulatorActions.shareFile -> {
-//                    gameRepo.shareRom(action.romUri)
-//            }
 
             is EmulatorActions.ClearError -> {
                 _state.update { it.copy(errorMessage = null) }
+            }
+
+            is EmulatorActions.LaunchExternalRom -> {
+                Log.i("EmulatorViewModel", "External ROM launch requested: ${action.uri}")
+                viewModelScope.launch {
+                    gameRepo.addSingleGame(action.uri)
+                }
+                // Logic to handle external ROM launch:
+                // 1. Identify the ROM (maybe use idRom logic)
+                // 2. Start the appropriate emulator
             }
         }
     }

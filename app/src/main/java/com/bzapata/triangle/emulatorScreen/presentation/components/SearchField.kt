@@ -50,6 +50,7 @@ import com.bzapata.triangle.R
 
 @Composable
 fun SearchField(
+    modifier : Modifier = Modifier,
     initialText: String = "",
     onSearch: (String) -> Unit
 ) {
@@ -64,7 +65,7 @@ fun SearchField(
     }
 
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
@@ -80,7 +81,7 @@ fun SearchField(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                //.padding(bottom = 8.dp)
                 .height(40.dp),
             verticalAlignment = Alignment.CenterVertically,
 

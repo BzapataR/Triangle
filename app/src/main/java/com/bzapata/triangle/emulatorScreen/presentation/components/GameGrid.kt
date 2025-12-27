@@ -49,7 +49,7 @@ fun GameGrid(
                     game = game,
                     isContextMenuShown = state.gameHashForContextMenu == game.hash,
                     onActions = onAction,
-                    state = state
+                    state = state,
                 )
             }
         }

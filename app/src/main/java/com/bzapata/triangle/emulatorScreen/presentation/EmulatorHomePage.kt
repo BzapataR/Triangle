@@ -17,6 +17,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.directoryPicker
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
+import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.components.AppBar
 import com.bzapata.triangle.emulatorScreen.presentation.components.DatabaseCoverSelector
 import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
@@ -141,7 +144,7 @@ fun EmulatorHomePage(
             }
 
             state.noRomPath -> NoRomPathMessage()
-            state.isScanning && state.isInitialScanDone -> ScanIndicator()
+            state.isScanning -> ScanIndicator()
             state.games.isEmpty() && state.isInitialScanDone -> NoGamesFoundMessage()
         }
     }
@@ -177,6 +180,7 @@ private fun NoRomPathMessage() {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ScanIndicator() {
     Column(
@@ -184,7 +188,7 @@ private fun ScanIndicator() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        CircularProgressIndicator()
+        LoadingIndicator()
         Spacer(modifier = Modifier.size(8.dp))
         Text("Scanning Roms")
     }
@@ -208,6 +212,6 @@ fun EmulatorHomePagePreview() {
     TriangleTheme {
         val consoles = Consoles.entries.toTypedArray()
         rememberPagerState(pageCount = { consoles.size })
-        EmulatorHomePage(EmulatorState(), onAction = {})
+        EmulatorHomePage(EmulatorState(games = listOf(GameUiExample)), onAction = {})
     }
 }

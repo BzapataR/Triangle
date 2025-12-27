@@ -9,6 +9,9 @@ package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -24,6 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
@@ -37,13 +41,17 @@ fun AppBar(
     onChangeUserFolder: () -> Unit,
     onChangeRomsFolder: () -> Unit
 ) {
+
+    val isExpanded = false// widthSizeClass == androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Expanded // todo add this var to MainActivity
+
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         CenterAlignedTopAppBar(
             title = {
                 Text(
                     text = currentEmulatorName,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    //modifier = Modifier.height(40.dp)
                 )
             },
             navigationIcon = {
@@ -56,25 +64,31 @@ fun AppBar(
                 }
             },
             actions = {
-                IconButton(onClick = { fileToggle() }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
-                        contentDescription = "Add Games",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                    IconButton(onClick = { fileToggle() }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
+                            contentDescription = "Add Games",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 FileContextMenu(
-                    subMenuOpen = isMenuOpen,
-                    fileMenuToggle = { fileToggle() },
-                    onChangeUserFolder = onChangeUserFolder,
-                    onChangeRomsFolder = onChangeRomsFolder
-                )
+                        subMenuOpen = isMenuOpen,
+                        fileMenuToggle = { fileToggle() },
+                        onChangeUserFolder = onChangeUserFolder,
+                        onChangeRomsFolder = onChangeRomsFolder
+                    )
+                if (isExpanded) {
+                    SearchField(modifier = Modifier.width(250.dp)) {}
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
             },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         )
-        SearchField {}
+        if (!isExpanded) {
+            SearchField {}
+        }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
 

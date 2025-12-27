@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.material3)
     ksp(libs.androidx.room.compiler)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

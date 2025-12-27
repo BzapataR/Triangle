@@ -31,6 +31,7 @@ import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
+import com.bzapata.triangle.emulatorScreen.presentation.components.GameContextMenu
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -38,7 +39,8 @@ fun GameCover(
     game: Game,
     state: EmulatorState,
     isContextMenuShown: Boolean,
-    onActions: (EmulatorActions) -> Unit
+    onActions: (EmulatorActions) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()

@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,7 +56,8 @@ fun Settings(
     toControllerSettings: () -> Unit = {},
     toControllerSkins: () -> Unit = {}
 ) {
-    rememberCoroutineScope()
+
+    val uriHandler = LocalUriHandler.current
 
     var sliderPositions by remember { mutableFloatStateOf(70f) }
     var isChecked by remember { mutableStateOf(true) }
@@ -425,7 +427,10 @@ fun Settings(
                     color = Color.White
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IconButton(onClick = {}, modifier = Modifier.size(44.dp)) {
+                    IconButton(
+                        onClick = {uriHandler.openUri("https://github.com/rileytestut/Delta")},
+                        modifier = Modifier.size(44.dp)
+                    ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.deltaicon),
                             contentDescription = "THE OG",
@@ -433,7 +438,9 @@ fun Settings(
                             tint = Color.White
                         )
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(
+                        onClick = { uriHandler.openUri("https://github.com/BzapataR/Triangle")}
+                    ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.github_mark_white),
                             contentDescription = "Source Code",
@@ -442,7 +449,7 @@ fun Settings(
                     }
                 }
                 Spacer(Modifier.size(24.dp))
-                SubText("Triangle 0.0.1")
+                SubText("Triangle 0.1.0-alpha")
             }
         }
     }

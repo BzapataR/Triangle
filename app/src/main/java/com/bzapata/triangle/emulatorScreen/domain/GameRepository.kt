@@ -10,5 +10,7 @@ interface GameRepository {
     suspend fun saveCover(uri: Uri, gameHash: String)
     suspend fun getCoverFromClipboard(gameHash: String)
     suspend fun addSingleGame(uri: Uri)
-    suspend fun renameGame(newName: String, gameHash: String)
+    suspend fun renameRom(newName: String, gameHash: String)
+    suspend fun queryCovers(query :String) : Map<Uri, String?>
+    suspend fun querySavedRoms(query : String): List<Game>
 }

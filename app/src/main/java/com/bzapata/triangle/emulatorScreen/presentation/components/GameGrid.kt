@@ -27,6 +27,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @Composable
 fun GameGrid(
+    modifier: Modifier = Modifier,
     games: List<Game>,
     state: EmulatorState,
     onAction: (EmulatorActions) -> Unit
@@ -38,7 +39,7 @@ fun GameGrid(
     key(state.gameHashForContextMenu) { //When 1 rom is loaded context menu won't open without this
         LazyVerticalGrid(
             columns = GridCells.Adaptive(90.dp),
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),

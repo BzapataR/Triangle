@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.collections.emptyList
 
 class GameRepository(
     private val gamesDoa: GamesDbDoa,
@@ -132,10 +133,15 @@ class GameRepository(
         return rom
     }
 
-    suspend fun queryCovers(titleName: String): Map<Uri, String?> = withContext(Dispatchers.IO) {
-        if (titleName.isBlank()) return@withContext emptyMap()
-        gamesDoa.queryCover(titleName.trim())
+    override suspend fun queryCovers(query: String): Map<Uri, String?> = withContext(Dispatchers.IO) {
+        if (query.isBlank()) return@withContext emptyMap()
+        gamesDoa.queryCover(query.trim())
             .associate { it.releaseCoverFront.toUri() to it.releaseTitleName }
+    }
+
+    override suspend fun querySavedRoms(query: String) : List<Game> = withContext(Dispatchers.IO) {
+        if (query.isBlank()) return@withContext emptyList()
+        savedRomsDoa.queryRoms(name = query.trim()).map { it?.toGame() ?:return@withContext emptyList() }
     }
 
     override suspend fun saveCover(uri: Uri, gameHash: String) = withContext(Dispatchers.IO) {
@@ -181,7 +187,7 @@ class GameRepository(
 
     }
 
-    override suspend fun renameGame(newName: String, gameHash: String) {
+    override suspend fun renameRom(newName: String, gameHash: String) = withContext(Dispatchers.IO){
         savedRomsDoa.renameRom(gameHash, newName)
     }
 //    override fun shareRom(uri : Uri) {

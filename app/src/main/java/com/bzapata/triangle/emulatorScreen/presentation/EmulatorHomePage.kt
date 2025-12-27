@@ -7,6 +7,7 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,17 +46,23 @@ import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
 import com.bzapata.triangle.emulatorScreen.presentation.components.RenameDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
-import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.directoryPicker
+import com.bzapata.triangle.util.fileLaunchers.directoryPicker
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun EmulatorHomePageRoot() {
     val viewModel: EmulatorViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val activity = LocalActivity.current!!
+    val windowSize = calculateWindowSizeClass(activity)
+    LaunchedEffect(windowSize.widthSizeClass) {
+        viewModel.changeWindowSize(windowSize.widthSizeClass)
+    }
     EmulatorHomePage(
         state = state,
         onAction = viewModel::onAction
@@ -99,10 +108,13 @@ fun EmulatorHomePage(
             AppBar(
                 settingsToggle = { onAction(EmulatorActions.ToggleSettings) },
                 fileToggle = { onAction(EmulatorActions.ToggleFileContextMenu) },
+                windowWidth = state.windowSize,
                 isMenuOpen = state.isFileContextMenuOpen,
-                currentEmulatorName = state.consoles.getOrNull(state.currentPage)?.name ?: "",
+                currentEmulatorName = if (state.romQuery.isNotEmpty()) "Results" else
+                    state.consoles.getOrNull(state.currentPage)?.name ?: "",
                 onChangeUserFolder = userDirectoryPicker,
-                onChangeRomsFolder = romsDirectoryPicker
+                onChangeRomsFolder = romsDirectoryPicker,
+                onQuery = {onAction(EmulatorActions.QuerySavedRoms(it))}
             )
         },
         bottomBar = {
@@ -113,6 +125,7 @@ fun EmulatorHomePage(
     ) { innerPadding ->
         when {
             state.consoles.isNotEmpty() -> {
+
                 PullToRefreshBox(
                     isRefreshing = state.isRefreshing,
                     onRefresh = { onAction(EmulatorActions.RefreshRomList) },
@@ -129,15 +142,27 @@ fun EmulatorHomePage(
                         )
                     }
                 ) {
-                    HorizontalPager(
-                        modifier = Modifier.padding(innerPadding),
-                        state = pagerState,
-                    ) { page ->
-                        GameGrid(
-                            games = state.games.filter { it.consoles == state.consoles[page] },
-                            state = state,
-                            onAction = onAction
-                        )
+                    when {
+                        state.romQuery.isEmpty() -> {
+                            HorizontalPager(
+                                modifier = Modifier.padding(innerPadding),
+                                state = pagerState,
+                            ) { page ->
+                                GameGrid(
+                                    games = state.games.filter { it.consoles == state.consoles[page] },
+                                    state = state,
+                                    onAction = onAction
+                                )
+                            }
+                        }
+                        else -> {
+                            GameGrid(
+                                games = state.queriedRoms,
+                                state = state,
+                                onAction = onAction,
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                     }
                 }
             }

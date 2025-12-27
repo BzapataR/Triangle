@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
-import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.filePicker
-import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.photoPicker
+import com.bzapata.triangle.util.fileLaunchers.filePicker
+import com.bzapata.triangle.util.fileLaunchers.photoPicker
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import kotlinx.coroutines.launch
 

@@ -36,7 +36,7 @@ import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
-import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.shareFile
+import com.bzapata.triangle.util.fileLaunchers.shareFile
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

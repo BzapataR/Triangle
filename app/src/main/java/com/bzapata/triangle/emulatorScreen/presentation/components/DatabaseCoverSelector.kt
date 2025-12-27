@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
@@ -23,7 +22,6 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,10 +51,6 @@ fun DatabaseCoverSelector(
     state: EmulatorState,
     onAction: (EmulatorActions) -> Unit
 ) {
-    remember { mutableListOf<Uri>() }
-
-    rememberTextFieldState()
-    rememberSearchBarState()
 
     val scope = rememberCoroutineScope()
     val modalBottomSheetProperties = remember {
@@ -65,8 +59,6 @@ fun DatabaseCoverSelector(
             isAppearanceLightNavigationBars = false,
         )
     }
-    rememberLazyListState()
-
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
@@ -163,28 +155,6 @@ fun DatabaseCoverSelector(
                     )
                     HorizontalDivider()
                 }
-//                items(20){
-//                    ListItem(
-//                        modifier = Modifier
-//                            .height(100.dp)
-//                            .clickable(onClick = {}),
-//                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-//                        leadingContent = {
-//                            AsyncImage(
-//                                model = ImageRequest.Builder(LocalContext.current)
-//                                //.data(game.localCoverUri) // Pass the Uri object here
-//                                .fallback(R.drawable.deltaicon)
-//                                .error(R.drawable.deltaicon)
-//                                .crossfade(true)
-//                                .build(),
-//                                contentDescription = "Cover",
-//                                contentScale = ContentScale.Fit,
-//                            )
-//                                          },
-//                        headlineContent = {Text("Text")}
-//                    )
-//                    HorizontalDivider()
-//                }
             }
         }
     }

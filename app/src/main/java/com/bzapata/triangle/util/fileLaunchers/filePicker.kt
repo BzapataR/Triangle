@@ -1,4 +1,5 @@
-package com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers
+package com.bzapata.triangle.util.fileLaunchers
+
 
 import android.content.Intent
 import android.net.Uri
@@ -9,26 +10,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun directoryPicker(
-    startingLocation: Uri? = null,
-    onDirectorySelected: (Uri?) -> Unit
+fun filePicker(
+    onFileSelected: (Uri?) -> Unit
 ): () -> Unit { // return function to make it possible to be called on composable (i.e. onClick() )
     val context = LocalContext.current
     val contentResolver = context.contentResolver
 
-    val directoryPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree(),
+    val filePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
             uri?.let {
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 contentResolver.takePersistableUriPermission(it, takeFlags)
             }
-            onDirectorySelected(uri)
+            onFileSelected(uri)
             Log.i("directory picker", "path selected: ${uri?.path}")
         }
     )
     return {
-        directoryPickerLauncher.launch(startingLocation)
+        filePicker.launch(arrayOf("image/*"))
     }
 }

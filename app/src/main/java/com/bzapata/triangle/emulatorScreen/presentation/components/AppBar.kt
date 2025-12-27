@@ -10,6 +10,7 @@ package com.bzapata.triangle.emulatorScreen.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,11 +40,12 @@ fun AppBar(
     isMenuOpen: Boolean,
     currentEmulatorName: String,
     onChangeUserFolder: () -> Unit,
-    onChangeRomsFolder: () -> Unit
+    onChangeRomsFolder: () -> Unit,
+    onQuery :(String) -> Unit,
+    windowWidth: WindowWidthSizeClass
 ) {
 
-    val isExpanded =
-        false// widthSizeClass == androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Expanded // todo add this var to MainActivity
+    val isExpanded = windowWidth == WindowWidthSizeClass.Expanded
 
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         CenterAlignedTopAppBar(
@@ -78,7 +81,9 @@ fun AppBar(
                     onChangeRomsFolder = onChangeRomsFolder
                 )
                 if (isExpanded) {
-                    SearchField(modifier = Modifier.width(250.dp)) {}
+                    SearchField(modifier = Modifier.width(275.dp)) {
+                        onQuery(it)
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             },
@@ -87,7 +92,9 @@ fun AppBar(
             )
         )
         if (!isExpanded) {
-            SearchField {}
+            SearchField(Modifier.padding(bottom = 8.dp)) {
+                onQuery(it)
+            }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
@@ -101,11 +108,13 @@ private fun TopAppBarPreview() {
     TriangleTheme {
         AppBar(
             settingsToggle = {},
-            isMenuOpen = true,
             fileToggle = {},
+            isMenuOpen = true,
             currentEmulatorName = "GBA",
             onChangeUserFolder = {},
-            onChangeRomsFolder = {}
+            onChangeRomsFolder = {},
+            windowWidth = WindowWidthSizeClass.Compact,
+            onQuery = {}
         )
     }
 }

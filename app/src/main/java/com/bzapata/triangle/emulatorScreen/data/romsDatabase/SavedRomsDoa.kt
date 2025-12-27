@@ -32,5 +32,13 @@ interface SavedRomsDoa {
 
     @Query("UPDATE SavedRomsDb SET name = :newName WHERE deviceHash = :hash")
     suspend fun renameRom(hash: String, newName: String)
+    @Query(
+        """
+        SELECT DISTINCT *
+        FROM SavedRomsDb
+        WHERE name LIKE '%' || :name || '%'
+    """
+    )
+    suspend fun queryRoms(name : String) : List<SavedRomsEntity?>
 
 }

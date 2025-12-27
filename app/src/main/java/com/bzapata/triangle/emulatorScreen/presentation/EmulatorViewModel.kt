@@ -1,6 +1,7 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.util.Log
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzapata.triangle.data.repository.ConfigRepository
@@ -28,11 +29,13 @@ class EmulatorViewModel(
     val state = _state.asStateFlow()
 
     private var searchCoversJob: Job? = null
+    private var searchRomsJob : Job? = null
 
     init {
         setScreen()
         observeRomPath()
-        observeSearchQuery()
+        observeRomQuery()
+        observeCoverSearchQuery()
     }
 
     private fun setScreen() {
@@ -134,9 +137,7 @@ class EmulatorViewModel(
             }
 
             is EmulatorActions.QueryCovers -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(query = action.gameName) }
-                }
+                    _state.update { it.copy(coverQuery = action.gameName) }
             }
 
             is EmulatorActions.ToggleDbCover -> {
@@ -179,7 +180,7 @@ class EmulatorViewModel(
 
             is EmulatorActions.RenameRom -> {
                 viewModelScope.launch {
-                    gameRepo.renameGame(
+                    gameRepo.renameRom(
                         action.newName,
                         gameHash = _state.value.selectedGame?.hash ?: return@launch
                     )
@@ -189,12 +190,18 @@ class EmulatorViewModel(
             is EmulatorActions.ToggleRenameDialog -> {
                 _state.update { it.copy(renameDialogOpen = !it.renameDialogOpen) }
             }
+            is EmulatorActions.QuerySavedRoms -> {
+                _state.update { it.copy(romQuery = action.name) }
+            }
         }
+    }
+    fun changeWindowSize(windowSize : WindowWidthSizeClass) {
+        _state.update { it.copy(windowSize = windowSize) }
     }
 
     @OptIn(FlowPreview::class)
-    private fun observeSearchQuery() {
-        _state.map { it.query }
+    private fun observeCoverSearchQuery() {
+        _state.map { it.coverQuery }
             .distinctUntilChanged()
             .debounce(500L)
             .onEach { query ->
@@ -213,5 +220,24 @@ class EmulatorViewModel(
 
     private fun searchCovers(query: String) = viewModelScope.launch {
         _state.update { it.copy(queriedCovers = gameRepo.queryCovers(query)) }
+    }
+
+    private fun observeRomQuery() {
+        _state.map { it.romQuery }
+            .distinctUntilChanged()
+            .onEach { query->
+                when{
+                    query.isBlank() -> {
+                        _state.update { it.copy(queriedRoms = emptyList()) }
+                    }
+                    else -> {
+                        searchRomsJob?.cancel()
+                        searchRomsJob = searchRoms(query)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+    private fun searchRoms(query : String) = viewModelScope.launch{
+        _state.update { it.copy(queriedRoms = gameRepo.querySavedRoms(query)) }
     }
 }

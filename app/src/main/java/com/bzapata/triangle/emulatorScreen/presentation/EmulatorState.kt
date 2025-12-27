@@ -1,10 +1,12 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.net.Uri
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.domain.Game
 
 data class EmulatorState(
+    val windowSize : WindowWidthSizeClass = WindowWidthSizeClass.Compact,
     val consoles: List<Consoles> = emptyList(),
     val games: List<Game> = emptyList(),
     val gameHashForContextMenu: String? = null,
@@ -20,7 +22,9 @@ data class EmulatorState(
     val isCoverActionSheetOpen: Boolean = false,
     val isCoverDbSelectorOpen: Boolean = false,
     val queriedCovers: Map<Uri, String?> = emptyMap(),
-    val query: String = "",
+    val queriedRoms : List<Game> = emptyList(),
+    val coverQuery: String = "",
+    val romQuery : String = "",
     val errorMessage: String? = null,
     val renameDialogOpen: Boolean = false
 )

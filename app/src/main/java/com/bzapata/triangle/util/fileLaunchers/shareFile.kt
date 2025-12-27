@@ -1,4 +1,4 @@
-package com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers
+package com.bzapata.triangle.util.fileLaunchers
 
 import android.content.Intent
 import android.net.Uri

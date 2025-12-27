@@ -27,7 +27,7 @@ import java.io.File
 
 class MainActivity : ComponentActivity() {
     private val config: ConfigRepository by inject()
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -64,13 +64,15 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (intent.action == Intent.ACTION_VIEW
-            || intent.action == Intent.ACTION_SEND) {
+            || intent.action == Intent.ACTION_SEND
+        ) {
             handleExternalRomLaunch(intent)
         }
     }
 
     private fun handleExternalRomLaunch(intent: Intent) {
-        val uri: Uri? = if (intent.action == Intent.ACTION_SEND) intent.getParcelableExtra(Intent.EXTRA_STREAM)  else intent.data
+        val uri: Uri? =
+            if (intent.action == Intent.ACTION_SEND) intent.getParcelableExtra(Intent.EXTRA_STREAM) else intent.data
         val viewModel: EmulatorViewModel = getViewModel()
         if (uri != null) {
             val fileName = DocumentFile.fromSingleUri(this, uri)?.name ?: return
@@ -81,7 +83,7 @@ class MainActivity : ComponentActivity() {
                 Log.i("FileAssociation", "Opening ROM: $uri")
                 viewModel.onAction(EmulatorActions.LaunchExternalRom(uri))
             } else {
-                val toast = Toast.makeText(this, "Incorrect file extension", Toast.LENGTH_SHORT )
+                val toast = Toast.makeText(this, "Incorrect file extension", Toast.LENGTH_SHORT)
                 toast.show()
                 Log.e("FileAssociation", "File with incorrect file extension: $console")
                 this.finishAndRemoveTask()

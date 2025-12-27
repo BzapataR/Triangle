@@ -10,7 +10,6 @@ package com.bzapata.triangle.emulatorScreen.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +41,8 @@ fun AppBar(
     onChangeRomsFolder: () -> Unit
 ) {
 
-    val isExpanded = false// widthSizeClass == androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Expanded // todo add this var to MainActivity
+    val isExpanded =
+        false// widthSizeClass == androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Expanded // todo add this var to MainActivity
 
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         CenterAlignedTopAppBar(
@@ -64,19 +64,19 @@ fun AppBar(
                 }
             },
             actions = {
-                    IconButton(onClick = { fileToggle() }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
-                            contentDescription = "Add Games",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                FileContextMenu(
-                        subMenuOpen = isMenuOpen,
-                        fileMenuToggle = { fileToggle() },
-                        onChangeUserFolder = onChangeUserFolder,
-                        onChangeRomsFolder = onChangeRomsFolder
+                IconButton(onClick = { fileToggle() }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
+                        contentDescription = "Add Games",
+                        tint = MaterialTheme.colorScheme.primary
                     )
+                }
+                FileContextMenu(
+                    subMenuOpen = isMenuOpen,
+                    fileMenuToggle = { fileToggle() },
+                    onChangeUserFolder = onChangeUserFolder,
+                    onChangeRomsFolder = onChangeRomsFolder
+                )
                 if (isExpanded) {
                     SearchField(modifier = Modifier.width(250.dp)) {}
                     Spacer(modifier = Modifier.width(8.dp))

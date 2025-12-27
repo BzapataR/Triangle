@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun shareFile(uri : Uri) : () -> Unit {
+fun shareFile(uri: Uri): () -> Unit {
     val context = LocalContext.current
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
         type = "application/octet-stream"

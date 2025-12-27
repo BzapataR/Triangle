@@ -50,7 +50,7 @@ import com.bzapata.triangle.R
 
 @Composable
 fun SearchField(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     initialText: String = "",
     onSearch: (String) -> Unit
 ) {

@@ -9,6 +9,6 @@ interface GameRepository {
     fun databaseBomb()
     suspend fun saveCover(uri: Uri, gameHash: String)
     suspend fun getCoverFromClipboard(gameHash: String)
-    suspend fun addSingleGame(uri : Uri)
-    suspend fun renameGame(newName : String, gameHash : String)
+    suspend fun addSingleGame(uri: Uri)
+    suspend fun renameGame(newName: String, gameHash: String)
 }

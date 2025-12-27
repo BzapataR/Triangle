@@ -176,6 +176,7 @@ class EmulatorViewModel(
                 // 1. Identify the ROM (maybe use idRom logic)
                 // 2. Start the appropriate emulator
             }
+
             is EmulatorActions.RenameRom -> {
                 viewModelScope.launch {
                     gameRepo.renameGame(
@@ -184,6 +185,7 @@ class EmulatorViewModel(
                     )
                 }
             }
+
             is EmulatorActions.ToggleRenameDialog -> {
                 _state.update { it.copy(renameDialogOpen = !it.renameDialogOpen) }
             }

@@ -28,9 +28,9 @@ interface SavedRomsDoa {
     suspend fun updateCoverUri(hash: String, uri: String)
 
     @Query("SELECT * FROM SavedRomsDb WHERE deviceHash = :hash")
-    suspend fun queryForDevice(hash : String) : SavedRomsEntity?
+    suspend fun queryForDevice(hash: String): SavedRomsEntity?
 
     @Query("UPDATE SavedRomsDb SET name = :newName WHERE deviceHash = :hash")
-    suspend fun renameRom(hash : String, newName : String)
+    suspend fun renameRom(hash: String, newName: String)
 
 }

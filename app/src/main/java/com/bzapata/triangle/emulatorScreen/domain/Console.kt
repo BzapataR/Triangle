@@ -1,7 +1,6 @@
 package com.bzapata.triangle.emulatorScreen.domain
 
 
-
 enum class Consoles(
     val fullName: String,
     val brand: String,

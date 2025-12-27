@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.directoryPicker
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
 import com.bzapata.triangle.emulatorScreen.presentation.components.AppBar
@@ -45,6 +43,7 @@ import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
 import com.bzapata.triangle.emulatorScreen.presentation.components.RenameDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
+import com.bzapata.triangle.emulatorScreen.presentation.components.fileLaunchers.directoryPicker
 import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
@@ -159,10 +158,13 @@ fun EmulatorHomePage(
             errorMessage = state.errorMessage,
             onDismiss = { onAction(EmulatorActions.ClearError) })
     }
-    if (state.renameDialogOpen){
-        RenameDialog(game = state.selectedGame, onDismiss = { onAction(EmulatorActions.ToggleRenameDialog) }, onConfirm = {newName ->
-            onAction(EmulatorActions.RenameRom(newName))
-        }
+    if (state.renameDialogOpen) {
+        RenameDialog(
+            game = state.selectedGame,
+            onDismiss = { onAction(EmulatorActions.ToggleRenameDialog) },
+            onConfirm = { newName ->
+                onAction(EmulatorActions.RenameRom(newName))
+            }
         )
     }
 

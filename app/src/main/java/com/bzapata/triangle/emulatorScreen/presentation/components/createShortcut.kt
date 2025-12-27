@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-fun createPinnedShortcut(context: Context, shortcutId: String, label: String, iconUri : Uri) {
+fun createPinnedShortcut(context: Context, shortcutId: String, label: String, iconUri: Uri) {
     val shortcutManager = context.getSystemService<ShortcutManager>()
     if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -57,9 +57,10 @@ fun createPinnedShortcut(context: Context, shortcutId: String, label: String, ic
 
             // 4. Request the system to pin
             shortcutManager.requestPinShortcut(pinShortcutInfo, null)
-            }
         }
+    }
 }
+
 private fun getSquareCroppedBitmap(bitmap: Bitmap): Bitmap {
     val size = Math.min(bitmap.width, bitmap.height)
     val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)

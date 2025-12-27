@@ -5,15 +5,17 @@ import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 
-fun copyFile(context : Context, sourceUri: Uri, destinationUri : Uri) : Uri? {
+fun copyFile(context: Context, sourceUri: Uri, destinationUri: Uri): Uri? {
     return try {
-        val documentFile = DocumentFile.fromSingleUri(context,sourceUri) ?: return null
+        val documentFile = DocumentFile.fromSingleUri(context, sourceUri) ?: return null
         val fileName = documentFile.name ?: hasher(context, sourceUri)
 
         val destinationDir = DocumentFile.fromTreeUri(context, destinationUri)
-        val importedDir = destinationDir?.findFile("imported") ?: destinationDir?.createDirectory("imported")
+        val importedDir =
+            destinationDir?.findFile("imported") ?: destinationDir?.createDirectory("imported")
 
-        val targetFile = importedDir?.createFile("application/octet-stream", fileName)?: return null
+        val targetFile =
+            importedDir?.createFile("application/octet-stream", fileName) ?: return null
 
         //copying file contents
         context.contentResolver.openInputStream(sourceUri)?.use { input ->
@@ -23,8 +25,7 @@ fun copyFile(context : Context, sourceUri: Uri, destinationUri : Uri) : Uri? {
         }
 
         return targetFile.uri
-    }
-    catch (e : Exception) {
+    } catch (e: Exception) {
         Log.e("GameRepo", "Failed to copy external Rom", e)
         null
     }

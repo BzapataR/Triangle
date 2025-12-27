@@ -8,7 +8,6 @@
 package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
@@ -43,10 +41,10 @@ fun FileContextMenu(
         DropdownMenuGroup(
             shapes = MenuDefaults.groupShape(0, 3)
         ) {
-            MenuDefaults.Label() {
+            MenuDefaults.Label {
                 Text(
                     text = "Paths",
-                   // modifier = Modifier.padding(horizontal = 12.dp),
+                    // modifier = Modifier.padding(horizontal = 12.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

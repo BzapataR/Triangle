@@ -8,7 +8,6 @@ package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
@@ -25,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -33,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.domain.GameUiExample
@@ -76,7 +73,10 @@ fun GameContextMenu(
                 DropdownMenuGroup(
                     tonalElevation = 0.dp,
                     shadowElevation = 0.dp,
-                    shapes = MenuDefaults.groupShape(0, 1) // 0 of 1 group = Fully rounded top and bottom
+                    shapes = MenuDefaults.groupShape(
+                        0,
+                        1
+                    ) // 0 of 1 group = Fully rounded top and bottom
                 ) {
                     MenuDefaults.Label {
                         Text(
@@ -262,12 +262,15 @@ fun GameContextMenu(
 fun GameContextMenuPreview() {
     TriangleTheme {
 
-            GameContextMenu(
-                GameUiExample,
-                expanded = true,
-                onActions = {},
-                state = EmulatorState(gameHashForContextMenu = GameUiExample.hash, selectedGame = GameUiExample),
-            )
+        GameContextMenu(
+            GameUiExample,
+            expanded = true,
+            onActions = {},
+            state = EmulatorState(
+                gameHashForContextMenu = GameUiExample.hash,
+                selectedGame = GameUiExample
+            ),
+        )
 
     }
 }

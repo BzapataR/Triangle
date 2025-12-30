@@ -4,7 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,7 +45,10 @@ fun GameCover(
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
+
+    val isHighlighted = isFocused || isHovered
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,6 +56,7 @@ fun GameCover(
     ) {
         Box(
             modifier = Modifier
+                .focusable(interactionSource = interactionSource)
                 .combinedClickable(
                     interactionSource = interactionSource,
                     indication = null,
@@ -63,10 +69,11 @@ fun GameCover(
                     onClickLabel = "Launch ROM",
                     onLongClickLabel = "Show ROM context menu",
                 )
+                .focusable(interactionSource = interactionSource)
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     width = 2.dp,
-                    color = if (isHovered) MaterialTheme.colorScheme.primary else Color.Transparent,
+                    color = if (isHighlighted) MaterialTheme.colorScheme.primary else Color.Transparent,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .background(MaterialTheme.colorScheme.background),

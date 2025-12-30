@@ -30,10 +30,13 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,6 +79,7 @@ fun EmulatorHomePage(
     state: EmulatorState,
     onAction: (EmulatorActions) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
     val pagerState = rememberPagerState(
         initialPage = state.currentPage,
         pageCount = { state.consoles.size }
@@ -83,6 +87,11 @@ fun EmulatorHomePage(
 
     val pullToRefreshState = rememberPullToRefreshState()
 
+    LaunchedEffect(Unit) {
+        if (state.games.isNotEmpty()) {
+            focusRequester.requestFocus()
+        }
+    }
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
@@ -146,12 +155,14 @@ fun EmulatorHomePage(
                         state.romQuery.isEmpty() -> {
                             HorizontalPager(
                                 modifier = Modifier.padding(innerPadding),
+                                beyondViewportPageCount = 1,
                                 state = pagerState,
                             ) { page ->
                                 GameGrid(
                                     games = state.games.filter { it.consoles == state.consoles[page] },
                                     state = state,
-                                    onAction = onAction
+                                    onAction = onAction,
+                                    modifier = Modifier.focusRequester(focusRequester)
                                 )
                             }
                         }
@@ -160,7 +171,7 @@ fun EmulatorHomePage(
                                 games = state.queriedRoms,
                                 state = state,
                                 onAction = onAction,
-                                modifier = Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding).focusRequester(focusRequester)
                             )
                         }
                     }

@@ -1,6 +1,7 @@
 package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.net.Uri
+import androidx.compose.ui.geometry.Offset
 import com.bzapata.triangle.emulatorScreen.domain.Game
 
 sealed interface EmulatorActions {
@@ -23,4 +24,7 @@ sealed interface EmulatorActions {
     data class LaunchExternalRom(val uri: Uri) : EmulatorActions
     data object ToggleRenameDialog : EmulatorActions
     data class RenameRom(val newName: String) : EmulatorActions
+    data object FocusSearchBar : EmulatorActions
+    data class MovePage(val offset : Int) : EmulatorActions
+
 }

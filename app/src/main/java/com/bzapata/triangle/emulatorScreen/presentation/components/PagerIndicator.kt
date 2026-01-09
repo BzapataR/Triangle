@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ import com.bzapata.triangle.ui.theme.TriangleTheme
 fun PagerIndicator(
     pagerState: PagerState
 ) {
-    Column {
+    Column(modifier = Modifier.focusProperties { canFocus = false }) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         BottomAppBar(

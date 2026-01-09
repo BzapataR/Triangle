@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -42,23 +43,29 @@ fun AppBar(
     onChangeUserFolder: () -> Unit,
     onChangeRomsFolder: () -> Unit,
     onQuery :(String) -> Unit,
-    windowWidth: WindowWidthSizeClass
+    windowWidth: WindowWidthSizeClass,
 ) {
 
-    val isExpanded = windowWidth == WindowWidthSizeClass.Expanded
+    val isWideScreen = windowWidth != WindowWidthSizeClass.Compact
 
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+    )
+    {
         CenterAlignedTopAppBar(
             title = {
                 Text(
                     text = currentEmulatorName,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    //modifier = Modifier.height(40.dp)
                 )
             },
             navigationIcon = {
-                IconButton(onClick = { settingsToggle() }) {
+                IconButton(
+                    onClick = { settingsToggle() },
+                    modifier = Modifier.focusProperties { canFocus = false }
+                ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.settings),
                         contentDescription = "Settings",
@@ -67,7 +74,10 @@ fun AppBar(
                 }
             },
             actions = {
-                IconButton(onClick = { fileToggle() }) {
+                IconButton(
+                    onClick = { fileToggle() },
+                    modifier = Modifier.focusProperties { canFocus = false }
+                ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.outline_add_24),
                         contentDescription = "Add Games",
@@ -80,8 +90,12 @@ fun AppBar(
                     onChangeUserFolder = onChangeUserFolder,
                     onChangeRomsFolder = onChangeRomsFolder
                 )
-                if (isExpanded) {
-                    SearchField(modifier = Modifier.width(275.dp)) {
+                if (isWideScreen) {
+                    SearchField(
+                        modifier = Modifier
+                            .width(275.dp)
+                            .focusProperties { canFocus = false }
+                    ) {
                         onQuery(it)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -91,8 +105,12 @@ fun AppBar(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         )
-        if (!isExpanded) {
-            SearchField(Modifier.padding(bottom = 8.dp)) {
+        if (!isWideScreen) {
+            SearchField(
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .focusProperties { canFocus = false }
+            ) {
                 onQuery(it)
             }
         }
@@ -114,7 +132,7 @@ private fun TopAppBarPreview() {
             onChangeUserFolder = {},
             onChangeRomsFolder = {},
             windowWidth = WindowWidthSizeClass.Compact,
-            onQuery = {}
+            onQuery = {},
         )
     }
 }

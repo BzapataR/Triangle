@@ -11,9 +11,11 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
+import android.view.KeyEvent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bzapata.triangle.data.controller.Controller
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
@@ -27,6 +29,7 @@ import java.io.File
 
 class MainActivity : ComponentActivity() {
     private val config: ConfigRepository by inject()
+    private val controllerClass = Controller()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -69,7 +72,14 @@ class MainActivity : ComponentActivity() {
             handleExternalRomLaunch(intent)
         }
     }
-
+    override fun onKeyDown(keyCode : Int, event : KeyEvent) : Boolean {
+        val action = controllerClass.onKeyDown(event)
+        if (action != null) {
+            getViewModel<EmulatorViewModel>().onAction(action)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
     private fun handleExternalRomLaunch(intent: Intent) {
         val uri: Uri? =
             if (intent.action == Intent.ACTION_SEND) intent.getParcelableExtra(Intent.EXTRA_STREAM) else intent.data

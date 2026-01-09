@@ -91,7 +91,6 @@ fun GameContextMenu(
                         )
                     }
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
-
                     DropdownMenuItem(
                         text = { Text("Rename") },
                         leadingIcon = {
@@ -146,13 +145,16 @@ fun GameContextMenu(
                             )
                         },
                         onClick = {
-                            if (game.localCoverUri != null)
+                            if (game.localCoverUri != null) {
                                 createPinnedShortcut(
                                     context = context,
                                     shortcutId = game.hash,
                                     label = game.name,
                                     iconUri = game.localCoverUri
                                 )
+                                onActions(EmulatorActions.ToggleGameContextMenu(null))
+                            }
+
                         }
                     )
 

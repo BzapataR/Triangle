@@ -26,5 +26,5 @@ data class EmulatorState(
     val coverQuery: String = "",
     val romQuery : String = "",
     val errorMessage: String? = null,
-    val renameDialogOpen: Boolean = false
+    val renameDialogOpen: Boolean = false,
 )

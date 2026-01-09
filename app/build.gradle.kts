@@ -15,6 +15,12 @@ android {
     }
 
     defaultConfig {
+        externalNativeBuild {
+            cmake {
+                arguments += "-DANDROID_ALIGNED_16K=ON"
+                cppFlags += ""
+            }
+        }
         applicationId = "com.bzapata.triangle"
         minSdk = 33
         targetSdk = 36
@@ -22,8 +28,20 @@ android {
         versionName = "0.1.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false

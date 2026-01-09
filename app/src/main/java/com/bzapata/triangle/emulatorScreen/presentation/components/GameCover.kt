@@ -1,5 +1,10 @@
 package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.view.InputDevice
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,11 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.getSystemService
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bzapata.triangle.R
@@ -47,6 +56,28 @@ fun GameCover(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val haptics = LocalHapticFeedback.current
+    val context = LocalContext.current
+    fun vibrateController() {
+        // We can't easily get the device ID from combinedClickable's lambda,
+        // so we check all connected controllers for a quick "buzz"
+        val inputManager = context.getSystemService(Context.INPUT_SERVICE) as android.hardware.input.InputManager
+        inputManager.inputDeviceIds.forEach { id ->
+            val device = inputManager.getInputDevice(id)
+            if (device != null && (device.sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD)) {
+                // For modern SDKs (31+)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    val vm = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                    vm.defaultVibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    // Older SDKs
+                    @Suppress("DEPRECATION")
+                    val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    v.vibrate(50)
+                }
+            }
+        }
+    }
 
     val isHighlighted = isFocused || isHovered
 
@@ -60,8 +91,12 @@ fun GameCover(
                 .combinedClickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    onClick = {/*Launch Game*/ },
+                    onClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
+                        vibrateController()
+                    },
                     onLongClick = {
+                        vibrateController()
                         onActions(EmulatorActions.ToggleGameContextMenu(game.hash))
                         onActions(EmulatorActions.SelectGame(game))
                     }, // Original Delta open the game on this event but i don'''t like that instead focus on cover and show menu. wow this is a long comment should i split it or not? Nah no is looking at this... yet ;)

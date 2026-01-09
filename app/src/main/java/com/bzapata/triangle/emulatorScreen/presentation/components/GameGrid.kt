@@ -8,6 +8,7 @@ package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
 
 import android.util.Log
 import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,13 +35,13 @@ fun GameGrid(
     onAction: (EmulatorActions) -> Unit
 ) {
 
-    LaunchedEffect(state.gameHashForContextMenu) {
-        Log.i("Page", "state hash changed to: ${state.gameHashForContextMenu}")
-    }
-    key(state.gameHashForContextMenu) { //When 1 rom is loaded context menu won't open without this
+//    LaunchedEffect(state.gameHashForContextMenu) {
+//        Log.i("Page", "state hash changed to: ${state.gameHashForContextMenu}")
+//    }
+//    key(state.gameHashForContextMenu) { //When 1 rom is loaded context menu won't open without this
         LazyVerticalGrid(
             columns = GridCells.Adaptive(90.dp),
-            modifier = modifier.fillMaxSize().focusGroup(),
+            modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -55,7 +56,7 @@ fun GameGrid(
                 )
             }
         }
-    }
+//    }
 }
 
 @Preview(showBackground = true)

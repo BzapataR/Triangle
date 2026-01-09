@@ -45,7 +45,7 @@ class EmulatorViewModel(
                     val updatedConsoles = games.map { it.consoles }.distinct().sorted()
                     currentState.copy(
                         games = games.sortedBy { it.name },
-                        consoles = updatedConsoles
+                        consoles = updatedConsoles,
                     )
                 }
             }.launchIn(viewModelScope)
@@ -75,7 +75,7 @@ class EmulatorViewModel(
                         currentPage = action.page
                     )
                 }
-                Log.i("Page", "Current Page: ${_state.value}")
+                Log.i("Page", "Current Page: ${_state.value.currentPage}")
             }
 
             is EmulatorActions.ToggleGameContextMenu -> {
@@ -193,6 +193,24 @@ class EmulatorViewModel(
             is EmulatorActions.QuerySavedRoms -> {
                 _state.update { it.copy(romQuery = action.name) }
             }
+            is EmulatorActions.MovePage -> {
+                _state.update { currentState ->
+                    val maxPage = currentState.consoles.size -1
+                    if (maxPage < 0)
+                        return@update currentState
+
+                    val newPage = when (action.offset) {
+                        Int.MAX_VALUE -> maxPage
+                        Int.MIN_VALUE -> 0
+                        else -> {
+                            val calculatedPage = currentState.currentPage + action.offset
+                                calculatedPage.coerceIn(0, maxPage)
+                        }
+                    }
+                    currentState.copy(currentPage = newPage)
+                }
+            }
+            is EmulatorActions.FocusSearchBar -> {}
         }
     }
     fun changeWindowSize(windowSize : WindowWidthSizeClass) {

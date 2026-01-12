@@ -1,5 +1,6 @@
 package com.bzapata.triangle.di
 
+import com.bzapata.triangle.data.controller.ControllerManager
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameDataBase.GamesDb
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
@@ -26,6 +27,9 @@ val appModule = module {
 
     single {
         SavedRomsDb.getRomsDatabase(context = get())
+    }
+    single {
+        ControllerManager(context = get())
     }
     single { get<SavedRomsDb>().romsDbDoa() }
 

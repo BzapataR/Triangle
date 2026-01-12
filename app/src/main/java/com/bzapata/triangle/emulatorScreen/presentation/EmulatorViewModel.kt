@@ -39,8 +39,9 @@ class EmulatorViewModel(
     }
 
     private fun setScreen() {
-        gameRepo.getGames().distinctUntilChanged()
+        gameRepo.getGames()
             .onEach { games ->
+                Log.i("Game List", "Game List Updated")
                 _state.update { currentState ->
                     val updatedConsoles = games.map { it.consoles }.distinct().sorted()
                     currentState.copy(

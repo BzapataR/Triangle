@@ -24,8 +24,8 @@ interface SavedRomsDoa {
     @Query("DELETE FROM SavedRomsDb")
     fun deleteAll()
 
-    @Query("UPDATE SavedRomsDb SET localCoverUri = :uri WHERE deviceHash = :hash")
-    suspend fun updateCoverUri(hash: String, uri: String)
+    @Query("UPDATE SavedRomsDb SET localCoverUri = :uri, coverTimeStamp = :newCoverTimeStamp WHERE deviceHash = :hash")
+    suspend fun updateCoverUri(hash: String, uri: String, newCoverTimeStamp : Long)
 
     @Query("SELECT * FROM SavedRomsDb WHERE deviceHash = :hash")
     suspend fun queryForDevice(hash: String): SavedRomsEntity?

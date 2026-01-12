@@ -1,5 +1,6 @@
 package com.bzapata.triangle.emulatorScreen.data.romsDatabase
 
+import android.net.Uri
 import androidx.core.net.toUri
 import com.bzapata.triangle.emulatorScreen.domain.Game
 
@@ -8,23 +9,25 @@ fun SavedRomsEntity.toGame(): Game {
         name = this.name,
         romID = this.romId,
         path = this.path.toUri(),
-        coverDownloaderUri = this.coverDownloadUri.map { it?.toUri() },
         localCoverUri = this.localCoverUri?.toUri(),
         consoles = this.console,
-        hash = this.deviceHash
+        hash = this.deviceHash,
+        coverTimeStamp = this.coverTimeStamp
+
     )
 }
 
-fun Game.toSavedRomsEntity(lastModified: Long): SavedRomsEntity {
+fun Game.toSavedRomsEntity(lastModified: Long, coverUrl : List<Uri>): SavedRomsEntity {
     return SavedRomsEntity(
         deviceHash = this.hash,
         name = this.name,
-        coverDownloadUri = this.coverDownloaderUri.map { it.toString() },
+        coverDownloadUri = coverUrl.map { it.toString() },
         localCoverUri = this.localCoverUri.toString(),
         path = this.path.toString(),
         romId = this.romID,
         console = this.consoles,
-        lastModified = lastModified
+        lastModified = lastModified,
+        coverTimeStamp = this.coverTimeStamp
     )
 }
 

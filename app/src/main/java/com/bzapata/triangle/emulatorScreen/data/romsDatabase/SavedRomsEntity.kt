@@ -14,5 +14,6 @@ data class SavedRomsEntity(
     @ColumnInfo(name = "path") val path: String,
     @ColumnInfo(name = "romId") val romId: Int,
     @ColumnInfo(name = "console") val console: Consoles,
-    @ColumnInfo(name = "lastModified") val lastModified: Long
+    @ColumnInfo(name = "lastModified") val lastModified: Long,
+    @ColumnInfo(name = "coverTimeStamp") val coverTimeStamp : Long?,
 )

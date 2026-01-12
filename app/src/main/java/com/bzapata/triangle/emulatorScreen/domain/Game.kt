@@ -8,7 +8,7 @@ data class Game(
     val romID: Int,
     val path: Uri,
 //val settings : ROOMDB SETTINGS
-    val coverDownloaderUri: List<Uri?>,
+    val coverTimeStamp : Long?,
     val localCoverUri: Uri?,
     val consoles: Consoles,
     val hash: String

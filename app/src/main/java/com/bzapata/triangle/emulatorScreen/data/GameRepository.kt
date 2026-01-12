@@ -87,7 +87,7 @@ class GameRepository(
         Log.i("GameRepo", "Validation finished.")
     }
 
-    private suspend fun idRom(
+    private suspend fun idRom( //todo god i need to clean this up
         romPath: Uri,
         context: Context,
         doa: GamesDbDoa,
@@ -106,29 +106,31 @@ class GameRepository(
         val coverURI = doa.getCoverURI(romID).map { it?.toUri() ?: "".toUri() }
         val console = dbRom?.consoles ?: Consoles.fromExtension(File(fileName).extension)
         ?: throw IllegalArgumentException("File with incorrect file extension $fileName")
+        val cover = if (dbRom?.localCoverUri?.isValid(context) == true) dbRom.localCoverUri else findCover(
+            context = context,
+            userFolder = userPath,
+            gameHash = hash,
+        ) ?: downloadCover(
+            context = context,
+            gameHash = hash,
+            imageUris = coverURI,
+            userFolder = userPath
+        ) ?: Uri.EMPTY
+        val coverTimeStamp = DocumentFile.fromSingleUri(context, cover)?.lastModified()
 
 
         val rom = Game(
             name = romName,
-            coverDownloaderUri = coverURI,
             romID = romID,
             path = romPath,
             consoles = console,
             hash = hash,
-            localCoverUri = if (dbRom?.localCoverUri?.isValid(context) == true) dbRom.localCoverUri else findCover(
-                context = context,
-                userFolder = userPath,
-                gameHash = hash,
-            ) ?: downloadCover(
-                context = context,
-                gameHash = hash,
-                imageUris = coverURI,
-                userFolder = userPath
-            ) ?: Uri.EMPTY
+            localCoverUri = cover,
+            coverTimeStamp = coverTimeStamp
         )
         if (dbRom == null) {
-            val lastModified = file.lastModified()
-            savedRomsDoa.upsert(rom.toSavedRomsEntity(lastModified))
+            val romLastModified = file.lastModified()
+            savedRomsDoa.upsert(rom.toSavedRomsEntity(romLastModified, coverURI))
         }
         return rom
     }
@@ -151,7 +153,8 @@ class GameRepository(
             imageUri = uri,
             gameHash = gameHash
         )
-        savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash)
+        val coverTimeStamp = DocumentFile.fromSingleUri(context, newUri?: return@withContext)?.lastModified()?: return@withContext
+        savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash, newCoverTimeStamp = coverTimeStamp)
     }
 
     override suspend fun getCoverFromClipboard(gameHash: String) = withContext(Dispatchers.IO) {
@@ -164,7 +167,8 @@ class GameRepository(
                 imageUri = uriFromClipboard,
                 gameHash = gameHash
             )
-            savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash)
+            val coverTimeStamp = DocumentFile.fromSingleUri(context, newUri!!)!!.lastModified()
+            savedRomsDoa.updateCoverUri(uri = newUri.toString(), hash = gameHash, newCoverTimeStamp =coverTimeStamp)
         } catch (e: Exception) {
             throw e
         }

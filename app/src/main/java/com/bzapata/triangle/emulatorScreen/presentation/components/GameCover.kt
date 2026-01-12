@@ -22,12 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,14 +35,15 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.getSystemService
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
 import com.bzapata.triangle.emulatorScreen.presentation.components.GameContextMenu
+import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -86,7 +87,7 @@ fun GameCover(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .focusable(interactionSource = interactionSource)
                 .combinedClickable(
                     interactionSource = interactionSource,
@@ -116,17 +117,20 @@ fun GameCover(
 
             )
         {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(game.localCoverUri) // Pass the Uri object here
-                    .fallback(R.drawable.deltaicon)
-                    .error(R.drawable.deltaicon)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Cover",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize(),
-            )
+            key(game.coverTimeStamp) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(game.localCoverUri)
+                        .setParameter("lastModified", game.coverTimeStamp)
+                        .fallback(R.drawable.deltaicon)
+                        .error(R.drawable.deltaicon)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Cover",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
             GameContextMenu(
                 game = game,
                 expanded = isContextMenuShown,

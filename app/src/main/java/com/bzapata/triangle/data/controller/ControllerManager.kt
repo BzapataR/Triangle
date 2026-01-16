@@ -18,6 +18,9 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
 
     private val _connectedControllers = MutableStateFlow<List<ConnectedController>>(emptyList())
     val connectedController = _connectedControllers.asStateFlow()
+    private val _recentControllerType = MutableStateFlow<ControllerType?>(null)
+    val recentControllerType = _recentControllerType.asStateFlow()
+
     enum class ControllerType(){
         XBOX,
         PLAYSTATION,
@@ -41,10 +44,11 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
             val device = inputManager.getInputDevice(id)
             if (device != null && isSupportedInput(device)) {
                 Log.i(tag, "Device Added: ${device.name}")
+                _recentControllerType.update { identifyController(device) }// todo update other functions to update state
                 ConnectedController(
                     id = id,
                     name = device.name,
-                    type = identifyController(device),
+                    type = identifyController(device) ?: return@map null,
                     vendorID = device.vendorId,
                     productId = device.productId
                 )
@@ -55,16 +59,29 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
         }.filterNotNull()
         _connectedControllers.update { controllers }
     }
-    private fun identifyController(device : InputDevice) : ControllerType {
+//    private fun detectGamepadBrand(device: InputDevice): InputType { below works fine for now
+//        return when (device.vendorId) {
+//            0x054C -> InputType.PLAYSTATION   // Sony
+//            0x045E -> InputType.XBOX          // Microsoft
+//            0x057E -> InputType.NINTENDO      // Nintendo
+//            else -> InputType.UNKNOWN
+//        }
+//    }
+
+    private fun identifyController(device : InputDevice) : ControllerType? {
         val name = device.name.lowercase()
-        return when {
-            name.contains("xbox") -> ControllerType.XBOX
-            name.contains("dualshock") || name.contains("dualsense") || name.contains("playstation") -> ControllerType.PLAYSTATION
-            name.contains("joy-con") || name.contains("pro controller") || name.contains("nintendo") -> ControllerType.NINTENDO
-            (device.sources and InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD &&
-                    device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC -> ControllerType.KEYBOARD
-            else -> ControllerType.OTHER
+        if (isSupportedInput(device)) {
+            return when {
+                name.contains("xbox") -> ControllerType.XBOX
+                name.contains("dualshock") || name.contains("dualsense") || name.contains("playstation") -> ControllerType.PLAYSTATION
+                name.contains("joy-con") || name.contains("pro controller") || name.contains("nintendo") -> ControllerType.NINTENDO
+                (device.sources and InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD &&
+                        device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC -> ControllerType.KEYBOARD
+
+                else -> ControllerType.OTHER
+            }
         }
+        return null // touch input
     }
     fun vibrate(deviceId: Int, durationMillis : Long = 100) {
         val device = inputManager.getInputDevice(deviceId) ?: return
@@ -91,7 +108,17 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
         Log.i(tag, "Input Removed")
         updateControllerList()
     }
-    fun onKeyDown(event: KeyEvent): EmulatorActions? {
+    fun inputDeviceDetection(event : KeyEvent) : ControllerType?  {
+        val type = identifyController(event.device)
+        Log.i(tag, "deviceBrand : $type")
+        return type
+    }
+//    fun inputDeviceDetection(event : MotionEvent) : ControllerType?  {
+//        val type = identifyController(event.device)
+//        Log.i(tag, "deviceBrand : $type")
+//        return type
+//    }
+    fun buttonActionMapping(event: KeyEvent): EmulatorActions? {
         val keyCode = event.keyCode
         if (event.repeatCount != 0) return null
         if (event.action != KeyEvent.ACTION_DOWN) return null
@@ -131,14 +158,35 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
             else -> null
         }
     }
+    fun motionActionMapping(event: MotionEvent) : EmulatorActions? {
+        if (!isSupportedInput(event.device)) {
+            return null
+        }
+        val lTrigger = maxOf(
+            event.getAxisValue(MotionEvent.AXIS_LTRIGGER),
+            event.getAxisValue(MotionEvent.AXIS_BRAKE),
+            event.getAxisValue(MotionEvent.AXIS_Z)
+        )
+        val rTrigger = maxOf(
+            event.getAxisValue(MotionEvent.AXIS_RTRIGGER),
+            event.getAxisValue(MotionEvent.AXIS_GAS),
+            event.getAxisValue(MotionEvent.AXIS_RZ)
+        )
+        val triggerThreshold = 0.25f
+        val ltPressed = lTrigger > triggerThreshold
+        val rtPressed = rTrigger > triggerThreshold
 
-    fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        //TODO Handle Scroll Wheel or Right Stick scrolling
-        return false
+        return when {
+            rtPressed -> EmulatorActions.MovePage(Int.MAX_VALUE)
+            ltPressed -> EmulatorActions.MovePage(Int.MIN_VALUE)
+            else -> null
+        }
     }
-
     private fun isSupportedInput(device: InputDevice): Boolean {
         val sources = device.sources
+        if (device.isVirtual) {
+            return false
+        }
         return (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) ||
                 (sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK) ||
                 ((sources and InputDevice.SOURCE_KEYBOARD == InputDevice.SOURCE_KEYBOARD) && device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC)

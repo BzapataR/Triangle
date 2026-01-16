@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bzapata.triangle.data.controller.ControllerManager
+import com.bzapata.triangle.data.controller.ControllerManager.ControllerType
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +24,8 @@ import kotlinx.coroutines.launch
 
 class EmulatorViewModel(
     private val gameRepo: GameRepository,
-    private val configRepo: ConfigRepository
+    private val configRepo: ConfigRepository,
+    private val controllerManager: ControllerManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EmulatorState())
@@ -36,6 +39,7 @@ class EmulatorViewModel(
         observeRomPath()
         observeRomQuery()
         observeCoverSearchQuery()
+        observeControllerPresence()
     }
 
     private fun setScreen() {
@@ -50,6 +54,14 @@ class EmulatorViewModel(
                     )
                 }
             }.launchIn(viewModelScope)
+    }
+    private fun observeControllerPresence() {
+        controllerManager.connectedController.onEach { controllers ->
+            val isPresent = controllers.isNotEmpty()
+            if (isPresent)
+                updateRecentController(controllerManager.recentControllerType.value)
+            _state.update { it.copy(controllerPresent = isPresent) }
+        }.launchIn(viewModelScope)
     }
 
     private fun observeRomPath() {
@@ -258,5 +270,8 @@ class EmulatorViewModel(
     }
     private fun searchRoms(query : String) = viewModelScope.launch{
         _state.update { it.copy(queriedRoms = gameRepo.querySavedRoms(query)) }
+    }
+    fun updateRecentController (type : ControllerType?) {
+        _state.update { it.copy(currentControllerType = type) }
     }
 }

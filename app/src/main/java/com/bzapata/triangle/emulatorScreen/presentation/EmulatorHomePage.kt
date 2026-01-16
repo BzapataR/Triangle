@@ -11,7 +11,6 @@ import android.hardware.input.InputManager
 import android.util.Log
 import android.view.InputDevice
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +40,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -60,7 +58,6 @@ import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.Gam
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import com.bzapata.triangle.util.fileLaunchers.directoryPicker
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.onStart
@@ -179,7 +176,7 @@ fun EmulatorHomePage(
         },
         bottomBar = {
             if (state.consoles.isNotEmpty()) {
-                PagerIndicator(pagerState = pagerState)
+                PagerIndicator(pagerState = pagerState, state.controllerPresent, state.currentControllerType)
             }
         }
     ) { innerPadding ->

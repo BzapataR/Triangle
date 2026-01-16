@@ -2,6 +2,7 @@ package com.bzapata.triangle.emulatorScreen.presentation
 
 import android.net.Uri
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.bzapata.triangle.data.controller.ControllerManager
 import com.bzapata.triangle.emulatorScreen.domain.Consoles
 import com.bzapata.triangle.emulatorScreen.domain.Game
 
@@ -27,4 +28,6 @@ data class EmulatorState(
     val romQuery : String = "",
     val errorMessage: String? = null,
     val renameDialogOpen: Boolean = false,
+    val controllerPresent : Boolean = false,
+    val currentControllerType : ControllerManager.ControllerType? = null
 )

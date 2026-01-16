@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import android.view.KeyEvent
+import android.view.MotionEvent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,12 +74,25 @@ class MainActivity : ComponentActivity() {
         }
     }
     override fun onKeyDown(keyCode : Int, event : KeyEvent) : Boolean {
-        val action = controllerManagerClass.onKeyDown(event)
+        val vm = getViewModel<EmulatorViewModel>()
+        vm.updateRecentController(controllerManagerClass.inputDeviceDetection(event))
+        val action = controllerManagerClass.buttonActionMapping(event)
         if (action != null) {
-            getViewModel<EmulatorViewModel>().onAction(action)
+            vm.onAction(action)
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
+        val vm = getViewModel<EmulatorViewModel>()
+        val action = controllerManagerClass.motionActionMapping(event)
+        if (action != null) {
+            vm.onAction(action)
+            return true
+        }
+        //vm.updateRecentController(controllerManagerClass.inputDeviceDetection(ev))
+        return super.dispatchGenericMotionEvent(event)
     }
     private fun handleExternalRomLaunch(intent: Intent) {
         val uri: Uri? =

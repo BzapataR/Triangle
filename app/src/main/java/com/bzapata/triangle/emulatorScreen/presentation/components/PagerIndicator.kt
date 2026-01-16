@@ -19,20 +19,30 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bzapata.triangle.R
+import com.bzapata.triangle.data.controller.ControllerManager
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import com.bzapata.triangle.util.controllerIcons.leftTriggerIcons
+import com.bzapata.triangle.util.controllerIcons.rightTriggerIcons
 
 
 @Composable
 fun PagerIndicator(
-    pagerState: PagerState
+    pagerState: PagerState,
+    controllerPresent : Boolean,
+    controllerType : ControllerManager.ControllerType?
 ) {
     Column(modifier = Modifier.focusProperties { canFocus = false }) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -48,21 +58,50 @@ fun PagerIndicator(
 //        }
             Row(
                 Modifier
-                    //.wrapContentHeight()
+                    .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (controllerPresent)Arrangement.SpaceBetween else Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             )
             {
-                repeat(pagerState.pageCount) { iteration ->
-                    val color =
-                        if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else Color.LightGray
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .size(6.dp)
-                    )
+                if (controllerPresent && controllerType != null) {
+                    Row {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_double_arrow_left_24),
+                            contentDescription = null
+                        )
+                        Icon(
+                            imageVector = ImageVector.vectorResource(leftTriggerIcons(controllerType)),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+                Row {
+                    repeat(pagerState.pageCount) { iteration ->
+                        val color =
+                            if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else Color.LightGray
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .size(6.dp)
+                        )
+                    }
+                }
+                if (controllerPresent && controllerType != null) {
+                    Row {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(rightTriggerIcons(controllerType)),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_double_arrow_right_24),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         }
@@ -74,6 +113,6 @@ fun PagerIndicator(
 fun PagerIndicatorPreview() {
     TriangleTheme {
         val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 1)
-        PagerIndicator(pagerState)
+        PagerIndicator(pagerState, false, null)
     }
 }

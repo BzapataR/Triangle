@@ -39,7 +39,7 @@ class EmulatorViewModel(
         observeRomPath()
         observeRomQuery()
         observeCoverSearchQuery()
-        observeControllerPresence()
+        observeRecentControllerType()
     }
 
     private fun setScreen() {
@@ -55,12 +55,9 @@ class EmulatorViewModel(
                 }
             }.launchIn(viewModelScope)
     }
-    private fun observeControllerPresence() {
-        controllerManager.connectedController.onEach { controllers ->
-            val isPresent = controllers.isNotEmpty()
-            if (isPresent)
-                updateRecentController(controllerManager.recentControllerType.value)
-            _state.update { it.copy(controllerPresent = isPresent) }
+    private fun observeRecentControllerType() {
+        controllerManager.recentControllerType.onEach { type ->
+            _state.update { it.copy(currentControllerType = type) }
         }.launchIn(viewModelScope)
     }
 
@@ -270,8 +267,5 @@ class EmulatorViewModel(
     }
     private fun searchRoms(query : String) = viewModelScope.launch{
         _state.update { it.copy(queriedRoms = gameRepo.querySavedRoms(query)) }
-    }
-    fun updateRecentController (type : ControllerType?) {
-        _state.update { it.copy(currentControllerType = type) }
     }
 }

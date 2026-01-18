@@ -128,10 +128,9 @@ fun DatabaseCoverSelector(
                         }
                         SearchField(
                             modifier = Modifier.padding(bottom = 4.dp),
-                            initialText = game.name
-                        ) {
-                            onAction(EmulatorActions.QueryCovers(it))
-                        }
+                            initialText = game.name,
+                            onSearch = { onAction(EmulatorActions.QueryCovers(it)) }
+                        )
                     }
                 }
                 if (state.coverQuery.isEmpty()) {

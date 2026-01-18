@@ -28,6 +28,5 @@ data class EmulatorState(
     val romQuery : String = "",
     val errorMessage: String? = null,
     val renameDialogOpen: Boolean = false,
-    val controllerPresent : Boolean = false,
     val currentControllerType : ControllerManager.ControllerType? = null
 )

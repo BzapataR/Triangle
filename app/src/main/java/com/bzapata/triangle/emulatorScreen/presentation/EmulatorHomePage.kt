@@ -171,12 +171,13 @@ fun EmulatorHomePage(
                         /*"${pagerState.currentPage} , ${state.currentPage}",*/state.consoles.getOrNull(state.currentPage)?.name ?: "",
                 onChangeUserFolder = userDirectoryPicker,
                 onChangeRomsFolder = romsDirectoryPicker,
-                onQuery = {onAction(EmulatorActions.QuerySavedRoms(it))}
+                onQuery = {onAction(EmulatorActions.QuerySavedRoms(it))},
+                controllerType = state.currentControllerType
             )
         },
         bottomBar = {
             if (state.consoles.isNotEmpty()) {
-                PagerIndicator(pagerState = pagerState, state.controllerPresent, state.currentControllerType)
+                PagerIndicator(pagerState = pagerState, state.currentControllerType)
             }
         }
     ) { innerPadding ->

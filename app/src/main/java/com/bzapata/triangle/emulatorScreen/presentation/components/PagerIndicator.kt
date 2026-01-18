@@ -41,7 +41,6 @@ import com.bzapata.triangle.util.controllerIcons.rightTriggerIcons
 @Composable
 fun PagerIndicator(
     pagerState: PagerState,
-    controllerPresent : Boolean,
     controllerType : ControllerManager.ControllerType?
 ) {
     Column(modifier = Modifier.focusProperties { canFocus = false }) {
@@ -60,11 +59,11 @@ fun PagerIndicator(
                 Modifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = if (controllerPresent)Arrangement.SpaceBetween else Arrangement.Center,
+                horizontalArrangement = if (controllerType != null)Arrangement.SpaceBetween else Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             )
             {
-                if (controllerPresent && controllerType != null) {
+                if (controllerType != null) {
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_double_arrow_left_24),
@@ -90,7 +89,7 @@ fun PagerIndicator(
                         )
                     }
                 }
-                if (controllerPresent && controllerType != null) {
+                if (controllerType != null) {
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(rightTriggerIcons(controllerType)),
@@ -113,6 +112,6 @@ fun PagerIndicator(
 fun PagerIndicatorPreview() {
     TriangleTheme {
         val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 1)
-        PagerIndicator(pagerState, false, null)
+        PagerIndicator(pagerState, null)
     }
 }

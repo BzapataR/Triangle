@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.data.controller.ControllerManager
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +45,7 @@ fun AppBar(
     onChangeRomsFolder: () -> Unit,
     onQuery :(String) -> Unit,
     windowWidth: WindowWidthSizeClass,
+    controllerType: ControllerManager.ControllerType? = null,
 ) {
 
     val isWideScreen = windowWidth != WindowWidthSizeClass.Compact
@@ -94,10 +96,10 @@ fun AppBar(
                     SearchField(
                         modifier = Modifier
                             .width(275.dp)
-                            .focusProperties { canFocus = true } // here too
-                    ) {
-                        onQuery(it)
-                    }
+                            .focusProperties { canFocus = true },
+                        onSearch = { onQuery(it) },
+                        controllerType = controllerType
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             },
@@ -109,10 +111,11 @@ fun AppBar(
             SearchField(
                 modifier = Modifier
                     .padding(bottom = 8.dp)
-                    .focusProperties { canFocus = true } // todo make false when controller connected but still make it accessible by pressing Triangle button(or xbox/nintendo equivalent)
-            ) {
-                onQuery(it)
-            }
+                    .focusProperties { canFocus = true }, // todo make false when controller connected but still make it accessible by pressing Triangle button(or xbox/nintendo equivalent)
+
+                onSearch = { onQuery(it) },
+                controllerType = controllerType
+            )
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 

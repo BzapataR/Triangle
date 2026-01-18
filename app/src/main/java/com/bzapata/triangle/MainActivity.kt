@@ -74,8 +74,8 @@ class MainActivity : ComponentActivity() {
         }
     }
     override fun onKeyDown(keyCode : Int, event : KeyEvent) : Boolean {
+        controllerManagerClass.inputDeviceDetection(event)
         val vm = getViewModel<EmulatorViewModel>()
-        vm.updateRecentController(controllerManagerClass.inputDeviceDetection(event))
         val action = controllerManagerClass.buttonActionMapping(event)
         if (action != null) {
             vm.onAction(action)
@@ -85,13 +85,13 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
+        controllerManagerClass.inputDeviceDetection(event)
         val vm = getViewModel<EmulatorViewModel>()
         val action = controllerManagerClass.motionActionMapping(event)
         if (action != null) {
             vm.onAction(action)
             return true
         }
-        //vm.updateRecentController(controllerManagerClass.inputDeviceDetection(ev))
         return super.dispatchGenericMotionEvent(event)
     }
     private fun handleExternalRomLaunch(intent: Intent) {

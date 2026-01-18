@@ -42,9 +42,9 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
     private fun updateControllerList() {
         val controllers = inputManager.inputDeviceIds.map { id ->
             val device = inputManager.getInputDevice(id)
+            _recentControllerType.update { identifyController(device) }
             if (device != null && isSupportedInput(device)) {
                 Log.i(tag, "Device Added: ${device.name}")
-                _recentControllerType.update { identifyController(device) }// todo update other functions to update state
                 ConnectedController(
                     id = id,
                     name = device.name,
@@ -68,20 +68,25 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
 //        }
 //    }
 
-    private fun identifyController(device : InputDevice) : ControllerType? {
+    private fun identifyController(device : InputDevice?) : ControllerType? {
+        if (device == null){
+            return null
+        }
         val name = device.name.lowercase()
+        val vendorId = device.vendorId
         if (isSupportedInput(device)) {
             return when {
-                name.contains("xbox") -> ControllerType.XBOX
-                name.contains("dualshock") || name.contains("dualsense") || name.contains("playstation") -> ControllerType.PLAYSTATION
-                name.contains("joy-con") || name.contains("pro controller") || name.contains("nintendo") -> ControllerType.NINTENDO
+                (vendorId == 0x045E) || name.contains("xbox")  -> ControllerType.XBOX
+                (vendorId == 0x054C) || name.contains("dualshock") || name.contains("dualsense") || name.contains("playstation") -> ControllerType.PLAYSTATION
+                (vendorId == 0x057E) || name.contains("joy-con") || name.contains("pro controller") || name.contains("nintendo") -> ControllerType.NINTENDO
                 (device.sources and InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD &&
                         device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC -> ControllerType.KEYBOARD
+                device.sources == InputDevice.SOURCE_MOUSE || device.sources == InputDevice.SOURCE_MOUSE -> ControllerType.KEYBOARD
 
                 else -> ControllerType.OTHER
             }
         }
-        return null // touch input
+        return null
     }
     fun vibrate(deviceId: Int, durationMillis : Long = 100) {
         val device = inputManager.getInputDevice(deviceId) ?: return
@@ -108,16 +113,16 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
         Log.i(tag, "Input Removed")
         updateControllerList()
     }
-    fun inputDeviceDetection(event : KeyEvent) : ControllerType?  {
+    fun inputDeviceDetection(event : KeyEvent)  {
         val type = identifyController(event.device)
         Log.i(tag, "deviceBrand : $type")
-        return type
+        _recentControllerType.update { type }
     }
-//    fun inputDeviceDetection(event : MotionEvent) : ControllerType?  {
-//        val type = identifyController(event.device)
-//        Log.i(tag, "deviceBrand : $type")
-//        return type
-//    }
+    fun inputDeviceDetection(event : MotionEvent) {
+        val type = identifyController(event.device)
+        Log.i(tag, "deviceBrand : $type")
+        _recentControllerType.update{ type }
+    }
     fun buttonActionMapping(event: KeyEvent): EmulatorActions? {
         val keyCode = event.keyCode
         if (event.repeatCount != 0) return null
@@ -184,11 +189,14 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
     }
     private fun isSupportedInput(device: InputDevice): Boolean {
         val sources = device.sources
+        Log.i(tag, "source: $sources")
+        Log.i(tag, "source: $sources")
         if (device.isVirtual) {
             return false
         }
         return (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) ||
                 (sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK) ||
+                (sources and InputDevice.SOURCE_MOUSE == InputDevice.SOURCE_MOUSE) ||
                 ((sources and InputDevice.SOURCE_KEYBOARD == InputDevice.SOURCE_KEYBOARD) && device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC)
     }
 }

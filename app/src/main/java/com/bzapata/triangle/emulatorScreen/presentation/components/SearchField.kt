@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.clearText
@@ -46,13 +47,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
+import com.bzapata.triangle.data.controller.ControllerManager
+import com.bzapata.triangle.util.controllerIcons.yIcon
 
 
 @Composable
 fun SearchField(
     modifier: Modifier = Modifier,
     initialText: String = "",
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    controllerType: ControllerManager.ControllerType? = null,
 ) {
     val textState = rememberTextFieldState(
         initialText = initialText
@@ -104,7 +108,8 @@ fun SearchField(
                 leadingIcon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.sharp_search_24),
-                        contentDescription = "Look For Games"
+                        contentDescription = "Look For Games",
+                        modifier = Modifier.size(24.dp)
                     )
                 },
                 trailingIcon = {
@@ -116,6 +121,16 @@ fun SearchField(
                                 imageVector = ImageVector.vectorResource(R.drawable.sharp_close_24),
                                 contentDescription = "Clear search",
                                 tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                    else if (controllerType != null){
+                        yIcon(controllerType)?.let {
+                            Icon (
+                                imageVector = ImageVector.vectorResource(it),
+                                contentDescription = null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }

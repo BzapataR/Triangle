@@ -18,6 +18,7 @@ import com.bzapata.triangle.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.graphics.createBitmap
 
 fun createPinnedShortcut(context: Context, shortcutId: String, label: String, iconUri: Uri) {
     val shortcutManager = context.getSystemService<ShortcutManager>()
@@ -62,8 +63,8 @@ fun createPinnedShortcut(context: Context, shortcutId: String, label: String, ic
 }
 
 private fun getSquareCroppedBitmap(bitmap: Bitmap): Bitmap {
-    val size = Math.min(bitmap.width, bitmap.height)
-    val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val size = bitmap.width.coerceAtMost(bitmap.height)
+    val output = createBitmap(size, size)
     val canvas = Canvas(output)
 
     val srcRect = if (bitmap.width > bitmap.height) {

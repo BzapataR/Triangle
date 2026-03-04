@@ -86,6 +86,6 @@ fun ControllerSettings(goBack: () -> Unit) {
 @Composable
 fun ControllerSettingsPreview() {
     TriangleTheme {
-        ControllerSettings({})
+        ControllerSettings {}
     }
 }

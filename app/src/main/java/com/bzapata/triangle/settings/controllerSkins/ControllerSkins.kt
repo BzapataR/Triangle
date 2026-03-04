@@ -124,6 +124,6 @@ fun ControllerSkins(goBack: () -> Unit) {
 @Composable
 fun ControllerSkinsPreview() {
     TriangleTheme {
-        ControllerSkins({})
+        ControllerSkins {}
     }
 }

@@ -32,6 +32,6 @@ fun NoTrianglePathDialog(dismiss: () -> Unit) {
 @Composable
 fun NoTrianglePathDialogPreview() {
     TriangleTheme {
-        NoTrianglePathDialog({})
+        NoTrianglePathDialog {}
     }
 }

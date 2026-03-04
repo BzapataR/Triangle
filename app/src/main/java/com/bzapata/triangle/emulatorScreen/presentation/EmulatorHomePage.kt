@@ -54,7 +54,7 @@ import com.bzapata.triangle.emulatorScreen.presentation.components.ErrorDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.PagerIndicator
 import com.bzapata.triangle.emulatorScreen.presentation.components.RenameDialog
 import com.bzapata.triangle.emulatorScreen.presentation.components.SelectCoverActionSheet
-import com.bzapata.triangle.emulatorScreen.presentation.emulators.components.GameGrid
+import com.bzapata.triangle.emulatorScreen.presentation.components.GameGrid
 import com.bzapata.triangle.settings.SettingsNavigator
 import com.bzapata.triangle.ui.theme.TriangleTheme
 import com.bzapata.triangle.util.fileLaunchers.directoryPicker

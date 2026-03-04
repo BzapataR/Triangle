@@ -87,7 +87,7 @@ fun RoundedListItem(
             Text(
                 text = leadingText,
                 maxLines = 1,
-                color = if (trailingIconColor != null) trailingIconColor else Color.Unspecified
+                color = trailingIconColor ?: Color.Unspecified
                 // modifier = Modifier.weight(1f)
             )
         },

@@ -1,4 +1,4 @@
-package com.bzapata.triangle.emulatorScreen.presentation.emulators.components
+package com.bzapata.triangle.emulatorScreen.presentation.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -38,7 +38,6 @@ import com.bzapata.triangle.data.controller.ControllerManager
 import com.bzapata.triangle.emulatorScreen.domain.Game
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorActions
 import com.bzapata.triangle.emulatorScreen.presentation.EmulatorState
-import com.bzapata.triangle.emulatorScreen.presentation.components.GameContextMenu
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalFoundationApi::class)

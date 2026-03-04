@@ -66,6 +66,6 @@ fun Welcome(next: () -> Unit) {
 @Composable
 fun WelcomePreview() {
     TriangleTheme {
-        Welcome({})
+        Welcome {}
     }
 }

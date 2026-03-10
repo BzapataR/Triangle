@@ -51,7 +51,7 @@ fun Path(
         uri?.let { onActions(PathsActions.SetTrianglePath(it)) }
     }
 
-    val selectRomsPathLauncher = directoryPicker(state.romPath) { uri ->
+    val selectRomsPathLauncher = directoryPicker() { uri ->
         uri?.let { onActions(PathsActions.SetRomsPath(it)) }
     }
 

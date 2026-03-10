@@ -78,6 +78,7 @@ fun ControllerSkins(goBack: () -> Unit) {
                 TextButton(
                     onClick = { goBack() },
                     modifier = Modifier.align(Alignment.CenterStart),
+                    contentPadding = PaddingValues(horizontal = 0.dp)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),

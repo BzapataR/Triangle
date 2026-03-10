@@ -5,7 +5,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzapata.triangle.data.controller.ControllerManager
-import com.bzapata.triangle.data.controller.ControllerManager.ControllerType
 import com.bzapata.triangle.data.repository.ConfigRepository
 import com.bzapata.triangle.emulatorScreen.data.GameRepository
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class EmulatorViewModel(
     private val gameRepo: GameRepository,
-    private val configRepo: ConfigRepository,
+    private val appConfig: ConfigRepository,
     private val controllerManager: ControllerManager
 ) : ViewModel() {
 
@@ -62,7 +61,7 @@ class EmulatorViewModel(
     }
 
     private fun observeRomPath() {
-        configRepo.romUriFlow.distinctUntilChanged().onEach { uri ->
+        appConfig.romUrisFlow.distinctUntilChanged().onEach { uri ->
             if (uri != null && !_state.value.isInitialScanDone) {
                 CoroutineScope(Dispatchers.IO).launch {
                     _state.update { it.copy(noRomPath = false, isScanning = true) }
@@ -116,13 +115,13 @@ class EmulatorViewModel(
 
             is EmulatorActions.SetUserFolder -> {
                 viewModelScope.launch {
-                    action.uri?.let { configRepo.saveTriangleDataUri(it) }
+                    action.uri?.let { appConfig.saveTriangleDataUri(it) }
                 }
             }
 
             is EmulatorActions.SetRomsFolder -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    action.uri?.let { configRepo.saveRomsUri(it) }
+                    action.uri?.let { appConfig.saveRomsUri(it) }
                     gameRepo.databaseBomb()
                     _state.update { it.copy(isScanning = true, currentPage = 0) }
                     gameRepo.scanRoms()

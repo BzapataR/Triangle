@@ -18,12 +18,12 @@ class ConfigRepository(private val context: Context) {
 
     private object PreferenceKeys {
         val TRIANGLE_DATA_URI = stringPreferencesKey("triangle_data_uri")
-        val ROMS_URI = stringPreferencesKey("roms_uri")
+        val ROMS_URIS = stringPreferencesKey("roms_uris")
 
         val FIRST_LAUNCH = booleanPreferencesKey("first_launch")
     }
 
-    val triangleDataUriFlow: Flow<Uri?> = context.dataStore.data
+    val triangleDataUriFlow: Flow<Uri?> = context.dataStore.data //todo maybe remove null typing
         .map { preferences ->
             val uriString = preferences[PreferenceKeys.TRIANGLE_DATA_URI]
             uriString?.toUri()
@@ -35,15 +35,26 @@ class ConfigRepository(private val context: Context) {
         }
     }
 
-    val romUriFlow: Flow<Uri?> = context.dataStore.data
+    val romUrisFlow: Flow<List<Uri>> = context.dataStore.data
         .map { preferences ->
-            val uriString = preferences[PreferenceKeys.ROMS_URI]
-            uriString?.toUri()
+            val rawString = preferences[PreferenceKeys.ROMS_URIS]
+            if (rawString.isNullOrEmpty()) {
+                emptyList()
+            }
+            else {
+                rawString.split("\n").map { it.toUri() }
+            }
         }
 
     suspend fun saveRomsUri(uri: Uri?) {
         context.dataStore.edit { preferences ->
-            preferences[PreferenceKeys.ROMS_URI] = uri.toString()
+            val rawString = preferences[PreferenceKeys.ROMS_URIS] ?: ""
+            val currentList = if(rawString.isEmpty()) emptyList() else rawString.split("\n")
+
+            if(!currentList.contains(uri.toString())) {
+                val newList = currentList + uri.toString()
+                preferences[PreferenceKeys.ROMS_URIS] = newList.joinToString("\n")
+            }
         }
     }
 

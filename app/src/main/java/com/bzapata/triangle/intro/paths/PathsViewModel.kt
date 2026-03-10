@@ -37,7 +37,7 @@ class PathsViewModel(
         observerConfig?.cancel()
         observerConfig = combine(
             flow = configRepo.triangleDataUriFlow,
-            flow2 = configRepo.romUriFlow
+            flow2 = configRepo.romUrisFlow
         ) { trianglePath, romPath ->
             _state.update {
                 it.copy(

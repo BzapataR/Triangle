@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Triangle</string>
+    <string name="paths">Paths</string>
+    <string name="settings">Settings</string>
+    <string name="rom_paths">ROM Paths</string>
+    <string name="triangle_path">Triangle Path</string>
+    <string name="add_path">Add Path</string>
 </resources>

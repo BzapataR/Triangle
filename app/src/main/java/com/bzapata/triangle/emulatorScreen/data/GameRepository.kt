@@ -42,25 +42,27 @@ class GameRepository(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun scanRoms() = withContext(Dispatchers.IO) {
-        val romPath = config.romUriFlow.first()
+        val romPaths = config.romUrisFlow.first()
         val userPath = config.triangleDataUriFlow.first()
 
-        if (romPath == null || userPath == null) {
+        if (userPath == null) {
             Log.w("GameRepo", "ROM or User path not configured, aborting scan.")
             return@withContext
         }
+        romPaths.forEach { romPath ->
 
-        Log.i("GameRepo", "Starting ROM scan for path: $romPath")
-        val romUris = getRomFiles(context, romPath).toList()
+            Log.i("GameRepo", "Starting ROM scan for path: $romPath")
+            val romUris = getRomFiles(context, romPath).toList()
 
-        romUris.map { romUri ->
-            async {
-                idRom(romUri, context, gamesDoa, userPath)
-            }
-        }.awaitAll()
+            romUris.map { romUri ->
+                async {
+                    idRom(romUri, context, gamesDoa, userPath)
+                }
+            }.awaitAll()
 
-        Log.i("GameRepo", "ROM scan finished. Validating database...")
-        validateSavedRoms()
+            Log.i("GameRepo", "ROM scan finished. Validating database...")
+            validateSavedRoms()
+        }
     }
 
     override fun getGames(): Flow<List<Game>> {
@@ -174,13 +176,14 @@ class GameRepository(
         }
     }
 
-    override suspend fun addSingleGame(uri: Uri) = withContext(Dispatchers.IO) {
+    override suspend fun addSingleGame(uri: Uri) = withContext(Dispatchers.IO) { //todo test this shit
         val userPath = config.triangleDataUriFlow.first() ?: return@withContext
-        val romPath = config.romUriFlow.first()
+        val destinationFile = DocumentFile.fromTreeUri(context,userPath)
+        val destinationDirectory = destinationFile?.findFile("imported games") ?: destinationFile?.createDirectory("imported games")
         val copiedFileUri = copyFile(
             context = context,
             sourceUri = uri,
-            destinationUri = romPath ?: userPath
+            destinationUri = destinationDirectory?.uri ?: return@withContext
         ) ?: return@withContext
         idRom(
             romPath = copiedFileUri,

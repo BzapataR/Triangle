@@ -44,17 +44,20 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.presentation.components.RoundedListItem
 import com.bzapata.triangle.settings.SubText
+import com.bzapata.triangle.ui.theme.TriangleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(
     dismiss: () -> Unit,
     toControllerSettings: () -> Unit = {},
-    toControllerSkins: () -> Unit = {}
+    toControllerSkins: () -> Unit = {},
+    toPaths : () -> Unit = {}
 ) {
 
     val uriHandler = LocalUriHandler.current
@@ -256,6 +259,16 @@ fun Settings(
             Spacer(modifier = Modifier.size(24.dp))
         }
 
+        item {
+            SubText(text = "File Paths")
+            Card {
+                RoundedListItem(
+                    leadingText = "Saved Paths",
+                    onClick = {toPaths()}
+                )
+            }
+            Spacer(modifier = Modifier.size(24.dp))
+        }
 
         item {
             SubText(text = "TRIANGLE SYNC")
@@ -452,5 +465,13 @@ fun Settings(
                 SubText("Triangle 0.1.0-alpha")
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun SettingsPreview() {
+    TriangleTheme {
+        Settings({})
     }
 }

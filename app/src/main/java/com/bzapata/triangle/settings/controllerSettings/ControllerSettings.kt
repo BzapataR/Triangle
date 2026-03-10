@@ -3,6 +3,7 @@ package com.bzapata.triangle.settings.controllerSettings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,7 +50,8 @@ fun ControllerSettings(goBack: () -> Unit) {
             )
             TextButton(
                 onClick = { goBack() },
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier.align(Alignment.CenterStart),
+                contentPadding = PaddingValues(horizontal = 0.dp)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),

@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.bzapata.triangle.settings.Paths.PathsRoot
 import com.bzapata.triangle.settings.controllerSettings.ControllerSettings
 import com.bzapata.triangle.settings.controllerSkins.ControllerSkinsRoot
 import com.bzapata.triangle.settings.mainSettingsPage.Settings
@@ -88,6 +89,9 @@ fun SettingsNavigator(
                                 },
                                 toControllerSkins = {
                                     settingsNavigation.navigate(SettingsNavigation.ControllerSkins)
+                                },
+                                toPaths = {
+                                    settingsNavigation.navigate(SettingsNavigation.Paths)
                                 }
                             )
                         }
@@ -104,6 +108,15 @@ fun SettingsNavigator(
                                     settingsNavigation.popBackStack()
                                 }
                             })
+                        }
+                        composable<SettingsNavigation.Paths> {
+                            PathsRoot(
+                                goBack = {
+                                    if (settingsNavigation.previousBackStackEntry != null) {
+                                        settingsNavigation.popBackStack()
+                                    }
+                                }
+                            )
                         }
                     }
                 }

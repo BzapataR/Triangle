@@ -21,7 +21,7 @@ class ControllerManager(context : Context) : InputManager.InputDeviceListener { 
     private val _recentControllerType = MutableStateFlow<ControllerType?>(null)
     val recentControllerType = _recentControllerType.asStateFlow()
 
-    enum class ControllerType(){
+    enum class ControllerType {
         XBOX,
         PLAYSTATION,
         NINTENDO,

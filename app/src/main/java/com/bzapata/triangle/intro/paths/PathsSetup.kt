@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bzapata.triangle.R
-import com.bzapata.triangle.util.fileLaunchers.directoryPicker
 import com.bzapata.triangle.ui.theme.TriangleTheme
+import com.bzapata.triangle.util.fileLaunchers.directoryPicker
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -51,7 +51,7 @@ fun Path(
         uri?.let { onActions(PathsSetupActions.SetTrianglePath(it)) }
     }
 
-    val selectRomsPathLauncher = directoryPicker() { uri ->
+    val selectRomsPathLauncher = directoryPicker { uri ->
         uri?.let { onActions(PathsSetupActions.SetRomsPath(it)) }
     }
 

@@ -34,6 +34,7 @@ sealed interface SettingsNavigation {
 
     @Serializable
     data object PrivacyPolicy : SettingsNavigation
+
     @Serializable
     data object Paths : SettingsNavigation
 }

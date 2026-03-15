@@ -16,12 +16,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PathsViewModel(
+class PathsSetupViewModel(
     private val configRepo: ConfigRepository
 ) : ViewModel() {
 
     private var observerConfig: Job? = null
-    private val _state = MutableStateFlow(PathsState())
+    private val _state = MutableStateFlow(PathsSetupState())
 
     val state = _state.asStateFlow()
         .onStart {
@@ -49,13 +49,13 @@ class PathsViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun onAction(actions: PathsActions) {
+    fun onAction(actions: PathsSetupActions) {
         when (actions) {
-            is PathsActions.SetRomsPath -> {
+            is PathsSetupActions.SetRomsPath -> {
                 setRomPath(actions.uri)
             }
 
-            is PathsActions.SetTrianglePath -> {
+            is PathsSetupActions.SetTrianglePath -> {
                 setTrianglePath(actions.uri)
             }
         }

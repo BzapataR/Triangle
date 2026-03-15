@@ -60,16 +60,14 @@ class EmulatorViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun observeRomPath() {
-        appConfig.romUrisFlow.distinctUntilChanged().onEach { uri ->
-            if (uri != null && !_state.value.isInitialScanDone) {
+    private fun observeRomPath() { // todo maybe change this to account for multipul rom paths
+        appConfig.romUrisFlow.distinctUntilChanged().onEach { _ ->
+            if (!_state.value.isInitialScanDone) {
                 CoroutineScope(Dispatchers.IO).launch {
                     _state.update { it.copy(noRomPath = false, isScanning = true) }
                     gameRepo.scanRoms()
                     _state.update { it.copy(isInitialScanDone = true, isScanning = false) }
                 }
-            } else if (uri == null) {
-                _state.update { it.copy(noRomPath = true) }
             } else {
                 _state.update { it.copy(noRomPath = false) }
             }

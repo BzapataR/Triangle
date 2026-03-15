@@ -57,6 +57,14 @@ class ConfigRepository(private val context: Context) {
             }
         }
     }
+    suspend fun removeRomPath(uri: Uri) {
+        context.dataStore.edit { preferences ->
+            val rawString = preferences[PreferenceKeys.ROMS_URIS] ?: ""
+            val currentList = if (rawString.isEmpty()) emptyList() else rawString.split("\n")
+            val newList = currentList.filter { it != uri.toString() }
+            preferences[PreferenceKeys.ROMS_URIS] = newList.joinToString("\n")
+        }
+    }
 
     val isFirstLaunchFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences ->

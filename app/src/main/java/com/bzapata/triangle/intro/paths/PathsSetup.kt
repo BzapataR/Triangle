@@ -32,7 +32,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PathRoot(
-    viewModel: PathsViewModel = koinViewModel()
+    viewModel: PathsSetupViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -44,15 +44,15 @@ fun PathRoot(
 
 @Composable
 fun Path(
-    state: PathsState,
-    onActions: (PathsActions) -> Unit
+    state: PathsSetupState,
+    onActions: (PathsSetupActions) -> Unit
 ) {
     val selectTrianglePathLauncher = directoryPicker(state.trianglePath) { uri ->
-        uri?.let { onActions(PathsActions.SetTrianglePath(it)) }
+        uri?.let { onActions(PathsSetupActions.SetTrianglePath(it)) }
     }
 
     val selectRomsPathLauncher = directoryPicker() { uri ->
-        uri?.let { onActions(PathsActions.SetRomsPath(it)) }
+        uri?.let { onActions(PathsSetupActions.SetRomsPath(it)) }
     }
 
     Column(
@@ -108,14 +108,13 @@ fun Path(
             Button(
                 onClick = { selectRomsPathLauncher() },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state.romPath == null
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.videogame_asset_24dp),
                     contentDescription = "Select Applications folder"
                 )
                 Text(
-                    text = "Applications",
+                    text = if (state.romPath.isNotEmpty()) "Add More ROM folder" else "Select Roms Folder",
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
@@ -128,6 +127,6 @@ fun Path(
 @Composable
 fun PathsPreview() {
     TriangleTheme {
-        Path(state = PathsState(), onActions = {})
+        Path(state = PathsSetupState(), onActions = {})
     }
 }

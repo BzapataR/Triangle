@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 import com.bzapata.triangle.emulatorScreen.presentation.components.PdfImage
+import com.bzapata.triangle.settings.SettingsPageTemplate
 import com.bzapata.triangle.settings.SubText
 import com.bzapata.triangle.ui.theme.TriangleTheme
 
@@ -41,69 +42,10 @@ fun ControllerSkinsRoot(goBack: () -> Unit = {}) {
 
 @Composable
 fun ControllerSkins(goBack: () -> Unit) {
-    val listState = rememberLazyListState()
-
-    val headerAlpha by remember {
-        derivedStateOf {
-            if (listState.firstVisibleItemIndex > 0) 1f
-            else (listState.firstVisibleItemScrollOffset / 120f).coerceIn(0f, 1f)
-        }
-    }
-    LazyColumn(
-        state = listState,
-        contentPadding = PaddingValues(bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    )
-    {
-        stickyHeader {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xff1c1c1e))
-                    .padding(vertical = 8.dp),
-            ) {
-                Text(
-                    text = "NES",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier
-                        .graphicsLayer {
-                            alpha = headerAlpha
-                            translationY = (1f - headerAlpha) * -12f
-                        }
-                        .align(Alignment.Center)
-                )
-
-                TextButton(
-                    onClick = { goBack() },
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    contentPadding = PaddingValues(horizontal = 0.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "Settings",
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-            }
-        }
-        item {
-            Text(
-                text = "NES",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White
-            )
-
-            Spacer(modifier = Modifier.size(24.dp))
-
-        }
+    SettingsPageTemplate(
+        goBack = {goBack() },
+        title = "NES", // placeholder
+    ) {
         item {
             SubText("PORTRAIT")
             PdfImage(

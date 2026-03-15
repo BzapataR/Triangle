@@ -61,7 +61,7 @@ fun SettingsNavigator(
             Column(
                 modifier = Modifier
                     .fillMaxHeight(.94f)
-                    .padding(horizontal = 16.dp),
+//                    .padding(horizontal = 16.dp),
             ) {
                 NavHost(
                     navController = settingsNavigation,

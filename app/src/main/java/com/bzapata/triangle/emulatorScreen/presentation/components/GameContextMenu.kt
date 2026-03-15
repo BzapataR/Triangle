@@ -199,6 +199,18 @@ fun GameContextMenu(
 
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
 
+                    //debug line
+                    DropdownMenuItem(
+                        text = { Text("${game.path.path}") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.outline_outbox_24),
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {}
+                    )
+
                     DropdownMenuItem(
                         text = {
                             Text(

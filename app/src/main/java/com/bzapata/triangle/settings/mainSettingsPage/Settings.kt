@@ -56,7 +56,7 @@ fun Settings(
     var sliderPositions by remember { mutableFloatStateOf(70f) }
     var isChecked by remember { mutableStateOf(true) }
 
-    SettingsPageTemplate(goBack = { dismiss() }, title = "Settings") {
+    SettingsPageTemplate(goBack = { dismiss() }, title = "Settings", rootPage = true) {
         item {
             SubText("CONTROLLER")
             Card(

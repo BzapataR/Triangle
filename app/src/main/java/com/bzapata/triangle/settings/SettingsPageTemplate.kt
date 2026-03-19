@@ -31,7 +31,13 @@ import androidx.compose.ui.unit.dp
 import com.bzapata.triangle.R
 
 @Composable
-fun SettingsPageTemplate(goBack : () -> Unit, title : String, modifier : Modifier = Modifier, content : LazyListScope.() -> Unit) {
+fun SettingsPageTemplate(
+    goBack: () -> Unit,
+    title: String,
+    modifier: Modifier = Modifier,
+    rootPage: Boolean = false,
+    content: LazyListScope.() -> Unit
+) {
     val listState = rememberLazyListState()
     val headerAlpha by remember {
         derivedStateOf {
@@ -41,7 +47,9 @@ fun SettingsPageTemplate(goBack : () -> Unit, title : String, modifier : Modifie
     }
 
     LazyColumn(
-        modifier = modifier.then(Modifier.fillMaxSize().padding(horizontal = 16.dp)),
+        modifier = modifier.then(Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)),
         state = listState,
         contentPadding = PaddingValues(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -50,7 +58,7 @@ fun SettingsPageTemplate(goBack : () -> Unit, title : String, modifier : Modifie
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xff1c1c1e))
+                    .background(Color(0xff1c1c1e).copy(alpha = headerAlpha))
                     .padding(vertical = 8.dp),
             ) {
                 Text(
@@ -65,22 +73,36 @@ fun SettingsPageTemplate(goBack : () -> Unit, title : String, modifier : Modifie
                         }
                         .align(Alignment.Center)
                 )
-
-                TextButton(
-                    onClick = { goBack() },
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    contentPadding = PaddingValues(horizontal = 0.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Settings",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                if (!rootPage) {
+                    TextButton(
+                        onClick = { goBack() },
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        contentPadding = PaddingValues(horizontal = 0.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.outline_keyboard_arrow_left_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Settings",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                }
+                else {
+                    TextButton(
+                        onClick = { goBack() },
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        contentPadding = PaddingValues(horizontal = 0.dp)
+                    ) {
+                        Text(
+                            text = "Done",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
                 }
             }
         }

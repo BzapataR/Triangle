@@ -26,12 +26,12 @@
                          input screen what part of the screen from the emulator you want to capture // original resolution
                          outscreen where to placae said input in screen
  */
-package com.bzapata.triangle.controllerSkins
+package com.bzapata.triangle.deltaCoreKt.controllerSkins
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PointF
 import android.graphics.RectF
-import android.service.controls.DeviceTypes
 import android.util.Log
 import android.view.WindowInsets
 import androidx.collection.LruCache
@@ -48,6 +48,13 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import java.util.zip.ZipFile
 
+const val kUTTpyeDeltaControllerSkin : String = "com.rileytestut.delta.skin"
+typealias RepresentationDictionary = Map<String, Map<String, Any>>
+
+object GameControllerInputTypeExt {
+    val controllerSkin = GameControllerInputType("controllerSkin")
+}
+
 class ControllerSkins(val file : File) {
     val tag = "Controller Skins"
 
@@ -58,7 +65,7 @@ class ControllerSkins(val file : File) {
     var debug : Boolean = false
 
     private val representations = mutableMapOf<Traits, Representation>()
-    private val imageCache = LruCache<String, android.graphics.Bitmap>(6)
+    private val imageCache = LruCache<String, Bitmap>(50)
     private val zipFile = ZipFile(file)
 
     enum class Placement { CONTROLLER, APP }
@@ -69,12 +76,12 @@ class ControllerSkins(val file : File) {
     enum class Size { SMALL, MEDIUM, LARGE }
 
 
-    data class Traits(
-        val device : Device,
-        val displayType : DisplayType,
-        val orientation : Orientation,
+    data class Traits( // todo put in seperate file
+        var device : Device,
+        var displayType : DisplayType,
+        var orientation : Orientation,
 
-        val description : String = device.name + "-" + displayType.name + displayType.name
+        var description : String = device.name + "-" + displayType.name + displayType.name
     )
     fun defaults(context : Context, windowInsets : WindowInsetsCompat) : Traits {
         val resources = context.resources
@@ -210,13 +217,13 @@ class ControllerSkins(val file : File) {
                 (frameObj["x"]?.jsonPrimitive?.float ?: 0f) + (frameObj["width"]?.jsonPrimitive?.float ?: 0f),
                 (frameObj["y"]?.jsonPrimitive?.float ?: 0f) + (frameObj["height"]?.jsonPrimitive?.float ?: 0f)
             )
-
             Item(
                 id = "${identifier}_${traits}_$index",
-                kind = Item.Kind.BUTTON, // Simplified for brevity
+                kind = Item.Kind.BUTTON,
                 frame = RectF(rawFrame.left / mappingSize.x, rawFrame.top / mappingSize.y, rawFrame.right / mappingSize.x, rawFrame.bottom / mappingSize.y),
-                extendedFrame = rawFrame, // Logic for extended edges would go here
-                placement = Placement.CONTROLLER
+                extendedFrame = rawFrame,
+                placement = Placement.CONTROLLER,
+                inputs = []
             )
         } ?: emptyList()
     }

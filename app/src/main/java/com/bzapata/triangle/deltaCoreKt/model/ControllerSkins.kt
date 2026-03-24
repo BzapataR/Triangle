@@ -26,7 +26,7 @@
                          input screen what part of the screen from the emulator you want to capture // original resolution
                          outscreen where to placae said input in screen
  */
-package com.bzapata.triangle.deltaCoreKt.controllerSkins
+package com.bzapata.triangle.deltaCoreKt.model
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -69,14 +69,14 @@ class ControllerSkins(val file : File) {
     private val zipFile = ZipFile(file)
 
     enum class Placement { CONTROLLER, APP }
-
+    // ControllerSkinTraits.swift :/ No extension functionality like swift has
     enum class Device { IPHONE, IPAD, TV}
     enum class DisplayType { STANDARD, EDGE_TO_EDGE, SPLIT_VIEW }
     enum class Orientation { PORTRAIT, LANDSCAPE }
     enum class Size { SMALL, MEDIUM, LARGE }
 
 
-    data class Traits( // todo put in seperate file
+    data class Traits(
         var device : Device,
         var displayType : DisplayType,
         var orientation : Orientation,

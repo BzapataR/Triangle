@@ -4,7 +4,7 @@ import android.graphics.RectF
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.DpSize
-import com.bzapata.triangle.deltaCoreKt.controllerSkins.ControllerSkins
+import com.bzapata.triangle.deltaCoreKt.model.ControllerSkins
 
 sealed interface ControllerSkinProtocol {
     var name : String

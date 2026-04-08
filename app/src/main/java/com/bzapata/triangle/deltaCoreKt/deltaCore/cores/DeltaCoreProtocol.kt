@@ -30,7 +30,6 @@ interface DeltaCoreProtocol {
     //Emulation
     val emulatorBridge : EmulatorBridging
     val resourceBundle : Bundle
-
     val directoryURI : Uri get() {
         val delta : Delta = get(Delta::class.java)
         val baseFile = File(delta.coresDirectoryUri.path ?: "")

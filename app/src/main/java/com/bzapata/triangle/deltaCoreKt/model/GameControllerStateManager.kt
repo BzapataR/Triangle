@@ -1,4 +1,4 @@
-package com.bzapata.triangle.deltaCoreKt.model.inputs
+package com.bzapata.triangle.deltaCoreKt.model
 
 import com.bzapata.triangle.deltaCoreKt.protocols.inputs.GameController
 import com.bzapata.triangle.deltaCoreKt.protocols.inputs.GameControllerReceiver
@@ -112,4 +112,3 @@ internal class GameControllerStateManager(val gameController: GameController) {
         return mapping.input(input)
     }
 }
-

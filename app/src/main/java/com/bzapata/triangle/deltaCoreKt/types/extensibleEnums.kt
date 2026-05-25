@@ -17,4 +17,8 @@ value class CheatType(val rawValue: String)
 
 @Serializable
 @JvmInline
-value class GameControllerInputType(val rawValue: String)
+value class GameControllerInputType(val rawValue: String) {
+    companion object {
+        val standard = GameControllerInputType("standard")
+    }
+}

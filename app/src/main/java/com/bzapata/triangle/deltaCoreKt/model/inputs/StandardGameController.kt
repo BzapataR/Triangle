@@ -57,7 +57,6 @@ enum class StandardGameControllerInput(val rawValue: String) : Input {
         catch (e : Exception) {
             throw Exception("can't find standard.deltamapping for game type $gameType")
         }
-        mapping =
     }
     companion object {
         private val inputMapping = mutableMapOf<GameType, GameControllerInputMappingProtocol>()

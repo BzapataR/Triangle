@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.bzapata.triangle.deltaCoreKt.Delta
+import com.bzapata.triangle.deltaCoreKt.protocols.inputs.Input
 import com.bzapata.triangle.deltaCoreKt.types.GameType
 import org.koin.java.KoinJavaComponent.get
 import java.io.File
@@ -18,7 +19,7 @@ interface DeltaCoreProtocol {
     val gameType : GameType
     val gameSaveFileExtension : String
 
-    val gameInputType : Input.type
+    val gameInputType : Input.Type
 
     //rendering
     val audioFormat : AVAudioFormat
